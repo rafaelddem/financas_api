@@ -1,0 +1,221 @@
+Installment (financas_api\tests\Installment)
+ [x] Create installment with accepted values with data set #0
+ [x] Create installment with accepted values with data set #1
+ [x] Create installment with accepted values with data set #2
+ [x] Create installment with accepted values with data set #3
+ [x] Create installment with accepted values with data set #4
+ [x] Create installment with accepted values with data set #5
+ [x] Create installment with accepted values with data set #6
+ [x] Create installment with accepted values with data set #7
+ [x] Create installment with accepted values with data set #8
+ [x] Create installment with accepted values with data set #9
+ [x] Create installment with accepted values with data set #10
+ [x] Create installment with accepted values with data set #11
+ [x] Change installment values after create
+ [x] Create installment with duo date empty
+ [x] Create installment with duo date invalid with data set #0
+ [x] Create installment with duo date invalid with data set #1
+ [x] Create installment with duo date invalid with data set #2
+ [x] Create installment with duo date invalid with data set #3
+ [x] Create installment with duo date invalid with data set #4
+ [x] Create installment with duo date invalid with data set #5
+ [x] Create installment with payment date empty
+ [x] Create installment with payment date invalid with data set #0
+ [x] Create installment with payment date invalid with data set #1
+ [x] Create installment with payment date invalid with data set #2
+ [x] Create installment with payment date invalid with data set #3
+ [x] Create installment with payment date invalid with data set #4
+ [x] Create installment with payment date invalid with data set #5
+ [x] Create installment with payment date lower than duo date
+ [x] Create installment with gross value empty
+ [x] Create installment with gross value negative
+ [x] Create installment with discount value negative
+ [x] Create installment with discount value equal gross value
+ [x] Create installment with discount value greater than gross value
+ [x] Create installment with interest value negative
+ [x] Create installment with total value sum negative
+
+Owner (financas_api\tests\Owner)
+ [x] Create owner with name with accepted size and characters with data set "shortName"
+ [x] Create owner with name with accepted size and characters with data set "longName"
+ [x] Create owner with name with not accepted size with data set "veryShortName"
+ [x] Create owner with name with not accepted size with data set "veryLongName"
+ [x] Create owner with name with not accepted characters with data set #0
+ [x] Create owner with name with not accepted characters with data set #1
+ [x] Create owner with name with not accepted characters with data set #2
+ [x] Create owner with name with not accepted characters with data set #3
+ [x] Create owner with name with not accepted characters with data set #4
+ [x] Create owner with name with not accepted characters with data set #5
+ [x] Create owner with name with not accepted characters with data set #6
+ [x] Create owner with name with not accepted characters with data set #7
+ [x] Create owner with name with not accepted characters with data set #8
+ [x] Create owner with name with not accepted characters with data set #9
+ [x] Create owner with name with not accepted characters with data set #10
+ [x] Create owner with name with not accepted characters with data set #11
+ [x] Create owner with name with not accepted characters with data set #12
+ [x] Create owner with name with not accepted characters with data set #13
+ [x] Create owner with name with not accepted characters with data set #14
+ [x] Create owner with name with not accepted characters with data set #15
+ [x] Create owner with name with not accepted characters with data set #16
+ [x] Create owner with name with not accepted characters with data set #17
+
+Payment Method (financas_api\tests\PaymentMethod)
+ [x] Create payment method with name with accepted size and characters with data set "shortName"
+ [x] Create payment method with name with accepted size and characters with data set "longName"
+ [x] Create payment method with name with not accepted size with data set "veryShortName"
+ [x] Create payment method with name with not accepted size with data set "veryLongName"
+ [x] Create payment method with name with not accepted characters with data set #0
+ [x] Create payment method with name with not accepted characters with data set #1
+ [x] Create payment method with name with not accepted characters with data set #2
+ [x] Create payment method with name with not accepted characters with data set #3
+ [x] Create payment method with name with not accepted characters with data set #4
+ [x] Create payment method with name with not accepted characters with data set #5
+ [x] Create payment method with name with not accepted characters with data set #6
+ [x] Create payment method with name with not accepted characters with data set #7
+ [x] Create payment method with name with not accepted characters with data set #8
+ [x] Create payment method with name with not accepted characters with data set #9
+ [x] Create payment method with name with not accepted characters with data set #10
+ [x] Create payment method with name with not accepted characters with data set #11
+ [x] Create payment method with name with not accepted characters with data set #12
+ [x] Create payment method with name with not accepted characters with data set #13
+ [x] Create payment method with name with not accepted characters with data set #14
+ [x] Create payment method with name with not accepted characters with data set #15
+ [x] Create payment method with name with not accepted characters with data set #16
+ [x] Create payment method with name with not accepted characters with data set #17
+
+Transaction (financas_api\tests\Transaction)
+ [x] Create installment with accepted values with data set "OneInstallment_simpleValues"
+ [x] Create installment with accepted values with data set "twoInstallments_simpleValues"
+ [x] Create installment with accepted values with data set "twoInstallments_SameDates_simpleValues"
+ [x] Create installment with accepted values with data set "fiveInstallments_simpleValues"
+ [x] Create installment with accepted values with data set "oneInstallment_discount"
+ [x] Create installment with accepted values with data set "twoInstallments_sameDates_discount"
+ [x] Create installment with accepted values with data set "twoInstallments_discount"
+ [x] Create installment with accepted values with data set "fiveInstallments_differentValues_discount"
+ [x] Create installment with accepted values with data set "fiveInstallments_differentValues_twoDiscount"
+ [x] Create installment with accepted values with data set "oneInstallment_interest"
+ [x] Create installment with accepted values with data set "twoInstallments_sameDates_interest"
+ [x] Create installment with accepted values with data set "twoInstallments_interest"
+ [x] Create installment with accepted values with data set "fiveInstallments_differentValues_interest"
+ [x] Create installment with accepted values with data set "oneInstallment_round"
+ [x] Create installment with accepted values with data set "twoInstallments_sameDates_round"
+ [x] Create installment with accepted values with data set "twoInstallments_round"
+ [x] Create installment with accepted values with data set "fiveInstallments_differentValues_round"
+ [x] Create installment with accepted values with data set "fiveInstallments_differentValues_discount_round"
+ [x] Create transaction with tittle with accepted size and characters with data set "shortTittle"
+ [x] Create transaction with tittle with accepted size and characters with data set "longTittle"
+ [x] Create transaction with tittle with not accepted size with data set "veryShortTittle"
+ [x] Create transaction with tittle with not accepted size with data set "veryLongTittle"
+ [x] Create transaction with tittle with not accepted characters with data set #0
+ [x] Create transaction with tittle with not accepted characters with data set #1
+ [x] Create transaction with tittle with not accepted characters with data set #2
+ [x] Create transaction with tittle with not accepted characters with data set #3
+ [x] Create transaction with tittle with not accepted characters with data set #4
+ [x] Create transaction with tittle with not accepted characters with data set #5
+ [x] Create transaction with tittle with not accepted characters with data set #6
+ [x] Create transaction with tittle with not accepted characters with data set #7
+ [x] Create transaction with tittle with not accepted characters with data set #8
+ [x] Create transaction with tittle with not accepted characters with data set #9
+ [x] Create transaction with tittle with not accepted characters with data set #10
+ [x] Create transaction with tittle with not accepted characters with data set #11
+ [x] Create transaction with tittle with not accepted characters with data set #12
+ [x] Create transaction with tittle with not accepted characters with data set #13
+ [x] Create transaction with tittle with not accepted characters with data set #14
+ [x] Create transaction with tittle with not accepted characters with data set #15
+ [x] Create transaction with tittle with not accepted characters with data set #16
+ [x] Create transaction with tittle with not accepted characters with data set #17
+ [x] Create installment with transaction date empty
+ [x] Create installment with transaction date invalid with data set #0
+ [x] Create installment with transaction date invalid with data set #1
+ [x] Create installment with transaction date invalid with data set #2
+ [x] Create installment with transaction date invalid with data set #3
+ [x] Create installment with transaction date invalid with data set #4
+ [x] Create installment with transaction date invalid with data set #5
+ [x] Create transaction type with relevance with accepted values with data set #0
+ [x] Create transaction type with relevance with accepted values with data set #1
+ [x] Create transaction type with relevance with accepted values with data set #2
+ [x] Create transaction type with relevance with not accepted values with data set #0
+ [x] Create transaction type with relevance with not accepted values with data set #1
+ [x] Create transaction type with relevance with not accepted values with data set #2
+ [x] Create transaction type with relevance with not accepted values with data set #3
+ [x] Create transaction type with relevance with not accepted values with data set #4
+ [x] Create transaction type with relevance with not accepted values with data set #5
+ [x] Create transaction with description with accepted size and characters with data set "shortDescription"
+ [x] Create transaction with description with accepted size and characters with data set "longDescription"
+ [x] Create transaction with description with not accepted size with data set "veryLongDescription"
+ [x] Create transaction with description with not accepted characters with data set #0
+ [x] Create transaction with description with not accepted characters with data set #1
+ [x] Create transaction with description with not accepted characters with data set #2
+ [x] Create transaction with description with not accepted characters with data set #3
+ [x] Create transaction with description with not accepted characters with data set #4
+ [x] Create transaction with description with not accepted characters with data set #5
+ [x] Create transaction with description with not accepted characters with data set #6
+ [x] Create transaction with description with not accepted characters with data set #7
+ [x] Create transaction with description with not accepted characters with data set #8
+ [x] Create transaction with description with not accepted characters with data set #9
+ [x] Create transaction with description with not accepted characters with data set #10
+ [x] Create transaction with description with not accepted characters with data set #11
+ [x] Create transaction with description with not accepted characters with data set #12
+ [x] Create transaction with description with not accepted characters with data set #13
+ [x] Create transaction with description with not accepted characters with data set #14
+ [x] Create transaction with description with not accepted characters with data set #15
+ [x] Create transaction with description with not accepted characters with data set #16
+ [x] Create transaction with description with not accepted characters with data set #17
+
+Transaction Type (financas_api\tests\TransactionType)
+ [x] Create transaction type with name with accepted size and characters with data set "shortName"
+ [x] Create transaction type with name with accepted size and characters with data set "longName"
+ [x] Create transaction type with name with not accepted size with data set "veryShortName"
+ [x] Create transaction type with name with not accepted size with data set "veryLongName"
+ [x] Create transaction type with name with not accepted characters with data set #0
+ [x] Create transaction type with name with not accepted characters with data set #1
+ [x] Create transaction type with name with not accepted characters with data set #2
+ [x] Create transaction type with name with not accepted characters with data set #3
+ [x] Create transaction type with name with not accepted characters with data set #4
+ [x] Create transaction type with name with not accepted characters with data set #5
+ [x] Create transaction type with name with not accepted characters with data set #6
+ [x] Create transaction type with name with not accepted characters with data set #7
+ [x] Create transaction type with name with not accepted characters with data set #8
+ [x] Create transaction type with name with not accepted characters with data set #9
+ [x] Create transaction type with name with not accepted characters with data set #10
+ [x] Create transaction type with name with not accepted characters with data set #11
+ [x] Create transaction type with name with not accepted characters with data set #12
+ [x] Create transaction type with name with not accepted characters with data set #13
+ [x] Create transaction type with name with not accepted characters with data set #14
+ [x] Create transaction type with name with not accepted characters with data set #15
+ [x] Create transaction type with name with not accepted characters with data set #16
+ [x] Create transaction type with name with not accepted characters with data set #17
+ [x] Create transaction type with relevance with accepted values with data set #0
+ [x] Create transaction type with relevance with accepted values with data set #1
+ [x] Create transaction type with relevance with accepted values with data set #2
+ [x] Create transaction type with relevance with not accepted values with data set #0
+ [x] Create transaction type with relevance with not accepted values with data set #1
+ [x] Create transaction type with relevance with not accepted values with data set #2
+ [x] Create transaction type with relevance with not accepted values with data set #3
+ [x] Create transaction type with relevance with not accepted values with data set #4
+ [x] Create transaction type with relevance with not accepted values with data set #5
+
+Wallet (financas_api\tests\Wallet)
+ [x] Create wallet with name with accepted size and characters with data set "shortName"
+ [x] Create wallet with name with accepted size and characters with data set "longName"
+ [x] Create wallet with name with not accepted size with data set "veryShortName"
+ [x] Create wallet with name with not accepted size with data set "veryLongName"
+ [x] Create wallet with name with not accepted characters with data set #0
+ [x] Create wallet with name with not accepted characters with data set #1
+ [x] Create wallet with name with not accepted characters with data set #2
+ [x] Create wallet with name with not accepted characters with data set #3
+ [x] Create wallet with name with not accepted characters with data set #4
+ [x] Create wallet with name with not accepted characters with data set #5
+ [x] Create wallet with name with not accepted characters with data set #6
+ [x] Create wallet with name with not accepted characters with data set #7
+ [x] Create wallet with name with not accepted characters with data set #8
+ [x] Create wallet with name with not accepted characters with data set #9
+ [x] Create wallet with name with not accepted characters with data set #10
+ [x] Create wallet with name with not accepted characters with data set #11
+ [x] Create wallet with name with not accepted characters with data set #12
+ [x] Create wallet with name with not accepted characters with data set #13
+ [x] Create wallet with name with not accepted characters with data set #14
+ [x] Create wallet with name with not accepted characters with data set #15
+ [x] Create wallet with name with not accepted characters with data set #16
+ [x] Create wallet with name with not accepted characters with data set #17
+

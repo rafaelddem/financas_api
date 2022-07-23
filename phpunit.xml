@@ -1,0 +1,17 @@
+<phpunit
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/6.3/phpunit.xsd"
+    colors="true"
+>
+    <testsuites>
+        <testsuite name ="test_folder">
+            <directory>tests</directory>
+            <!-- <file>/path/to/MyTest.php</file> -->
+            <!-- <exclude>/path/to/exclude</exclude> -->
+        </testsuite>
+    </testsuites>
+
+    <logging>
+        <log type="testdox-text" target="tests_results.txt"/>
+    </logging>
+</phpunit>

@@ -1,0 +1,81 @@
+<?php
+
+namespace financas_api\model\entity;
+
+use financas_api\exceptions\entity\ValueNotAcceptException;
+
+class Wallet
+{
+    private int $id;
+    private string $name;
+    private int $owner_id;
+    private bool $main_wallet;
+    private bool $active;
+
+    public function __construct(int $id, string $name, int $owner_id, bool $main_wallet, bool $active)
+    {
+        self::setId($id);
+        self::setName($name);
+        self::setOwnerId($owner_id);
+        self::setMainWallet($main_wallet);
+        self::setActive($active);
+    }
+
+    private function setId(int $id)
+    {
+        $this->id = $id;
+    }
+
+    public function getId() : int
+    {
+        return $this->id;
+    }
+
+    private function setName(string $name)
+    {
+        if(strlen($name) < 3 or strlen($name) > 30)
+            throw new ValueNotAcceptException('The \'name\' attribute need to be between 3 and 30 characters', 020100201);
+        else if (preg_match('/[!@#$%&*{}$?<>:;|\/]/', $name))
+            throw new ValueNotAcceptException('The \'name\' attribute only accepts letters and numbers', 020100201);
+        
+        $this->name = $name;
+    }
+
+    public function getName() : string
+    {
+        return $this->name;
+    }
+
+    private function setOwnerId(int $owner_id)
+    {
+        $this->owner_id = $owner_id;
+    }
+
+    public function getOwnerId() : int
+    {
+        return $this->owner_id;
+    }
+
+    public function setMainWallet(bool $main_wallet)
+    {
+        $this->main_wallet = $main_wallet;
+    }
+
+    public function getMainWallet() : bool
+    {
+        return $this->main_wallet;
+    }
+
+    public function setActive(bool $active)
+    {
+        $this->active = $active;
+    }
+
+    public function getActive() : bool
+    {
+        return $this->active;
+    }
+
+}
+    
+?>
