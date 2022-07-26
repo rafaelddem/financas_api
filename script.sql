@@ -58,26 +58,6 @@ create table finance_api.transaction_type (
 
 
 
-create table financas.tbfi_tipoMovimento (
-	int_codigo int(5) not null auto_increment, 
-	str_nome varchar(45) not null, 
-	chr_tipo char(1) not null, 							/* 1-positivo, 2-negativo, 3-transferencia*/
-	int_indispensavel int(1) default 0, 
-	str_descricao varchar(255) default null, 
-	chr_ativo char(1) not null,						/* 0-inativa, 1-ativa */
-	primary key (int_codigo)
-);
--- select * from financas.tipoMovimento;
--- drop table financas.tipoMovimento;
-
-create table financas.tbfi_formaPagamento (
-	int_codigo int(2) not null auto_increment, 
-	str_nome varchar(30) not null, 
-	chr_ativo char(1) not null,						/* 0-inativa, 1-ativa */
-	primary key (int_codigo)
-);
--- select * from financas.formaPagamento;
--- drop table financas.formaPagamento;
 
 create table financas.tbfi_movimento (
 	int_codigo int(11) not null auto_increment, 
