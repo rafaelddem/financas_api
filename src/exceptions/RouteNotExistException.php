@@ -1,10 +1,10 @@
 <?php
 
-namespace financas_api\exceptions\bo;
+namespace financas_api\exceptions;
 
 use Exception;
 
-class EmptyValueException extends Exception
+class RouteNotExistException extends Exception
 {
     public function __construct($message, $code) {
         parent::__construct($message, $code);

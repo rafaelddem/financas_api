@@ -1,6 +1,6 @@
 <?php
 
-namespace financas_api\model\dao;
+namespace financas_api\model\dataAccess;
 
 use \PDO;
 
@@ -13,7 +13,7 @@ class Conection
         
     public function __construct()
     {
-        $this->dataBaseName = "api_finance";
+        $this->dataBaseName = "finance_api";
         $this->server = "127.0.0.1";
         $this->user = "root";
         $this->password = "root";

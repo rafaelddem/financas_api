@@ -2,7 +2,7 @@
 
 namespace financas_api\model\entity;
 
-use financas_api\exceptions\entity\ValueNotAcceptException;
+use financas_api\exceptions\ValueNotAcceptException;
 
 class Wallet
 {
@@ -34,9 +34,9 @@ class Wallet
     private function setName(string $name)
     {
         if(strlen($name) < 3 or strlen($name) > 30)
-            throw new ValueNotAcceptException('The \'name\' attribute need to be between 3 and 30 characters', 020100201);
+            throw new ValueNotAcceptException('The \'name\' attribute need to be between 3 and 30 characters', 1201002001);
         else if (preg_match('/[!@#$%&*{}$?<>:;|\/]/', $name))
-            throw new ValueNotAcceptException('The \'name\' attribute only accepts letters and numbers', 020100201);
+            throw new ValueNotAcceptException('The \'name\' attribute only accepts letters and numbers', 1201002001);
         
         $this->name = $name;
     }
@@ -74,6 +74,17 @@ class Wallet
     public function getActive() : bool
     {
         return $this->active;
+    }
+
+    public function entityToJson()
+    {
+        return [
+            'id' => $this->getId(), 
+            'name' => $this->getName(), 
+            'owner_id' => $this->getOwnerId(), 
+            'main_wallet' => $this->getMainWallet(), 
+            'active' => $this->getActive(), 
+        ];
     }
 
 }

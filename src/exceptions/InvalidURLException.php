@@ -1,10 +1,10 @@
 <?php
 
-namespace financas_api\exceptions\entity;
+namespace financas_api\exceptions;
 
 use Exception;
 
-class DateCreateException extends Exception
+class InvalidURLException extends Exception
 {
     public function __construct($message, $code) {
         parent::__construct($message, $code);

@@ -3,11 +3,10 @@
 namespace financas_api\model\entity;
 
 use DateTime;
-use \Exception;
 use financas_api\conf\Parameters;
-use financas_api\exceptions\entity\DateCreateException;
-use financas_api\exceptions\entity\EmptyValueException;
-use financas_api\exceptions\entity\ValueNotAcceptException;
+use financas_api\exceptions\DateCreateException;
+use financas_api\exceptions\EmptyValueException;
+use financas_api\exceptions\ValueNotAcceptException;
 
 class Installment
 {
@@ -68,13 +67,13 @@ class Installment
     private function setDuoDate(string $duo_date)
     {
         if ($duo_date == '') 
-            throw new EmptyValueException('The value for \'duo_date\' need to be informed', 020100601);
+            throw new EmptyValueException('The value for \'duo_date\' need to be informed', 1201006001);
 
         try {
             $this->duo_date = new DateTime($duo_date);
             // self::calculateNetValue();
         } catch (\Exception $ex) {
-            throw new DateCreateException('The value for \'duo_date\' are not accept, confirm value and format (\'yyyy-mm-dd\')', 020100602);
+            throw new DateCreateException('The value for \'duo_date\' are not accept, confirm value and format (\'yyyy-mm-dd\')', 1201006002);
         }
     }
     
@@ -91,11 +90,11 @@ class Installment
         try {
             $this->payment_date = new DateTime($payment_date);
         } catch (\Exception $ex) {
-            throw new DateCreateException('The value for \'payment_date\' are not accept, confirm value and format (\'yyyy-mm-dd\')', 020100603);
+            throw new DateCreateException('The value for \'payment_date\' are not accept, confirm value and format (\'yyyy-mm-dd\')', 1201006003);
         }
 
         if ($this->duo_date > $this->payment_date) 
-            throw new DateCreateException('The value for \'payment_date\' cannot be lower than \'duo_date\'', 020100604);
+            throw new DateCreateException('The value for \'payment_date\' cannot be lower than \'duo_date\'', 1201006004);
     }
 
     public function getPaymentDate() : string
@@ -109,7 +108,7 @@ class Installment
     private function setGrossValue(float $gross_value)
     {
         if (empty($gross_value) || $gross_value <= 0.0) 
-            throw new ValueNotAcceptException('The value for \'gross_value\' need to be positive', 020100605);
+            throw new ValueNotAcceptException('The value for \'gross_value\' need to be positive', 1201006005);
 
         $this->gross_value = round($gross_value, Parameters::$DECIMAL_PRECISION);
         // self::calculateNetValue();
@@ -123,10 +122,10 @@ class Installment
     public function setDiscountValue(float $discount_value)
     {
         if ($discount_value < 0.0) 
-            throw new ValueNotAcceptException('The value for \'discount_value\' need to be positive', 020100606);
+            throw new ValueNotAcceptException('The value for \'discount_value\' need to be positive', 1201006006);
 
         if ($discount_value >= $this->gross_value) 
-            throw new ValueNotAcceptException('The value for \'discount_value\' need to be lower than \'gross_value\'', 020100607);
+            throw new ValueNotAcceptException('The value for \'discount_value\' need to be lower than \'gross_value\'', 1201006007);
 
         $this->discount_value = round($discount_value, Parameters::$DECIMAL_PRECISION);
         self::calculateNetValue();
@@ -140,7 +139,7 @@ class Installment
     public function setInterestValue(float $interest_value)
     {
         if ($interest_value < 0.0) 
-            throw new ValueNotAcceptException('The value for \'interest_value\' need to be positive', 020100610);
+            throw new ValueNotAcceptException('The value for \'interest_value\' need to be positive', 1201006010);
 
         $this->interest_value = round($interest_value, Parameters::$DECIMAL_PRECISION);
         self::calculateNetValue();
@@ -167,7 +166,7 @@ class Installment
         $net_value = round(($this->gross_value - $this->discount_value + $this->interest_value) + $this->rounding_value, 2);
 
         if ($net_value <= 0.0) 
-            throw new ValueNotAcceptException('The sum of value need to be positive', 020100611);
+            throw new ValueNotAcceptException('The sum of value need to be positive', 1201006011);
 
         $this->net_value = $net_value;
     }

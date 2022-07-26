@@ -1,10 +1,10 @@
 <?php
 
-namespace financas_api\exceptions\dao;
+namespace financas_api\exceptions;
 
 use Exception;
 
-class DataNotExistException extends Exception
+class EmptyValueException extends Exception
 {
     public function __construct($message, $code) {
         parent::__construct($message, $code);

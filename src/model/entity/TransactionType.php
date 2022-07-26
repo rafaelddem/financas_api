@@ -2,7 +2,7 @@
 
 namespace financas_api\model\entity;
 
-use financas_api\exceptions\entity\ValueNotAcceptException;
+use financas_api\exceptions\ValueNotAcceptException;
 
 class TransactionType
 {
@@ -32,9 +32,9 @@ class TransactionType
     private function setName(string $name)
     {
         if(strlen($name) < 3 or strlen($name) > 45)
-            throw new ValueNotAcceptException('The \'name\' attribute need to be between 3 and 45 characters', 020100401);
+            throw new ValueNotAcceptException('The \'name\' attribute need to be between 3 and 45 characters', 1201004001);
         else if (preg_match('/[!@#$%&*{}$?<>:;|\/]/', $name))
-            throw new ValueNotAcceptException('The \'name\' attribute only accepts letters and numbers', 020100401);
+            throw new ValueNotAcceptException('The \'name\' attribute only accepts letters and numbers', 1201004002);
         
         $this->name = $name;
     }
@@ -47,7 +47,7 @@ class TransactionType
     public function setRelevance(int $relevance)
     {
         if (!in_array($relevance, array(0, 1, 2)))
-            throw new ValueNotAcceptException('The \'relevance\' attribute was not accepted. You need to use one of the accepted values: \'0\', \'1\' or \'2\'', 020100403);
+            throw new ValueNotAcceptException('The \'relevance\' attribute was not accepted. You need to use one of the accepted values: \'0\', \'1\' or \'2\'', 1201004003);
 
         $this->relevance = $relevance;
     }
@@ -65,6 +65,16 @@ class TransactionType
     public function getActive() : bool
     {
         return $this->active;
+    }
+
+    public function entityToJson()
+    {
+        return [
+            'id' => $this->getId(), 
+            'name' => $this->getName(), 
+            'relevance' => $this->getRelevance(), 
+            'active' => $this->getActive(), 
+        ];
     }
     
 }

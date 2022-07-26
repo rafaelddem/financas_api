@@ -4,10 +4,10 @@ namespace financas_api\model\entity;
 
 use DateTime;
 use financas_api\conf\Parameters;
-use financas_api\exceptions\entity\DataNotFoundException;
-use financas_api\exceptions\entity\DateCreateException;
-use financas_api\exceptions\entity\EmptyValueException;
-use financas_api\exceptions\entity\ValueNotAcceptException;
+use financas_api\exceptions\DataNotFoundException;
+use financas_api\exceptions\DateCreateException;
+use financas_api\exceptions\EmptyValueException;
+use financas_api\exceptions\ValueNotAcceptException;
 
 class Transaction
 {
@@ -68,9 +68,9 @@ class Transaction
     public function setTittle(string $tittle)
     {
         if(strlen($tittle) < 2 or strlen($tittle) > 50)
-            throw new ValueNotAcceptException('The \'tittle\' attribute need to be between 2 and 50 characters', 020100501);
+            throw new ValueNotAcceptException('The \'tittle\' attribute need to be between 2 and 50 characters', 1201005001);
         else if (preg_match('/[!@#$%&*{}$?<>:;|\/]/', $tittle))
-            throw new ValueNotAcceptException('The \'tittle\' attribute only accepts letters and numbers', 020100502);
+            throw new ValueNotAcceptException('The \'tittle\' attribute only accepts letters and numbers', 1201005002);
         
         $this->tittle = $tittle;
     }
@@ -83,12 +83,12 @@ class Transaction
     private function setTransactionDate(string $transaction_date)
     {
         if ($transaction_date == '') 
-            throw new EmptyValueException('The value for \'transaction_date\' need to be informed', 020100503);
+            throw new EmptyValueException('The value for \'transaction_date\' need to be informed', 1201005003);
 
         try {
             $this->transaction_date = new DateTime($transaction_date);
         } catch (\Exception $ex) {
-            throw new DateCreateException('The value for \'transaction_date\' are not accept, confirm value and format (\'yyyy-mm-dd\')', 020100504);
+            throw new DateCreateException('The value for \'transaction_date\' are not accept, confirm value and format (\'yyyy-mm-dd\')', 1201005004);
         }
     }
 
@@ -110,7 +110,7 @@ class Transaction
     private function setGrossValue(float $gross_value)
     {
         if (empty($gross_value) || $gross_value <= 0.0) 
-            throw new ValueNotAcceptException('The value for \'gross_value\' need to be positive', 020100505);
+            throw new ValueNotAcceptException('The value for \'gross_value\' need to be positive', 1201005005);
 
         $this->gross_value = round($gross_value, Parameters::$DECIMAL_PRECISION);
     }
@@ -123,10 +123,10 @@ class Transaction
     private function setDiscountValue(float $discount_value)
     {
         if ($discount_value < 0.0) 
-            throw new ValueNotAcceptException('The value for \'discount_value\' need to be positive', 020100506);
+            throw new ValueNotAcceptException('The value for \'discount_value\' need to be positive', 1201005006);
 
         if ($discount_value >= $this->gross_value) 
-            throw new ValueNotAcceptException('The value for \'discount_value\' need to be lower than \'gross_value\'', 020100507);
+            throw new ValueNotAcceptException('The value for \'discount_value\' need to be lower than \'gross_value\'', 1201005007);
 
         $this->discount_value = round($discount_value, Parameters::$DECIMAL_PRECISION);
     }
@@ -140,12 +140,12 @@ class Transaction
     private function setInstallments(array $installments)
     {
         if (count($installments) < 1) 
-            throw new EmptyValueException('The transaction must have payment information', 020100510);
+            throw new EmptyValueException('The transaction must have payment information', 1201005010);
 
         $temporary_installments = array();
         foreach ($installments as $installment) {
             if (!($installment instanceof Installment)) 
-                throw new ValueNotAcceptException('The installment informed was not accepted', 020100511);
+                throw new ValueNotAcceptException('The installment informed was not accepted', 1201005011);
 
             $temporary_installments[] = $installment;
         }
@@ -160,7 +160,7 @@ class Transaction
     public function getInstallment(int $installment_id) : Installment
     {
         if (isset($this->installments[$installment_id])) 
-            throw new DataNotFoundException('The installment informed, do not exist', 020100512);
+            throw new DataNotFoundException('The installment informed, do not exist', 1201005012);
 
         return $this->installments[$installment_id];
     }
@@ -214,7 +214,7 @@ class Transaction
 
         $transaction_value = $this->gross_value - $this->discount_value;
         if ($transaction_value != self::getInstallmentsGrossValue()) 
-            throw new ValueNotAcceptException('The sum of the installments\' values don\'t match with the transaction\'s value', 020100513);
+            throw new ValueNotAcceptException('The sum of the installments\' values don\'t match with the transaction\'s value', 1201005013);
 
         return true;
     }
@@ -222,7 +222,7 @@ class Transaction
     public function setRelevance(int $relevance)
     {
         if (!in_array($relevance, array(0, 1, 2)))
-            throw new ValueNotAcceptException('The \'relevance\' attribute was not accepted. You need to use one of the accepted values: \'0\', \'1\' or \'2\'', 020100514);
+            throw new ValueNotAcceptException('The \'relevance\' attribute was not accepted. You need to use one of the accepted values: \'0\', \'1\' or \'2\'', 1201005014);
 
         $this->relevance = $relevance;
     }
@@ -235,9 +235,9 @@ class Transaction
     public function setDescription(string $description)
     {
         if(strlen($description) > 255)
-            throw new ValueNotAcceptException('The \'description\' attribute must be a maximum of 255 characters', 020100515);
+            throw new ValueNotAcceptException('The \'description\' attribute must be a maximum of 255 characters', 1201005015);
         else if (preg_match('/[!@#$%&*{}$?<>:;|\/]/', $description))
-            throw new ValueNotAcceptException('The \'description\' attribute only accepts letters and numbers', 020100516);
+            throw new ValueNotAcceptException('The \'description\' attribute only accepts letters and numbers', 1201005016);
 
         $this->description = $description;
     }

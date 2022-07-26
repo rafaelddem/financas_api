@@ -1,18 +1,62 @@
 /* Create */
 
-drop database if exists api_finance;
+drop database if exists finance_api;
 
-create database api_finance character set utf8 collate utf8_general_ci;
--- drop database financas
+create database finance_api character set utf8 collate utf8_general_ci;
+-- drop database finance_api
 
-create table api_finance.owner (
+create table finance_api.owner (
 	id int(3) not null auto_increment, 
 	name varchar(30) not null, 
 	active char(1) not null, 
 	primary key (id) 
 );
--- select * from api_finance.owner;
--- drop table api_finance.owner;
+-- select * from finance_api.owner;
+-- drop table finance_api.owner;
+
+create table finance_api.wallet (
+	id int(3) not null auto_increment, 
+	name varchar(30) not null,
+	owner_id int(3) not null, 
+	main_wallet char(1) not null, 
+	active char(1) not null, 
+	primary key (id), 
+	constraint fk_wallet_owner foreign key (owner_id) references owner (id), 
+);
+-- select * from finance_api.wallet;
+-- drop table finance_api.wallet;
+
+create table finance_api.payment_method (
+	id int(3) not null auto_increment, 
+	name varchar(30) not null, 
+	active char(1) not null, 
+	primary key (id) 
+);
+-- select * from finance_api.payment_method;
+-- drop table finance_api.payment_method;
+
+create table finance_api.transaction_type (
+	id int(3) not null auto_increment, 
+	name varchar(30) not null, 
+	relevance char(1) not null, 
+	active char(1) not null, 
+	primary key (id) 
+);
+-- select * from finance_api.transaction_type;
+-- drop table finance_api.transaction_type;
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 create table financas.tbfi_tipoMovimento (
 	int_codigo int(5) not null auto_increment, 

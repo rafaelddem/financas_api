@@ -1,10 +1,10 @@
 <?php
 
-namespace financas_api\model\dao;
+namespace financas_api\model\dataAccess;
 
 use Exception;
-use financas_api\exceptions\dao\DataNotExistException;
-use financas_api\model\entity\Owner as EntityOwner;
+use financas_api\exceptions\DataNotExistException;
+use financas_api\model\entity\Owner as Owner_entity;
 use \PDO;
 
 class Owner extends DataAccessObject
@@ -14,7 +14,7 @@ class Owner extends DataAccessObject
         parent::__construct();
     }
 
-    public function insert(EntityOwner $owner)
+    public function insert(Owner_entity $owner)
     {
         self::getPDO()->beginTransaction();
 
@@ -27,18 +27,18 @@ class Owner extends DataAccessObject
 
             if (!$stmt->execute()) {
                 self::getPDO()->rollback();
-                throw new Exception('An error occurred while creating an \'owner\'. Please inform support');
+                throw new Exception('An error occurred while creating an \'owner\'. Please inform support', 1202001001);
             }
 
             self::getPDO()->commit();
             return '\'Owner\' successfully created';
         } catch (\Throwable $th) {
             self::getPDO()->rollback();
-            throw new Exception('An error occurred while creating an \'owner\'. Please inform support');
+            throw new Exception('An error occurred while creating an \'owner\'. Please inform support', 1202001002);
         }
     }
 
-    public function update(EntityOwner $owner)
+    public function update(Owner_entity $owner)
     {
         self::getPDO()->beginTransaction();
 
@@ -51,14 +51,14 @@ class Owner extends DataAccessObject
 
             if (!$stmt->execute()) {
                 self::getPDO()->rollback();
-                throw new Exception('An error occurred while updating an \'owner\'. Please inform support');
+                throw new Exception('An error occurred while updating an \'owner\'. Please inform support', 1202001003);
             }
 
             self::getPDO()->commit();
             return '\'Owner\' successfully updated';
         } catch (\Throwable $th) {
             self::getPDO()->rollback();
-            throw new Exception('An error occurred while updating an \'owner\'. Please inform support');
+            throw new Exception('An error occurred while updating an \'owner\'. Please inform support', 1202001004);
         }
     }
 
@@ -72,14 +72,19 @@ class Owner extends DataAccessObject
 
             if (!$stmt->execute()) {
                 self::getPDO()->rollback();
-                throw new Exception('An error occurred while deleting an \'owner\'. Please inform support');
+                throw new Exception('An error occurred while deleting an \'owner\'. Please inform support', 1202001005);
             }
+
+            if ($stmt->rowCount() <= 0) 
+                throw new DataNotExistException('There are no data for this \'id\'', 1202001007);
 
             self::getPDO()->commit();
             return '\'Owner\' successfully deleted';
+        } catch (DataNotExistException $ex) {
+            throw $ex;
         } catch (\Throwable $th) {
             self::getPDO()->rollback();
-            throw new Exception('An error occurred while deleting an \'owner\'. Please inform support');
+            throw new Exception('An error occurred while deleting an \'owner\'. Please inform support', 1202001010);
         }
     }
 
@@ -93,10 +98,10 @@ class Owner extends DataAccessObject
             if ($stmt->execute()) {
                 if($stmt->rowCount() > 0) {
                     while($row = $stmt->fetch(PDO::FETCH_OBJ)) {
-                        $owner = new EntityOwner($row->id, $row->name, boolval($row->active));
+                        $owner = new Owner_entity($row->id, $row->name, boolval($row->active));
                     }
                 } else {
-                    throw new DataNotExistException('There are no data for this \'id\'', 12);
+                    throw new DataNotExistException('There are no data for this \'id\'', 1202001011);
                 }
             }
 
@@ -104,9 +109,31 @@ class Owner extends DataAccessObject
         } catch (DataNotExistException $ex) {
             throw $ex;
         } catch (\Throwable $th) {
-            throw new Exception('An error occurred while updating an \'owner\'. Please inform support');
+            throw new Exception('An error occurred while looking for an \'owner\'. Please inform support', 1202001012);
         }
     }
+
+    public function findAll()
+    {
+        try {
+            $stmt = self::getPDO()->prepare("select * from owner");
+
+            $owners = array();
+            if ($stmt->execute()) {
+                while($row = $stmt->fetch(PDO::FETCH_OBJ)) {
+                    $owner = new Owner_entity($row->id, $row->name, boolval($row->active));
+                    $owners[] = $owner->entityToJson();
+                }
+            }
+
+            return $owners;
+        } catch (DataNotExistException $ex) {
+            throw $ex;
+        } catch (\Throwable $th) {
+            throw new Exception('An error occurred while looking for an \'owner\'. Please inform support', 1202001012);
+        }
+    }
+
     // public function pesquisar(array $colunas)
     // {
     //     self::getPDO()->beginTransaction();
@@ -158,7 +185,7 @@ class Owner extends DataAccessObject
     //         }
     //     } else {
     //         self::getPDO()->rollback();
-    //         throw new Exception("Erro interno ao sistema, ao tentar buscar o(s) objeto(s) de tipo 'Carteira'.", 6);
+    //         throw new Exception("Erro interno ao sistema, ao tentar buscar o(s) objeto(s) de tipo 'Carteira'.", 1202001013);
     //     }
         
     //     self::getPDO()->commit();

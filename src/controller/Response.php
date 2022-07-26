@@ -1,6 +1,6 @@
 <?php
 
-namespace financas_api\model\entity;
+namespace financas_api\controller;
 
 class Response
 {

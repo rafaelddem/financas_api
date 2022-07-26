@@ -1,6 +1,6 @@
 <?php
 
-namespace financas_api\model\dao;
+namespace financas_api\model\dataAccess;
 
 use \PDO;
 
@@ -18,6 +18,8 @@ class DataAccessObject
     {
         return $this->pdo;
     }
+
+    // protected function
         
 }
     

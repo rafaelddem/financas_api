@@ -2,7 +2,7 @@
 
 namespace financas_api\model\entity;
 
-use financas_api\exceptions\entity\ValueNotAcceptException;
+use financas_api\exceptions\ValueNotAcceptException;
 
 class Owner
 {
@@ -30,9 +30,9 @@ class Owner
     private function setName(string $name)
     {
         if(strlen($name) < 3 or strlen($name) > 30)
-            throw new ValueNotAcceptException('The \'name\' attribute need to be between 3 and 30 characters', 020100101);
+            throw new ValueNotAcceptException('The \'name\' attribute need to be between 3 and 30 characters', 1201001001);
         else if (preg_match('/[!@#$%&*{}$?<>:;|\/]/', $name))
-            throw new ValueNotAcceptException('The \'name\' attribute only accepts letters and numbers', 020100102);
+            throw new ValueNotAcceptException('The \'name\' attribute only accepts letters and numbers', 1201001002);
         
         $this->name = $name;
     }

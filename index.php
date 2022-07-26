@@ -4,61 +4,39 @@ error_reporting(E_ALL ^ E_WARNING);
 
 require_once "vendor/autoload.php";
 
-use financas_api\controller\Owner;
-use financas_api\model\entity\URL;
-use financas_api\model\entity\Response;
+use financas_api\controller\Controller;
+use financas_api\controller\Response;
+use financas_api\controller\Route;
+use financas_api\model\businessObject\Owner;
+use financas_api\model\businessObject\PaymentMethod;
+use financas_api\model\businessObject\TransactionType;
+use financas_api\model\businessObject\Wallet;
 
-$url = new URL($_SERVER['REQUEST_URI']);
+try {
+    Route::addPost('/owner', new Controller(Owner::class, 'create'));
+    Route::addPut('/owner', new Controller(Owner::class, 'update'));
+    Route::addDelete('/owner', new Controller(Owner::class, 'delete'));
+    Route::addGet('/owner', new Controller(Owner::class, 'find'));
+    // Route::add('/owner/wallets', new Controller(Owner::class, 'findWallets'));
 
-if ($url->getErrors()) {
-    Response::send($url->getErrors());
-}
+    Route::addPost('/wallet', new Controller(Wallet::class, 'create'));
+    Route::addPut('/wallet', new Controller(Wallet::class, 'update'));
+    Route::addDelete('/wallet', new Controller(Wallet::class, 'delete'));
+    Route::addGet('/wallet', new Controller(Wallet::class, 'find'));
 
-$path = $url->getUrlPath();
-$parameters = $url->getUrlParameters();
+    Route::addPost('/payment_method', new Controller(PaymentMethod::class, 'create'));
+    Route::addPut('/payment_method', new Controller(PaymentMethod::class, 'update'));
+    Route::addDelete('/payment_method', new Controller(PaymentMethod::class, 'delete'));
+    Route::addGet('/payment_method', new Controller(PaymentMethod::class, 'find'));
 
-switch ($path) {
-    case '':
-    case '/':
-    case '/home':
-        Response::send([
-            'software_name' => 'financas_api', 
-            'version' => '0.0.1', 
-            'developer' => 'Rafael Delfino de Medeiros', 
-            'e-mail' => 'rafaelddem@gmail.com', 
-        ], true, 200);
-        break;
+    Route::addPost('/transaction_type', new Controller(TransactionType::class, 'create'));
+    Route::addPut('/transaction_type', new Controller(TransactionType::class, 'update'));
+    Route::addDelete('/transaction_type', new Controller(TransactionType::class, 'delete'));
+    Route::addGet('/transaction_type', new Controller(TransactionType::class, 'find'));
 
-    case '/owner':
-        // $owner = new Owner;
-        // $owner->create($parameters);
-        break;
-
-    case '/owner/create':
-        $owner = new Owner;
-        $owner->create($parameters);
-        break;
-
-    case '/owner/update':
-        $owner = new Owner;
-        $owner->update($parameters);
-        break;
-
-    case '/owner/delete':
-        $owner = new Owner;
-        $owner->delete($parameters);
-        break;
-
-    case '/owner/find':
-        $owner = new Owner;
-        $owner->find($parameters);
-        break;
-
-    default:
-        Response::send([
-            'error' => 'url not found', 
-        ], true, 404);
-        break;
+    Route::getPath();
+} catch (\Throwable $th) {
+    Response::send(['code' => $th->getCode(), 'message' => $th->getMessage()], true, 404);
 }
 
 ?>

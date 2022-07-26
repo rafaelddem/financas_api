@@ -1,1 +1,3 @@
 /vendor
+.phpunit.result.cache
+tests_results.txt
