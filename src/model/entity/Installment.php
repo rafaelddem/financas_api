@@ -13,19 +13,19 @@ class Installment
     private int $transaction;
     private int $installment_number;
     private DateTime $duo_date;
-    private DateTime $payment_date;
     private float $gross_value = 0.0;
     private float $discount_value = 0.0;
     private float $interest_value = 0.0;
     private float $rounding_value = 0.0;
     private float $net_value = 0.0;
-    private int $payment_method;
-    private int $source_wallet;
     private int $destination_wallet;
+    private int $source_wallet;
+    private int $payment_method;
+    private DateTime $payment_date;
 
-    public function __construct(int $transaction, int $installment_number, string $duo_date, string $payment_date, 
+    public function __construct(int $transaction, int $installment_number, string $duo_date, 
         float $gross_value, float $discount_value, float $interest_value, float $rounding_value, 
-        int $payment_method, int $source_wallet, int $destination_wallet
+        int $destination_wallet, int $source_wallet, int $payment_method, string $payment_date
     )
     {
         self::setTransaction($transaction);
@@ -38,10 +38,10 @@ class Installment
         
         self::calculateNetValue();
         
-        self::setPaymentDate($payment_date);
-        self::setPaymentMethod($payment_method);
-        self::setSourceWallet($source_wallet);
         self::setDestinationWallet($destination_wallet);
+        self::setSourceWallet($source_wallet);
+        self::setPaymentMethod($payment_method);
+        self::setPaymentDate($payment_date);
     }
 
     private function setTransaction(int $transaction)
@@ -80,29 +80,6 @@ class Installment
     public function getDuoDate() : string
     {
         return $this->duo_date->format('Y-m-d');
-    }
-
-    public function setPaymentDate(string $payment_date)
-    {
-        if ($payment_date == '') 
-            return;
-
-        try {
-            $this->payment_date = new DateTime($payment_date);
-        } catch (\Exception $ex) {
-            throw new DateCreateException('The value for \'payment_date\' are not accept, confirm value and format (\'yyyy-mm-dd\')', 1201006003);
-        }
-
-        if ($this->duo_date > $this->payment_date) 
-            throw new DateCreateException('The value for \'payment_date\' cannot be lower than \'duo_date\'', 1201006004);
-    }
-
-    public function getPaymentDate() : string
-    {
-        if (empty($this->payment_date)) 
-            return '';
-
-        return $this->payment_date->format('Y-m-d');
     }
 
     private function setGrossValue(float $gross_value)
@@ -176,14 +153,14 @@ class Installment
         return round($this->net_value, Parameters::$DECIMAL_PRECISION);
     }
 
-    public function setPaymentMethod(int $payment_method)
+    private function setDestinationWallet(int $destination_wallet)
     {
-        $this->payment_method = $payment_method;
+        $this->destination_wallet = $destination_wallet;
     }
 
-    public function getPaymentMethod() : int
+    public function getDestinationWallet() : int
     {
-        return $this->payment_method;
+        return $this->destination_wallet;
     }
 
     public function setSourceWallet(int $source_wallet)
@@ -196,14 +173,37 @@ class Installment
         return $this->source_wallet;
     }
 
-    private function setDestinationWallet(int $destination_wallet)
+    public function setPaymentMethod(int $payment_method)
     {
-        $this->destination_wallet = $destination_wallet;
+        $this->payment_method = $payment_method;
     }
 
-    public function getDestinationWallet() : int
+    public function getPaymentMethod() : int
     {
-        return $this->destination_wallet;
+        return $this->payment_method;
+    }
+
+    public function setPaymentDate(string $payment_date)
+    {
+        if (empty($payment_date)) 
+            return;
+
+        try {
+            $this->payment_date = new DateTime($payment_date);
+        } catch (\Exception $ex) {
+            throw new DateCreateException('The value for \'payment_date\' are not accept, confirm value and format (\'yyyy-mm-dd\')', 1201006003);
+        }
+
+        if ($this->duo_date > $this->payment_date) 
+            throw new DateCreateException('The value for \'payment_date\' cannot be lower than \'duo_date\'', 1201006004);
+    }
+
+    public function getPaymentDate() : string
+    {
+        if (empty($this->payment_date)) 
+            return '';
+
+        return $this->payment_date->format('Y-m-d');
     }
 }
 

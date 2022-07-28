@@ -5,6 +5,7 @@ namespace financas_api\model\businessObject;
 use financas_api\controller\Response;
 use financas_api\exceptions\ValueNotAcceptException;
 use financas_api\model\dataAccess\Transaction as Transaction_dataAccess;
+use financas_api\model\entity\Installment;
 use financas_api\model\entity\Transaction as Transaction_entity;
 
 class Transaction
@@ -17,6 +18,7 @@ class Transaction
     private $discount_value;
     private $relevance;
     private $description;
+    private $installments;
 
     public function __construct(array $parameters = null)
     {
@@ -28,12 +30,38 @@ class Transaction
         $this->discount_value = isset($parameters['discount_value']) ? $parameters['discount_value'] : null;
         $this->relevance = isset($parameters['relevance']) ? $parameters['relevance'] : null;
         $this->description = isset($parameters['description']) ? $parameters['description'] : null;
+
+        $json_installments = isset($parameters['installments']) ? $parameters['installments'] : array();
+
+        foreach ($json_installments as $json_installment) {
+            $installment = array();
+            $installment['transaction'] = isset($json_installment['transaction']) ? $json_installment['transaction'] : null;
+            $installment['installment_number'] = isset($json_installment['installment_number']) ? $json_installment['installment_number'] : null;
+            $installment['duo_date'] = isset($json_installment['duo_date']) ? $json_installment['duo_date'] : null;
+            $installment['gross_value'] = isset($json_installment['gross_value']) ? $json_installment['gross_value'] : null;
+            $installment['discount_value'] = isset($json_installment['discount_value']) ? $json_installment['discount_value'] : null;
+            $installment['interest_value'] = isset($json_installment['interest_value']) ? $json_installment['interest_value'] : null;
+            $installment['rounding_value'] = isset($json_installment['rounding_value']) ? $json_installment['rounding_value'] : null;
+            $installment['payment_date'] = isset($json_installment['payment_date']) ? $json_installment['payment_date'] : null;
+            $installment['payment_method'] = isset($json_installment['payment_method']) ? $json_installment['payment_method'] : null;
+            $installment['source_wallet'] = isset($json_installment['source_wallet']) ? $json_installment['source_wallet'] : null;
+            $installment['destination_wallet'] = isset($json_installment['destination_wallet']) ? $json_installment['destination_wallet'] : null;
+            $this->installments[] = $installment;
+        }
     }
 
     public function create()
     {
         try {
-            $transaction = new Transaction_entity(0, $this->tittle, $this->transaction_date, $this->transaction_type, $this->gross_value, $this->discount_value, $this->installments, $this->relevance, $this->description);
+            $installments = array();
+            foreach ($this->installments as $installment) {
+                $installments[] = new Installment(
+                    0, $installment['installment_number'], $installment['duo_date'], 
+                    $installment['gross_value'], $installment['discount_value'], $installment['interest_value'], $installment['rounding_value'], 
+                    $installment['destination_wallet'], $installment['source_wallet'], $installment['payment_method'], $installment['payment_date']);
+
+            }
+            $transaction = new Transaction_entity(0, $this->tittle, $this->transaction_date, $this->transaction_type, $this->gross_value, $this->discount_value, $installments, $this->relevance, $this->description);
             $dao = new Transaction_dataAccess();
 
             Response::send(['response' => $dao->insert($transaction)], true, 200);

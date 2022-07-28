@@ -15,13 +15,13 @@ create table finance_api.owner (
 -- drop table finance_api.owner;
 
 create table finance_api.wallet (
-	id int(3) not null auto_increment, 
+	id int(4) not null auto_increment, 
 	name varchar(30) not null,
 	owner_id int(3) not null, 
 	main_wallet char(1) not null, 
 	active char(1) not null, 
 	primary key (id), 
-	constraint fk_wallet_owner foreign key (owner_id) references owner (id), 
+	constraint fk_wallet_owner foreign key (owner_id) references owner (id) 
 );
 -- select * from finance_api.wallet;
 -- drop table finance_api.wallet;
@@ -36,8 +36,8 @@ create table finance_api.payment_method (
 -- drop table finance_api.payment_method;
 
 create table finance_api.transaction_type (
-	id int(3) not null auto_increment, 
-	name varchar(30) not null, 
+	id int(4) not null auto_increment, 
+	name varchar(45) not null, 
 	relevance char(1) not null, 
 	active char(1) not null, 
 	primary key (id) 
@@ -45,43 +45,37 @@ create table finance_api.transaction_type (
 -- select * from finance_api.transaction_type;
 -- drop table finance_api.transaction_type;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-create table financas.tbfi_movimento (
-	int_codigo int(11) not null auto_increment, 
-	int_parcela int(3) not null, 
-	int_tipoMovimento int(5) not null, 
-	dat_dataMovimento date not null, 
-	dat_dataPagamento date default null, 
-	dub_valorInicial double(7,2) not null, 
-	dub_desconto double(7,2) not null, 
-	dub_tributacao double(7,2) not null, 
-	dub_juros double(7,2) not null, 
-	dub_arredondamento double(7,2) not null, 
-	dub_valorFinal double(7,2) not null, 
-	int_formaPagamento int(2) not null, 
-	int_carteiraOrigem int(3) not null, 
-	int_carteiraDestino int(3) not null, 
-	int_indispensavel int(1) default 0, 
-	str_descricao varchar(255) default null, 
-	primary key (int_codigo, int_parcela, int_carteiraOrigem, int_carteiraDestino), 
-	constraint fk_movimento_tipo_movimento foreign key (int_tipoMovimento) references tbfi_tipoMovimento (int_codigo), 
-	constraint fk_movimento_forma_pagamento foreign key (int_formaPagamento) references tbfi_formaPagamento (int_codigo), 
-	constraint fk_movimento_carteira_origem foreign key (int_carteiraOrigem) references tbfi_carteira (int_codigo), 
-	constraint fk_movimento_carteira_destino foreign key (int_carteiraDestino) references tbfi_carteira (int_codigo) 
+create table finance_api.transaction (
+	id int(6) not null auto_increment, 
+	tittle varchar(50) not null, 
+	transaction_date date not null, 
+	transaction_type int(4) not null, 
+	gross_value double(7,2) not null, 
+	discount_value double(7,2) not null, 
+	relevance char(1) not null, 
+	description varchar(255) default null, 
+	primary key (id), 
+	constraint fk_transaction_transaction_type foreign key (transaction_type) references transaction_type (id) 
 );
--- select * from financas.movimento;
--- drop table financas.movimento;
+-- select * from finance_api.transaction;
+-- drop table finance_api.transaction;
 
+create table finance_api.installment (
+	transaction int(6) not null, 
+	installment_number int(2) not null, 
+	duo_date date not null, 
+	gross_value double(7,2) not null, 
+	discount_value double(7,2) not null, 
+	interest_value double(7,2) not null, 
+	rounding_value double(7,2) not null, 
+	destination_wallet int(4) not null, 
+	source_wallet int(4) default null, 
+	payment_method int(3) default null, 
+	payment_date date default null, 
+	primary key (transaction, installment_number), 
+	constraint fk_transaction_payment_method foreign key (payment_method) references payment_method (id), 
+	constraint fk_transaction_source_wallet foreign key (source_wallet) references wallet (id), 
+	constraint fk_transaction_destination_wallet foreign key (destination_wallet) references wallet (id) 
+);
+-- select * from finance_api.installment;
+-- drop table finance_api.installment;

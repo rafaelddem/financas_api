@@ -11,19 +11,6 @@ use financas_api\exceptions\ValueNotAcceptException;
 
 class Transaction
 {
-// $table->increments('id');
-// $table->string('tittle', 50);
-// $table->integer('installments');
-// $table->dateTime('transaction_date');
-// $table->integer('transaction_type')->unsigned();
-// $table->decimal('gross_value', 8, 2)->default(0);
-// $table->decimal('discount_value', 6, 2)->nullable()->default(0);
-// $table->decimal('rounding_value', 5, 2)->nullable()->default(0);
-// $table->decimal('net_value', 8, 2)->default(0);
-// $table->enum('relevance', [0, 1, 2])->default(0);
-// $table->string('description', 255)->nullable();
-// $table->foreign('transaction_type')->references('id')->on('transaction_types');
-
     private int $id;
     private string $tittle;
     private DateTime $transaction_date;

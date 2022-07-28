@@ -9,6 +9,7 @@ use financas_api\controller\Response;
 use financas_api\controller\Route;
 use financas_api\model\businessObject\Owner;
 use financas_api\model\businessObject\PaymentMethod;
+use financas_api\model\businessObject\Transaction;
 use financas_api\model\businessObject\TransactionType;
 use financas_api\model\businessObject\Wallet;
 
@@ -33,6 +34,11 @@ try {
     Route::addPut('/transaction_type', new Controller(TransactionType::class, 'update'));
     Route::addDelete('/transaction_type', new Controller(TransactionType::class, 'delete'));
     Route::addGet('/transaction_type', new Controller(TransactionType::class, 'find'));
+
+    Route::addPost('/transaction', new Controller(Transaction::class, 'create'));
+    Route::addPut('/transaction', new Controller(Transaction::class, 'update'));
+    Route::addDelete('/transaction', new Controller(Transaction::class, 'delete'));
+    Route::addGet('/transaction', new Controller(Transaction::class, 'find'));
 
     Route::getPath();
 } catch (\Throwable $th) {

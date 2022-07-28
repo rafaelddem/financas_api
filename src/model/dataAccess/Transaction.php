@@ -4,6 +4,8 @@ namespace financas_api\model\dataAccess;
 
 use Exception;
 use financas_api\exceptions\DataNotExistException;
+use financas_api\exceptions\InsertInstallmentException;
+use financas_api\model\entity\Installment;
 use financas_api\model\entity\Transaction as Transaction_entity;
 use \PDO;
 
@@ -19,8 +21,8 @@ class Transaction extends DataAccessObject
         self::getPDO()->beginTransaction();
 
         try {
-            $sql = "insert into transaction (tittle, transaction_date, transaction_type, gross_value, discount_value, relevance, description) ";
-            $sql = "values (:tittle, :transaction_date, :transaction_type, :gross_value, :discount_value, :relevance, :description);";
+            $sql  = "insert into transaction (tittle, transaction_date, transaction_type, gross_value, discount_value, relevance, description) ";
+            $sql .= "values (:tittle, :transaction_date, :transaction_type, :gross_value, :discount_value, :relevance, :description);";
             $stmt = self::getPDO()->prepare($sql);
             
             $tittle = $transaction->getTittle();
@@ -40,15 +42,75 @@ class Transaction extends DataAccessObject
 
             if (!$stmt->execute()) {
                 self::getPDO()->rollback();
-                throw new Exception('An error occurred while creating an \'Transaction\'. Please inform support', 1202005001);
+                throw new Exception('An error occurred while creating an \'transaction\'. Please inform support', 1202005001);
+            }
+
+            $transaction_id = self::getLastId('transaction');
+
+            $sql  = "insert into installment ";
+            $sql .= "(transaction, installment_number, duo_date, gross_value, discount_value, interest_value, rounding_value, destination_wallet, source_wallet, payment_method, payment_date) ";
+            $sql .= "values ";
+            $sql .= "(:transaction, :installment_number, :duo_date, :gross_value, :discount_value, :interest_value, :rounding_value, :destination_wallet, :source_wallet, :payment_method, :payment_date);";
+            $stmt = self::getPDO()->prepare($sql);
+            
+            foreach ($transaction->getInstallments() as $installment) {
+                // $installment = new Installment;
+                $transaction = $transaction_id;
+                $installment_number = $installment->getInstallmentNumber();
+                $duo_date = $installment->getDuoDate();
+                $gross_value = $installment->getGrossValue();
+                $discount_value = $installment->getDiscountValue();
+                $interest_value = $installment->getInterestValue();
+                $rounding_value = $installment->getRoundingValue();
+                $destination_wallet = $installment->getDestinationWallet();
+                $source_wallet = empty($installment->getSourceWallet()) ? null : $installment->getSourceWallet();
+                $payment_method = empty($installment->getPaymentMethod()) ? null : $installment->getPaymentMethod();
+                $payment_date = empty($installment->getPaymentDate()) ? null : $installment->getPaymentDate();
+
+                $stmt->bindParam(':transaction', $transaction, PDO::PARAM_INT);
+                $stmt->bindParam(':installment_number', $installment_number, PDO::PARAM_INT);
+                $stmt->bindParam(':duo_date', $duo_date, PDO::PARAM_STR);
+                $stmt->bindParam(':gross_value', $gross_value, PDO::PARAM_STR);
+                $stmt->bindParam(':discount_value', $discount_value, PDO::PARAM_STR);
+                $stmt->bindParam(':interest_value', $interest_value, PDO::PARAM_STR);
+                $stmt->bindParam(':rounding_value', $rounding_value, PDO::PARAM_STR);
+                $stmt->bindParam(':destination_wallet', $destination_wallet, PDO::PARAM_INT);
+                $stmt->bindParam(':source_wallet', $source_wallet, PDO::PARAM_INT);
+                $stmt->bindParam(':payment_method', $payment_method, PDO::PARAM_INT);
+                $stmt->bindParam(':payment_date', $payment_date, PDO::PARAM_STR);
+
+                if (!$stmt->execute()) {
+                    throw new InsertInstallmentException('An error occurred while creating an \'installment\'. Please inform support', 1202005002);
+                }
             }
 
             self::getPDO()->commit();
             return '\'Transaction\' successfully created';
+        } catch (InsertInstallmentException $ex) {
+            self::getPDO()->rollback();
+            throw $ex; //new Exception('An error occurred while creating an \'installment\'. Please inform support', 1202005002);
         } catch (\Throwable $th) {
             self::getPDO()->rollback();
-            throw new Exception('An error occurred while creating an \'Transaction\'. Please inform support', 1202005002);
+            throw new Exception('An error occurred while creating an \'transaction\'. Please inform support', 1202005003);
         }
+    }
+
+    public function getLastId(string $table)
+    {
+        $stmt = self::getPDO()->prepare("select max(id) as id from $table");
+
+        $lastId = 0;
+        if ($stmt->execute()) {
+            if($stmt->rowCount() > 0) {
+                while($row = $stmt->fetch(PDO::FETCH_OBJ)) {
+                    $lastId = $row->id;
+                }
+            } else {
+                throw new Exception('An error occurred while looking for an \'owner\'. Please inform support', 1202005003);
+            }
+        }
+
+        return $lastId;
     }
 
     // public function update(Transaction_entity $transaction)
@@ -64,14 +126,14 @@ class Transaction extends DataAccessObject
 
     //         if (!$stmt->execute()) {
     //             self::getPDO()->rollback();
-    //             throw new Exception('An error occurred while updating an \'Transaction\'. Please inform support', 1202005003);
+    //             throw new Exception('An error occurred while updating an \'transaction\'. Please inform support', 1202005003);
     //         }
 
     //         self::getPDO()->commit();
     //         return '\'Transaction\' successfully updated';
     //     } catch (\Throwable $th) {
     //         self::getPDO()->rollback();
-    //         throw new Exception('An error occurred while updating an \'Transaction\'. Please inform support', 1202005004);
+    //         throw new Exception('An error occurred while updating an \'transaction\'. Please inform support', 1202005004);
     //     }
     // }
 
@@ -85,7 +147,7 @@ class Transaction extends DataAccessObject
 
     //         if (!$stmt->execute()) {
     //             self::getPDO()->rollback();
-    //             throw new Exception('An error occurred while deleting an \'Transaction\'. Please inform support', 1202005005);
+    //             throw new Exception('An error occurred while deleting an \'transaction\'. Please inform support', 1202005005);
     //         }
 
     //         if ($stmt->rowCount() <= 0) 
@@ -97,7 +159,7 @@ class Transaction extends DataAccessObject
     //         throw $ex;
     //     } catch (\Throwable $th) {
     //         self::getPDO()->rollback();
-    //         throw new Exception('An error occurred while deleting an \'Transaction\'. Please inform support', 1202005010);
+    //         throw new Exception('An error occurred while deleting an \'transaction\'. Please inform support', 1202005010);
     //     }
     // }
 
@@ -122,7 +184,7 @@ class Transaction extends DataAccessObject
     //     } catch (DataNotExistException $ex) {
     //         throw $ex;
     //     } catch (\Throwable $th) {
-    //         throw new Exception('An error occurred while looking for an \'Transaction\'. Please inform support', 1202005012);
+    //         throw new Exception('An error occurred while looking for an \'transaction\'. Please inform support', 1202005012);
     //     }
     // }
 
@@ -143,7 +205,7 @@ class Transaction extends DataAccessObject
     //     } catch (DataNotExistException $ex) {
     //         throw $ex;
     //     } catch (\Throwable $th) {
-    //         throw new Exception('An error occurred while looking for an \'Transaction\'. Please inform support', 1202005012);
+    //         throw new Exception('An error occurred while looking for an \'transaction\'. Please inform support', 1202005012);
     //     }
     // }
 
