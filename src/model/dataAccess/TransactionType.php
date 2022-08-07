@@ -117,16 +117,52 @@ class TransactionType extends DataAccessObject
         }
     }
 
-    public function findAll()
+    public function findByFilter(array $filters, bool $convertJson = true)
     {
         try {
-            $stmt = self::getPDO()->prepare("select * from transaction_type");
+            $where = "";
+            if (isset($filters['id'])) {
+                $where .= $where == "" ? " where" : " and";
+                $where .= " id = :id";
+            }
+            if (isset($filters['name'])) {
+                $where .= $where == "" ? " where" : " and";
+                $where .= " name like :name";
+            }
+            if (isset($filters['relevance'])) {
+                $where .= $where == "" ? " where" : " and";
+                $where .= " relevance = :relevance";
+            }
+            if (isset($filters['active'])) {
+                $where .= $where == "" ? " where" : " and";
+                $where .= " active = :active";
+            }
+
+            $sql  = "select * from transaction_type $where";
+            $stmt = self::getPDO()->prepare($sql);
+
+            if (isset($filters['id'])) {
+                $id = $filters['id'];
+                $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            }
+            if (isset($filters['name'])) {
+                $name = '%' . $filters['name'] . '%';
+                $stmt->bindParam(':name', $name, PDO::PARAM_STR);
+            }
+            if (isset($filters['relevance'])) {
+                $relevance = $filters['relevance'];
+                $stmt->bindParam(':relevance', $relevance, PDO::PARAM_INT);
+            }
+            if (isset($filters['active'])) {
+                $active = $filters['active'];
+                $stmt->bindParam(':active', $active, PDO::PARAM_BOOL);
+            }
 
             $transactionTypes = array();
             if ($stmt->execute()) {
                 while($row = $stmt->fetch(PDO::FETCH_OBJ)) {
                     $transactionType = new TransactionType_entity($row->id, $row->name, $row->relevance, boolval($row->active));
-                    $transactionTypes[] = $transactionType->entityToJson();
+                    $transactionTypes[] = $convertJson ? $transactionType->entityToJson() : $transactionType;
                 }
             }
 
@@ -134,7 +170,7 @@ class TransactionType extends DataAccessObject
         } catch (DataNotExistException $ex) {
             throw $ex;
         } catch (\Throwable $th) {
-            throw new Exception('An error occurred while looking for an \'transaction type\'. Please inform support', 1202004012);
+            throw new Exception('An error occurred while looking for an \'transaction type\'. Please inform support', 1202004011);
         }
     }
 

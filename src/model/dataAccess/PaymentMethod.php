@@ -88,41 +88,44 @@ class PaymentMethod extends DataAccessObject
         }
     }
 
-    public function find(int $id)
+    public function findByFilter(array $filters, bool $convertJson = true)
     {
         try {
-            $stmt = self::getPDO()->prepare("select * from payment_method where id = :id");
-            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-
-            $paymentMethod = '';
-            if ($stmt->execute()) {
-                if($stmt->rowCount() > 0) {
-                    while($row = $stmt->fetch(PDO::FETCH_OBJ)) {
-                        $paymentMethod = new PaymentMethod_entity($row->id, $row->name, boolval($row->active));
-                    }
-                } else {
-                    throw new DataNotExistException('There are no data for this \'id\'', 1202003011);
-                }
+            $where = "";
+            if (isset($filters['id'])) {
+                $where .= $where == "" ? " where" : " and";
+                $where .= " id = :id";
+            }
+            if (isset($filters['name'])) {
+                $where .= $where == "" ? " where" : " and";
+                $where .= " name like :name";
+            }
+            if (isset($filters['active'])) {
+                $where .= $where == "" ? " where" : " and";
+                $where .= " active = :active";
             }
 
-            return $paymentMethod;
-        } catch (DataNotExistException $ex) {
-            throw $ex;
-        } catch (\Throwable $th) {
-            throw new Exception('An error occurred while looking for an \'payment method\'. Please inform support', 1202003012);
-        }
-    }
+            $sql  = "select * from payment_method $where";
+            $stmt = self::getPDO()->prepare($sql);
 
-    public function findAll()
-    {
-        try {
-            $stmt = self::getPDO()->prepare("select * from payment_method");
+            if (isset($filters['id'])) {
+                $id = $filters['id'];
+                $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            }
+            if (isset($filters['name'])) {
+                $name = '%' . $filters['name'] . '%';
+                $stmt->bindParam(':name', $name, PDO::PARAM_STR);
+            }
+            if (isset($filters['active'])) {
+                $active = $filters['active'];
+                $stmt->bindParam(':active', $active, PDO::PARAM_BOOL);
+            }
 
             $paymentMethods = array();
             if ($stmt->execute()) {
                 while($row = $stmt->fetch(PDO::FETCH_OBJ)) {
                     $paymentMethod = new PaymentMethod_entity($row->id, $row->name, boolval($row->active));
-                    $paymentMethods[] = $paymentMethod->entityToJson();
+                    $paymentMethods[] = $convertJson ? $paymentMethod->entityToJson() : $paymentMethod;
                 }
             }
 
@@ -130,7 +133,7 @@ class PaymentMethod extends DataAccessObject
         } catch (DataNotExistException $ex) {
             throw $ex;
         } catch (\Throwable $th) {
-            throw new Exception('An error occurred while looking for an \'payment method\'. Please inform support', 1202003012);
+            throw new Exception('An error occurred while looking for an \'payment method\'. Please inform support', 1202003011);
         }
     }
 

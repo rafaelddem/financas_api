@@ -94,41 +94,60 @@ class Wallet extends DataAccessObject
         }
     }
 
-    public function find(int $id)
+    public function findByFilter(array $filters, bool $convertJson = true)
     {
         try {
-            $stmt = self::getPDO()->prepare("select * from wallet where id = :id");
-            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-
-            $wallet = '';
-            if ($stmt->execute()) {
-                if($stmt->rowCount() > 0) {
-                    while($row = $stmt->fetch(PDO::FETCH_OBJ)) {
-                        $wallet = new Wallet_entity($row->id, $row->name, $row->owner_id, boolval($row->main_wallet), boolval($row->active));
-                    }
-                } else {
-                    throw new DataNotExistException('There are no data for this \'id\'', 1202002011);
-                }
+            $where = "";
+            if (isset($filters['id'])) {
+                $where .= $where == "" ? " where" : " and";
+                $where .= " id = :id";
+            }
+            if (isset($filters['name'])) {
+                $where .= $where == "" ? " where" : " and";
+                $where .= " name like :name";
+            }
+            if (isset($filters['owner_id'])) {
+                $where .= $where == "" ? " where" : " and";
+                $where .= " owner_id = :owner_id";
+            }
+            if (isset($filters['main_wallet'])) {
+                $where .= $where == "" ? " where" : " and";
+                $where .= " main_wallet = :main_wallet";
+            }
+            if (isset($filters['active'])) {
+                $where .= $where == "" ? " where" : " and";
+                $where .= " active = :active";
             }
 
-            return $wallet;
-        } catch (DataNotExistException $ex) {
-            throw $ex;
-        } catch (\Throwable $th) {
-            throw new Exception('An error occurred while looking for an \'wallet\'. Please inform support', 1202002012);
-        }
-    }
+            $sql  = "select * from wallet $where";
+            $stmt = self::getPDO()->prepare($sql);
 
-    public function findAll()
-    {
-        try {
-            $stmt = self::getPDO()->prepare("select * from wallet");
+            if (isset($filters['id'])) {
+                $id = $filters['id'];
+                $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            }
+            if (isset($filters['name'])) {
+                $name = '%' . $filters['name'] . '%';
+                $stmt->bindParam(':name', $name, PDO::PARAM_STR);
+            }
+            if (isset($filters['owner_id'])) {
+                $owner_id = $filters['owner_id'];
+                $stmt->bindParam(':owner_id', $owner_id, PDO::PARAM_INT);
+            }
+            if (isset($filters['main_wallet'])) {
+                $main_wallet = $filters['main_wallet'];
+                $stmt->bindParam(':main_wallet', $main_wallet, PDO::PARAM_BOOL);
+            }
+            if (isset($filters['active'])) {
+                $active = $filters['active'];
+                $stmt->bindParam(':active', $active, PDO::PARAM_BOOL);
+            }
 
             $wallets = array();
             if ($stmt->execute()) {
                 while($row = $stmt->fetch(PDO::FETCH_OBJ)) {
                     $wallet = new Wallet_entity($row->id, $row->name, $row->owner_id, boolval($row->main_wallet), boolval($row->active));
-                    $wallets[] = $wallet->entityToJson();
+                    $wallets[] = $convertJson ? $wallet->entityToJson() : $wallet;
                 }
             }
 
@@ -136,7 +155,7 @@ class Wallet extends DataAccessObject
         } catch (DataNotExistException $ex) {
             throw $ex;
         } catch (\Throwable $th) {
-            throw new Exception('An error occurred while looking for an \'Wallet\'. Please inform support', 1202002012);
+            throw new Exception('An error occurred while looking for an \'owner\'. Please inform support', 1202002011);
         }
     }
 
