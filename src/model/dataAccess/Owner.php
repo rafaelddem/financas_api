@@ -4,8 +4,10 @@ namespace financas_api\model\dataAccess;
 
 use Exception;
 use financas_api\exceptions\DataNotExistException;
+use financas_api\exceptions\IntegrityException;
 use financas_api\model\entity\Owner as Owner_entity;
 use \PDO;
+use PDOException;
 
 class Owner extends DataAccessObject
 {
@@ -32,6 +34,9 @@ class Owner extends DataAccessObject
 
             self::getPDO()->commit();
             return '\'Owner\' successfully created';
+        } catch (PDOException $pdoe) {
+            self::getPDO()->rollback();
+            throw new IntegrityException($pdoe, 1202001012);
         } catch (\Throwable $th) {
             self::getPDO()->rollback();
             throw new Exception('An error occurred while creating an \'owner\'. Please inform support', 1202001002);
@@ -56,6 +61,9 @@ class Owner extends DataAccessObject
 
             self::getPDO()->commit();
             return '\'Owner\' successfully updated';
+        } catch (PDOException $pdoe) {
+            self::getPDO()->rollback();
+            throw new IntegrityException($pdoe, 1202001013);
         } catch (\Throwable $th) {
             self::getPDO()->rollback();
             throw new Exception('An error occurred while updating an \'owner\'. Please inform support', 1202001004);
@@ -80,7 +88,11 @@ class Owner extends DataAccessObject
 
             self::getPDO()->commit();
             return '\'Owner\' successfully deleted';
+        } catch (PDOException $pdoe) {
+            self::getPDO()->rollback();
+            throw new IntegrityException($pdoe, 1202001014);
         } catch (DataNotExistException $ex) {
+            self::getPDO()->rollback();
             throw $ex;
         } catch (\Throwable $th) {
             self::getPDO()->rollback();
@@ -130,8 +142,6 @@ class Owner extends DataAccessObject
             }
 
             return $owners;
-        } catch (DataNotExistException $ex) {
-            throw $ex;
         } catch (\Throwable $th) {
             throw new Exception('An error occurred while looking for an \'owner\'. Please inform support', 1202001011);
         }

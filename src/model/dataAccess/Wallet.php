@@ -4,6 +4,7 @@ namespace financas_api\model\dataAccess;
 
 use Exception;
 use financas_api\exceptions\DataNotExistException;
+use financas_api\exceptions\IntegrityException;
 use financas_api\model\entity\Wallet as Wallet_entity;
 use \PDO;
 
@@ -36,6 +37,9 @@ class Wallet extends DataAccessObject
 
             self::getPDO()->commit();
             return '\'Wallet\' successfully created';
+        } catch (\PDOException $pdoe) {
+            self::getPDO()->rollback();
+            throw new IntegrityException($pdoe, 1202002012);
         } catch (\Throwable $th) {
             self::getPDO()->rollback();
             throw new Exception('An error occurred while creating an \'wallet\'. Please inform support', 1202002002);
@@ -62,6 +66,9 @@ class Wallet extends DataAccessObject
 
             self::getPDO()->commit();
             return '\'Wallet\' successfully updated';
+        } catch (\PDOException $pdoe) {
+            self::getPDO()->rollback();
+            throw new IntegrityException($pdoe, 1202002013);
         } catch (\Throwable $th) {
             self::getPDO()->rollback();
             throw new Exception('An error occurred while updating an \'wallet\'. Please inform support', 1202002004);
@@ -86,7 +93,11 @@ class Wallet extends DataAccessObject
 
             self::getPDO()->commit();
             return '\'Wallet\' successfully deleted';
+        } catch (\PDOException $pdoe) {
+            self::getPDO()->rollback();
+            throw new IntegrityException($pdoe, 1202002014);
         } catch (DataNotExistException $ex) {
+            self::getPDO()->rollback();
             throw $ex;
         } catch (\Throwable $th) {
             self::getPDO()->rollback();
@@ -152,8 +163,6 @@ class Wallet extends DataAccessObject
             }
 
             return $wallets;
-        } catch (DataNotExistException $ex) {
-            throw $ex;
         } catch (\Throwable $th) {
             throw new Exception('An error occurred while looking for an \'owner\'. Please inform support', 1202002011);
         }

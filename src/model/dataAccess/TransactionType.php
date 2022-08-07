@@ -4,6 +4,7 @@ namespace financas_api\model\dataAccess;
 
 use Exception;
 use financas_api\exceptions\DataNotExistException;
+use financas_api\exceptions\IntegrityException;
 use financas_api\model\entity\TransactionType as TransactionType_entity;
 use \PDO;
 
@@ -34,6 +35,9 @@ class TransactionType extends DataAccessObject
 
             self::getPDO()->commit();
             return '\'Transaction type\' successfully created';
+        } catch (\PDOException $pdoe) {
+            self::getPDO()->rollback();
+            throw new IntegrityException($pdoe, 1202004012);
         } catch (\Throwable $th) {
             self::getPDO()->rollback();
             throw new Exception('An error occurred while creating an \'transaction type\'. Please inform support', 1202004002);
@@ -60,6 +64,9 @@ class TransactionType extends DataAccessObject
 
             self::getPDO()->commit();
             return '\'Transaction type\' successfully updated';
+        } catch (\PDOException $pdoe) {
+            self::getPDO()->rollback();
+            throw new IntegrityException($pdoe, 1202004013);
         } catch (\Throwable $th) {
             self::getPDO()->rollback();
             throw new Exception('An error occurred while updating an \'transaction type\'. Please inform support', 1202004004);
@@ -84,36 +91,15 @@ class TransactionType extends DataAccessObject
 
             self::getPDO()->commit();
             return '\'Transaction type\' successfully deleted';
+        } catch (\PDOException $pdoe) {
+            self::getPDO()->rollback();
+            throw new IntegrityException($pdoe, 1202004014);
         } catch (DataNotExistException $ex) {
+            self::getPDO()->rollback();
             throw $ex;
         } catch (\Throwable $th) {
             self::getPDO()->rollback();
             throw new Exception('An error occurred while deleting an \'transaction type\'. Please inform support', 1202004010);
-        }
-    }
-
-    public function find(int $id)
-    {
-        try {
-            $stmt = self::getPDO()->prepare("select * from transaction_type where id = :id");
-            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-
-            $transactionType = '';
-            if ($stmt->execute()) {
-                if($stmt->rowCount() > 0) {
-                    while($row = $stmt->fetch(PDO::FETCH_OBJ)) {
-                        $transactionType = new TransactionType_entity($row->id, $row->name, $row->relevance, boolval($row->active));
-                    }
-                } else {
-                    throw new DataNotExistException('There are no data for this \'id\'', 1202004011);
-                }
-            }
-
-            return $transactionType;
-        } catch (DataNotExistException $ex) {
-            throw $ex;
-        } catch (\Throwable $th) {
-            throw new Exception('An error occurred while looking for an \'transaction type\'. Please inform support', 1202004012);
         }
     }
 
@@ -167,8 +153,6 @@ class TransactionType extends DataAccessObject
             }
 
             return $transactionTypes;
-        } catch (DataNotExistException $ex) {
-            throw $ex;
         } catch (\Throwable $th) {
             throw new Exception('An error occurred while looking for an \'transaction type\'. Please inform support', 1202004011);
         }

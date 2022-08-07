@@ -9,7 +9,8 @@ create table finance_api.owner (
 	id int(3) not null auto_increment, 
 	name varchar(30) not null, 
 	active char(1) not null, 
-	primary key (id) 
+	primary key (id), 
+	unique(name) 
 );
 -- select * from finance_api.owner;
 -- drop table finance_api.owner;
@@ -30,7 +31,8 @@ create table finance_api.payment_method (
 	id int(3) not null auto_increment, 
 	name varchar(30) not null, 
 	active char(1) not null, 
-	primary key (id) 
+	primary key (id), 
+	unique(name) 
 );
 -- select * from finance_api.payment_method;
 -- drop table finance_api.payment_method;
@@ -40,7 +42,8 @@ create table finance_api.transaction_type (
 	name varchar(45) not null, 
 	relevance char(1) not null, 
 	active char(1) not null, 
-	primary key (id) 
+	primary key (id), 
+	unique(name) 
 );
 -- select * from finance_api.transaction_type;
 -- drop table finance_api.transaction_type;

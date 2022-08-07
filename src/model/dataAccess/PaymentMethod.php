@@ -4,6 +4,7 @@ namespace financas_api\model\dataAccess;
 
 use Exception;
 use financas_api\exceptions\DataNotExistException;
+use financas_api\exceptions\IntegrityException;
 use financas_api\model\entity\PaymentMethod as PaymentMethod_entity;
 use \PDO;
 
@@ -32,6 +33,9 @@ class PaymentMethod extends DataAccessObject
 
             self::getPDO()->commit();
             return '\'Payment method\' successfully created';
+        } catch (\PDOException $pdoe) {
+            self::getPDO()->rollback();
+            throw new IntegrityException($pdoe, 1202003012);
         } catch (\Throwable $th) {
             self::getPDO()->rollback();
             throw new Exception('An error occurred while creating an \'payment method\'. Please inform support', 1202003002);
@@ -56,6 +60,9 @@ class PaymentMethod extends DataAccessObject
 
             self::getPDO()->commit();
             return '\'Payment method\' successfully updated';
+        } catch (\PDOException $pdoe) {
+            self::getPDO()->rollback();
+            throw new IntegrityException($pdoe, 1202003013);
         } catch (\Throwable $th) {
             self::getPDO()->rollback();
             throw new Exception('An error occurred while updating an \'payment method\'. Please inform support', 1202003004);
@@ -80,7 +87,11 @@ class PaymentMethod extends DataAccessObject
 
             self::getPDO()->commit();
             return '\'Payment method\' successfully deleted';
+        } catch (\PDOException $pdoe) {
+            self::getPDO()->rollback();
+            throw new IntegrityException($pdoe, 1202003014);
         } catch (DataNotExistException $ex) {
+            self::getPDO()->rollback();
             throw $ex;
         } catch (\Throwable $th) {
             self::getPDO()->rollback();
@@ -130,8 +141,6 @@ class PaymentMethod extends DataAccessObject
             }
 
             return $paymentMethods;
-        } catch (DataNotExistException $ex) {
-            throw $ex;
         } catch (\Throwable $th) {
             throw new Exception('An error occurred while looking for an \'payment method\'. Please inform support', 1202003011);
         }
