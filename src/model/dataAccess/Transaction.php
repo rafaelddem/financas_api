@@ -3,9 +3,9 @@
 namespace financas_api\model\dataAccess;
 
 use Exception;
-use financas_api\exceptions\DataNotExistException;
+use financas_api\exceptions\EmptyValueException;
 use financas_api\exceptions\InsertInstallmentException;
-use financas_api\model\entity\Installment;
+use financas_api\model\entity\Installment as Installment_entity;
 use financas_api\model\entity\Transaction as Transaction_entity;
 use \PDO;
 
@@ -113,101 +113,123 @@ class Transaction extends DataAccessObject
         return $lastId;
     }
 
-    // public function update(Transaction_entity $transaction)
-    // {
-    //     self::getPDO()->beginTransaction();
+    public function findByFilter(array $filters, bool $convertJson = true)
+    {
+        try {
+            $where = "";
+            if (isset($filters['id'])) {
+                $where .= $where == "" ? " where" : " and";
+                $where .= " id = :id";
+            }
+            if (isset($filters['tittle'])) {
+                $where .= $where == "" ? " where" : " and";
+                $where .= " tittle like :tittle";
+            }
+            if (isset($filters['transaction_date'])) {
+                $where .= $where == "" ? " where" : " and";
+                $where .= " transaction_date = :transaction_date";
+            }
+            if (isset($filters['transaction_type'])) {
+                $where .= $where == "" ? " where" : " and";
+                $where .= " transaction_type = :transaction_type";
+            }
+            if (isset($filters['relevance'])) {
+                $where .= $where == "" ? " where" : " and";
+                $where .= " relevance = :relevance";
+            }
+            if (isset($filters['description'])) {
+                $where .= $where == "" ? " where" : " and";
+                $where .= " description like :description";
+            }
 
-    //     try {
-    //         $stmt = self::getPDO()->prepare("update Transaction set active = :active where id = :id");
-    //         $active = $transaction->getActive();
-    //         $id = $transaction->getId();
-    //         $stmt->bindParam(':active', $active, PDO::PARAM_BOOL);
-    //         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            $transactionFields = [
+                'transaction.id', 
+                'transaction.tittle', 
+                'transaction.transaction_date', 
+                'transaction.transaction_type', 
+                'transaction.gross_value as transaction_gross_value', 
+                'transaction.discount_value as transaction_discount_value', 
+                'transaction.relevance', 
+                'transaction.description', 
+            ];
+            $installmentFields = [
+                'installment.transaction', 
+                'installment.installment_number', 
+                'installment.duo_date as installment_duo_date', 
+                'installment.gross_value as installment_gross_value', 
+                'installment.discount_value as installment_discount_value', 
+                'installment.interest_value as installment_interest_value', 
+                'installment.rounding_value as installment_rounding_value', 
+                'installment.destination_wallet as installment_destination_wallet', 
+                'installment.source_wallet as installment_source_wallet', 
+                'installment.payment_method as installment_payment_method', 
+                'installment.payment_date as installment_payment_date', 
+            ];
+            $sql   = "select ";
+            $sql  .= implode(', ', $transactionFields) . ', ' . implode(', ', $installmentFields);
+            $sql  .= " from finance_api.transaction join finance_api.installment on transaction.id = installment.transaction";
+            $sql  .= " $where";
+            $sql  .= " order by transaction.id";
+            $stmt = self::getPDO()->prepare($sql);
 
-    //         if (!$stmt->execute()) {
-    //             self::getPDO()->rollback();
-    //             throw new Exception('An error occurred while updating an \'transaction\'. Please inform support', 1202005003);
-    //         }
+            if (isset($filters['id'])) {
+                $id = $filters['id'];
+                $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            }
+            if (isset($filters['tittle'])) {
+                $tittle = '%' . $filters['tittle'] . '%';
+                $stmt->bindParam(':tittle', $tittle, PDO::PARAM_STR);
+            }
+            if (isset($filters['transaction_date'])) {
+                $transaction_date = $filters['transaction_date'];
+                $stmt->bindParam(':transaction_date', $transaction_date, PDO::PARAM_STR);
+            }
+            if (isset($filters['transaction_type'])) {
+                $transaction_type = $filters['transaction_type'];
+                $stmt->bindParam(':transaction_type', $transaction_type, PDO::PARAM_INT);
+            }
+            if (isset($filters['relevance'])) {
+                $relevance = $filters['relevance'];
+                $stmt->bindParam(':relevance', $relevance, PDO::PARAM_INT);
+            }
+            if (isset($filters['description'])) {
+                $description = '%' . $filters['description'] . '%';
+                $stmt->bindParam(':description', $description, PDO::PARAM_STR);
+            }
 
-    //         self::getPDO()->commit();
-    //         return '\'Transaction\' successfully updated';
-    //     } catch (\Throwable $th) {
-    //         self::getPDO()->rollback();
-    //         throw new Exception('An error occurred while updating an \'transaction\'. Please inform support', 1202005004);
-    //     }
-    // }
+            $installments = array();
+            $transactions = array();
+            $transaction = array();
+            $transaction_id = 0;
+            if ($stmt->execute()) {
+                while($row = $stmt->fetch(PDO::FETCH_OBJ)) {
+                    if ($transaction_id != $row->id AND $transaction_id != 0) {
+                        $transaction_entity = new Transaction_entity($transaction['id'], $transaction['tittle'], $transaction['transaction_date'], $transaction['transaction_type'], $transaction['gross_value'], $transaction['discount_value'], $installments, $transaction['relevance'], $transaction['description']);
+                        $transactions[] = $transaction_entity->entityToJson();
+                        $installments = array();
+                    }
+                    $transaction_id = $row->id;
 
-    // public function delete(int $id)
-    // {
-    //     self::getPDO()->beginTransaction();
+                    $transaction['id'] = $row->id;
+                    $transaction['tittle'] = $row->tittle;
+                    $transaction['transaction_date'] = $row->transaction_date;
+                    $transaction['transaction_type'] = $row->transaction_type;
+                    $transaction['gross_value'] = $row->transaction_gross_value;
+                    $transaction['discount_value'] = $row->transaction_discount_value;
+                    $transaction['relevance'] = $row->relevance;
+                    $transaction['description'] = $row->description;
 
-    //     try {
-    //         $stmt = self::getPDO()->prepare("delete from Transaction where id = :id");
-    //         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+                    $installments[] = new Installment_entity($row->transaction, $row->installment_number, $row->installment_duo_date, $row->installment_gross_value, $row->installment_discount_value, $row->installment_interest_value, $row->installment_rounding_value, $row->installment_destination_wallet, $row->installment_source_wallet, $row->installment_payment_method, $row->installment_payment_date);
+                }
+                $transaction_entity = new Transaction_entity($transaction['id'], $transaction['tittle'], $transaction['transaction_date'], $transaction['transaction_type'], $transaction['gross_value'], $transaction['discount_value'], $installments, $transaction['relevance'], $transaction['description']);
+                $transactions[] = $transaction_entity->entityToJson();
+            }
 
-    //         if (!$stmt->execute()) {
-    //             self::getPDO()->rollback();
-    //             throw new Exception('An error occurred while deleting an \'transaction\'. Please inform support', 1202005005);
-    //         }
-
-    //         if ($stmt->rowCount() <= 0) 
-    //             throw new DataNotExistException('There are no data for this \'id\'', 1202005007);
-
-    //         self::getPDO()->commit();
-    //         return '\'Transaction\' successfully deleted';
-    //     } catch (DataNotExistException $ex) {
-    //         throw $ex;
-    //     } catch (\Throwable $th) {
-    //         self::getPDO()->rollback();
-    //         throw new Exception('An error occurred while deleting an \'transaction\'. Please inform support', 1202005010);
-    //     }
-    // }
-
-    // public function find(int $id)
-    // {
-    //     try {
-    //         $stmt = self::getPDO()->prepare("select * from Transaction where id = :id");
-    //         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-
-    //         $transaction = '';
-    //         if ($stmt->execute()) {
-    //             if($stmt->rowCount() > 0) {
-    //                 while($row = $stmt->fetch(PDO::FETCH_OBJ)) {
-    //                     $transaction = new Transaction_entity($row->id, $row->name, boolval($row->active));
-    //                 }
-    //             } else {
-    //                 throw new DataNotExistException('There are no data for this \'id\'', 1202005011);
-    //             }
-    //         }
-
-    //         return $transaction;
-    //     } catch (DataNotExistException $ex) {
-    //         throw $ex;
-    //     } catch (\Throwable $th) {
-    //         throw new Exception('An error occurred while looking for an \'transaction\'. Please inform support', 1202005012);
-    //     }
-    // }
-
-    // public function findAll()
-    // {
-    //     try {
-    //         $stmt = self::getPDO()->prepare("select * from Transaction");
-
-    //         $transactions = array();
-    //         if ($stmt->execute()) {
-    //             while($row = $stmt->fetch(PDO::FETCH_OBJ)) {
-    //                 $transaction = new Transaction_entity($row->id, $row->name, boolval($row->active));
-    //                 $transactions[] = $transaction->entityToJson();
-    //             }
-    //         }
-
-    //         return $transactions;
-    //     } catch (DataNotExistException $ex) {
-    //         throw $ex;
-    //     } catch (\Throwable $th) {
-    //         throw new Exception('An error occurred while looking for an \'transaction\'. Please inform support', 1202005012);
-    //     }
-    // }
+            return $transactions;
+        } catch (\Throwable $th) {
+            throw new Exception('An error occurred while looking for an \'transaction\'. Please inform support', 1202005005);
+        }
+    }
 
 }
     

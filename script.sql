@@ -109,18 +109,18 @@ insert into finance_api.transaction (tittle, transaction_date, transaction_type,
 ('Compra', '2022-05-01', 2, 12.50, 0.00, 2, 'Teste de compra');
 
 insert into  finance_api.installment (transaction, installment_number, duo_date, gross_value, discount_value, interest_value, rounding_value, destination_wallet, source_wallet, payment_method, payment_date) values 
-(1, 1, '2022-06-01', 12.50, 0.00, 0.00, 0.00, 1,  5, 1, '2022-05-01');
+(1, 1, '2022-06-01', 12.50, 0.00, 0.00, 0.00, 1,  5, 1, '2022-06-01');
 
 insert into finance_api.transaction (tittle, transaction_date, transaction_type, gross_value, discount_value, relevance, description) values 
 ('Venda', '2022-05-01', 1, 12.50, 0.00, 0, 'Teste de venda');
 
 insert into  finance_api.installment (transaction, installment_number, duo_date, gross_value, discount_value, interest_value, rounding_value, destination_wallet, source_wallet, payment_method, payment_date) values 
-(2, 1, '2022-06-01', 12.50, 0.00, 0.00, 0.00, 5,  1, 1, '2022-05-01');
+(2, 1, '2022-06-01', 12.50, 0.00, 0.00, 0.00, 5,  1, 1, '2022-06-01');
 
 insert into finance_api.transaction (tittle, transaction_date, transaction_type, gross_value, discount_value, relevance, description) values 
 ('Compra', '2022-07-01', 1, 20.00, 0.00, 0, 'Teste de compra');
 
 insert into  finance_api.installment (transaction, installment_number, duo_date, gross_value, discount_value, interest_value, rounding_value, destination_wallet, source_wallet, payment_method, payment_date) values 
-(3, 1, '2022-08-01', 10.00, 0.00, 0.00, 0.00, 1,  5, 1, '2022-05-01');
+(3, 1, '2022-08-01', 10.00, 0.00, 0.00, 0.00, 1,  5, 1, '2022-08-01');
 insert into  finance_api.installment (transaction, installment_number, duo_date, gross_value, discount_value, interest_value, rounding_value, destination_wallet) values 
 (3, 2, '2022-09-01', 10.00, 0.00, 0.00, 0.00, 1);

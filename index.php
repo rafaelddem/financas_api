@@ -36,8 +36,8 @@ try {
     Route::addGet('/transaction_type', new Controller(TransactionType::class, 'find'));
 
     Route::addPost('/transaction', new Controller(Transaction::class, 'create'));
-    Route::addPut('/transaction', new Controller(Transaction::class, 'update'));
-    Route::addDelete('/transaction', new Controller(Transaction::class, 'delete'));
+    // Route::addPut('/transaction', new Controller(Transaction::class, 'update'));
+    // Route::addDelete('/transaction', new Controller(Transaction::class, 'delete'));
     Route::addGet('/transaction', new Controller(Transaction::class, 'find'));
 
     Route::getPath();

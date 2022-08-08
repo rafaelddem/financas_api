@@ -18,14 +18,14 @@ class Installment
     private float $interest_value = 0.0;
     private float $rounding_value = 0.0;
     private float $net_value = 0.0;
-    private int $destination_wallet;
-    private int $source_wallet;
-    private int $payment_method;
+    private int|null $destination_wallet;
+    private int|null $source_wallet;
+    private int|null $payment_method;
     private DateTime $payment_date;
 
     public function __construct(int $transaction, int $installment_number, string $duo_date, 
         float $gross_value, float $discount_value, float $interest_value, float $rounding_value, 
-        int $destination_wallet, int $source_wallet, int $payment_method, string $payment_date
+        int $destination_wallet, int $source_wallet = null, int $payment_method = null, string $payment_date = null
     )
     {
         self::setTransaction($transaction);
@@ -163,27 +163,33 @@ class Installment
         return $this->destination_wallet;
     }
 
-    public function setSourceWallet(int $source_wallet)
+    public function setSourceWallet(int $source_wallet = null)
     {
+        // if (empty($payment_date)) 
+        //     return;
+
         $this->source_wallet = $source_wallet;
     }
 
-    public function getSourceWallet() : int
+    public function getSourceWallet() : int|null
     {
         return $this->source_wallet;
     }
 
-    public function setPaymentMethod(int $payment_method)
+    public function setPaymentMethod(int $payment_method = null)
     {
+        // if (empty($payment_date)) 
+        //     return;
+
         $this->payment_method = $payment_method;
     }
 
-    public function getPaymentMethod() : int
+    public function getPaymentMethod() : int|null
     {
         return $this->payment_method;
     }
 
-    public function setPaymentDate(string $payment_date)
+    public function setPaymentDate(string $payment_date = null)
     {
         if (empty($payment_date)) 
             return;
@@ -204,6 +210,32 @@ class Installment
             return '';
 
         return $this->payment_date->format('Y-m-d');
+    }
+
+    public function entityToJson()
+    {
+        $json = [
+            'transaction' => $this->getTransaction(), 
+            'installment_number' => $this->getInstallmentNumber(), 
+            'duo_date' => $this->getDuoDate(), 
+            'gross_value' => $this->getGrossValue(), 
+            'discount_value' => $this->getDiscountValue(), 
+            'interest_value' => $this->getInterestValue(), 
+            'rounding_value' => $this->getRoundingValue(), 
+            'destination_wallet' => $this->getDestinationWallet(), 
+        ];
+
+        if (isset($this->source_wallet)) {
+            $json['source_wallet'] = $this->getSourceWallet(); 
+        }
+        if (isset($this->payment_method)) {
+            $json['payment_method'] = $this->getPaymentMethod(); 
+        }
+        if (isset($this->payment_date)) {
+            $json['payment_date'] = $this->getPaymentDate(); 
+        }
+
+        return $json;
     }
 }
 

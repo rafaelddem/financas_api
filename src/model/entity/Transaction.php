@@ -234,6 +234,26 @@ class Transaction
         return $this->description;
     }
 
+    public function entityToJson()
+    {
+        $installments_entity = self::getInstallments();
+        $installments_json = array();
+        foreach ($installments_entity as $installment_entity) {
+            $installments_json[] = $installment_entity->entityToJson();
+        }
+
+        return [
+            'tittle' => $this->getTittle(), 
+            'transaction_date' => $this->getTransactionDate(), 
+            'transaction_type' => $this->getTransactionType(), 
+            'gross_value' => $this->getGrossValue(), 
+            'discount_value' => $this->getDiscountValue(), 
+            'relevance' => $this->getRelevance(), 
+            'description' => $this->getDescription(), 
+            'installments' => $installments_json, 
+        ];
+    }
+
 }
 
 ?>
