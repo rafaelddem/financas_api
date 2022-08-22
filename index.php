@@ -7,6 +7,7 @@ require_once "vendor/autoload.php";
 use financas_api\controller\Controller;
 use financas_api\controller\Response;
 use financas_api\controller\Route;
+use financas_api\model\businessObject\Installment;
 use financas_api\model\businessObject\Owner;
 use financas_api\model\businessObject\PaymentMethod;
 use financas_api\model\businessObject\Transaction;
@@ -36,9 +37,12 @@ try {
     Route::addGet('/transaction_type', new Controller(TransactionType::class, 'find'));
 
     Route::addPost('/transaction', new Controller(Transaction::class, 'create'));
-    // Route::addPut('/transaction', new Controller(Transaction::class, 'update'));
-    // Route::addDelete('/transaction', new Controller(Transaction::class, 'delete'));
+    Route::addPut('/transaction', new Controller(Transaction::class, 'update'));
+    // Route::addDelete('/transaction', new Controller(Transaction::class, 'delete'));delete+insert
     Route::addGet('/transaction', new Controller(Transaction::class, 'find'));
+    
+    Route::addPut('/transaction/installment', new Controller(Installment::class, 'update'));
+    Route::addGet('/transaction/installment', new Controller(Installment::class, 'find'));
 
     Route::getPath();
 } catch (\Throwable $th) {

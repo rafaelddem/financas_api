@@ -4,6 +4,7 @@ namespace financas_api\model\businessObject;
 
 use financas_api\controller\Response;
 use financas_api\exceptions\DataNotExistException;
+use financas_api\exceptions\EmptyValueException;
 use financas_api\exceptions\ValueNotAcceptException;
 use financas_api\model\dataAccess\Transaction as Transaction_dataAccess;
 use financas_api\model\entity\Installment as Installment_entity;
@@ -73,15 +74,55 @@ class Transaction
         }
     }
 
-    private function findEntity()
+    public function update()
     {
+        try {
+            $transaction = self::findEntity();
+
+            $hasUpdate = false;
+            if (isset($this->tittle)) {
+                $transaction->setTittle($this->tittle);
+                $hasUpdate = true;
+            }
+            if (isset($this->transaction_type)) {
+                $transaction->setTransactionType($this->transaction_type);
+                $hasUpdate = true;
+            }
+            if (isset($this->relevance)) {
+                $transaction->setRelevance($this->relevance);
+                $hasUpdate = true;
+            }
+            if (isset($this->description)) {
+                $transaction->setDescription($this->description);
+                $hasUpdate = true;
+            }
+
+            if (!$hasUpdate) 
+                throw new ValueNotAcceptException('Parameters must be informed for the update', 1203005001);
+
+            $dao = new Transaction_dataAccess();
+            Response::send(['message' => $dao->update($transaction)], true, 200);
+        } catch (\Exception $ex) {
+            Response::send(['code' => $ex->getCode(), 'message' => $ex->getMessage()], true, 404);
+        } catch (\TypeError $te) {
+            Response::send(['message' => 'data provided not accepted, please, see the api manual'], true, 406);
+        } catch (\Throwable $th) {
+            Response::send(['message' => 'bad request'], true, 400);
+        }
+    }
+
+    private function findEntity() : Transaction_entity
+    {
+        if (isset($this->id) < 1) 
+            throw new EmptyValueException('You need inform the \'id\'', 1203005002);
+
         $dao = new Transaction_dataAccess();
         $transactions = $dao->findByFilter([
             'id' => $this->id, 
         ], false);
 
         if (count($transactions) < 1) 
-            throw new DataNotExistException('There are no data for this \'id\'', 1203001002);
+            throw new DataNotExistException('There are no data for this \'id\'', 1203005003);
 
         return $transactions[0];
     }

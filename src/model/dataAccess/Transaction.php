@@ -2,12 +2,14 @@
 
 namespace financas_api\model\dataAccess;
 
-use Exception;
-use financas_api\exceptions\EmptyValueException;
+use financas_api\exceptions\DataNotExistException;
 use financas_api\exceptions\InsertInstallmentException;
+use financas_api\exceptions\IntegrityException;
+use financas_api\exceptions\UncatalogedException;
 use financas_api\model\entity\Installment as Installment_entity;
 use financas_api\model\entity\Transaction as Transaction_entity;
 use \PDO;
+use PDOException;
 
 class Transaction extends DataAccessObject
 {
@@ -18,7 +20,8 @@ class Transaction extends DataAccessObject
 
     public function insert(Transaction_entity $transaction)
     {
-        self::getPDO()->beginTransaction();
+        if (!self::getPDO()->inTransaction()) 
+            self::getPDO()->beginTransaction();
 
         try {
             $sql  = "insert into transaction (tittle, transaction_date, transaction_type, gross_value, discount_value, relevance, description) ";
@@ -40,10 +43,8 @@ class Transaction extends DataAccessObject
             $stmt->bindParam(':relevance', $relevance, PDO::PARAM_INT);
             $stmt->bindParam(':description', $description, PDO::PARAM_STR);
 
-            if (!$stmt->execute()) {
-                self::getPDO()->rollback();
-                throw new Exception('An error occurred while creating an \'transaction\'. Please inform support', 1202005001);
-            }
+            if (!$stmt->execute()) 
+                throw new UncatalogedException('Could not execute request. Please inform support', 1202005001);
 
             $transaction_id = self::getLastId('transaction');
 
@@ -54,7 +55,6 @@ class Transaction extends DataAccessObject
             $stmt = self::getPDO()->prepare($sql);
             
             foreach ($transaction->getInstallments() as $installment) {
-                // $installment = new Installment;
                 $transaction = $transaction_id;
                 $installment_number = $installment->getInstallmentNumber();
                 $duo_date = $installment->getDuoDate();
@@ -79,38 +79,52 @@ class Transaction extends DataAccessObject
                 $stmt->bindParam(':payment_method', $payment_method, PDO::PARAM_INT);
                 $stmt->bindParam(':payment_date', $payment_date, PDO::PARAM_STR);
 
-                if (!$stmt->execute()) {
+                if (!$stmt->execute()) 
                     throw new InsertInstallmentException('An error occurred while creating an \'installment\'. Please inform support', 1202005002);
-                }
             }
 
             self::getPDO()->commit();
             return '\'Transaction\' successfully created';
         } catch (InsertInstallmentException $ex) {
             self::getPDO()->rollback();
-            throw $ex; //new Exception('An error occurred while creating an \'installment\'. Please inform support', 1202005002);
+            throw $ex;
         } catch (\Throwable $th) {
             self::getPDO()->rollback();
-            throw new Exception('An error occurred while creating an \'transaction\'. Please inform support', 1202005003);
+            throw new UncatalogedException('An error occurred while creating an \'transaction\'. Please inform support', 1202005003, $th);
         }
     }
 
-    public function getLastId(string $table)
+    public function update(Transaction_entity $transaction)
     {
-        $stmt = self::getPDO()->prepare("select max(id) as id from $table");
+        if (!self::getPDO()->inTransaction()) 
+            self::getPDO()->beginTransaction();
 
-        $lastId = 0;
-        if ($stmt->execute()) {
-            if($stmt->rowCount() > 0) {
-                while($row = $stmt->fetch(PDO::FETCH_OBJ)) {
-                    $lastId = $row->id;
-                }
-            } else {
-                throw new Exception('An error occurred while looking for an \'owner\'. Please inform support', 1202005003);
-            }
+        try {
+            $sql  = "update transaction set tittle = :tittle, transaction_type = :transaction_type, relevance = :relevance, description = :description where id = :id;";
+            $stmt = self::getPDO()->prepare($sql);
+            $tittle = $transaction->getTittle();
+            $transaction_type = $transaction->getTransactionType();
+            $relevance = $transaction->getRelevance();
+            $description = $transaction->getDescription();
+            $id = $transaction->getId();
+            $stmt->bindParam(':tittle', $tittle, PDO::PARAM_STR);
+            $stmt->bindParam(':transaction_type', $transaction_type, PDO::PARAM_INT);
+            $stmt->bindParam(':relevance', $relevance, PDO::PARAM_INT);
+            $stmt->bindParam(':description', $description, PDO::PARAM_STR);
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+
+            if (!$stmt->execute()) 
+                throw new UncatalogedException('Could not execute request. Please inform support', 1202005004);
+
+            self::getPDO()->commit();
+            return '\'Transaction\' successfully updated';
+        } catch (PDOException $pdoe) {
+            self::getPDO()->rollback();
+            throw new IntegrityException($pdoe, 1202005005);
+        } catch (\Throwable $th) {
+            self::getPDO()->rollback();
+            throw new UncatalogedException('An error occurred while updating an \'transaction\'. Please inform support', 1202005006, $th);
         }
-
-        return $lastId;
     }
 
     public function findByFilter(array $filters, bool $convertJson = true)
@@ -142,31 +156,8 @@ class Transaction extends DataAccessObject
                 $where .= " description like :description";
             }
 
-            $transactionFields = [
-                'transaction.id', 
-                'transaction.tittle', 
-                'transaction.transaction_date', 
-                'transaction.transaction_type', 
-                'transaction.gross_value as transaction_gross_value', 
-                'transaction.discount_value as transaction_discount_value', 
-                'transaction.relevance', 
-                'transaction.description', 
-            ];
-            $installmentFields = [
-                'installment.transaction', 
-                'installment.installment_number', 
-                'installment.duo_date as installment_duo_date', 
-                'installment.gross_value as installment_gross_value', 
-                'installment.discount_value as installment_discount_value', 
-                'installment.interest_value as installment_interest_value', 
-                'installment.rounding_value as installment_rounding_value', 
-                'installment.destination_wallet as installment_destination_wallet', 
-                'installment.source_wallet as installment_source_wallet', 
-                'installment.payment_method as installment_payment_method', 
-                'installment.payment_date as installment_payment_date', 
-            ];
             $sql   = "select ";
-            $sql  .= implode(', ', $transactionFields) . ', ' . implode(', ', $installmentFields);
+            $sql  .= self::getTransactionColumns_find(true) . ', ' . self::getInstallmentColumns_find(true);
             $sql  .= " from finance_api.transaction join finance_api.installment on transaction.id = installment.transaction";
             $sql  .= " $where";
             $sql  .= " order by transaction.id";
@@ -205,7 +196,7 @@ class Transaction extends DataAccessObject
                 while($row = $stmt->fetch(PDO::FETCH_OBJ)) {
                     if ($transaction_id != $row->id AND $transaction_id != 0) {
                         $transaction_entity = new Transaction_entity($transaction['id'], $transaction['tittle'], $transaction['transaction_date'], $transaction['transaction_type'], $transaction['gross_value'], $transaction['discount_value'], $installments, $transaction['relevance'], $transaction['description']);
-                        $transactions[] = $transaction_entity->entityToJson();
+                        $transactions[] = ($convertJson) ? $transaction_entity->entityToJson() : $transaction_entity;
                         $installments = array();
                     }
                     $transaction_id = $row->id;
@@ -222,13 +213,68 @@ class Transaction extends DataAccessObject
                     $installments[] = new Installment_entity($row->transaction, $row->installment_number, $row->installment_duo_date, $row->installment_gross_value, $row->installment_discount_value, $row->installment_interest_value, $row->installment_rounding_value, $row->installment_destination_wallet, $row->installment_source_wallet, $row->installment_payment_method, $row->installment_payment_date);
                 }
                 $transaction_entity = new Transaction_entity($transaction['id'], $transaction['tittle'], $transaction['transaction_date'], $transaction['transaction_type'], $transaction['gross_value'], $transaction['discount_value'], $installments, $transaction['relevance'], $transaction['description']);
-                $transactions[] = $transaction_entity->entityToJson();
+                $transactions[] = ($convertJson) ? $transaction_entity->entityToJson() : $transaction_entity;
             }
 
             return $transactions;
+        } catch (DataNotExistException $dnee) {
+            throw $dnee;
         } catch (\Throwable $th) {
-            throw new Exception('An error occurred while looking for an \'transaction\'. Please inform support', 1202005005);
+            throw new UncatalogedException('An error occurred while looking for an \'transaction\'. Please inform support', 1202005007, $th);
         }
+    }
+
+    private function getTransactionColumns_find(bool $likeString = false) : array|string
+    {
+        $columns = [
+            'transaction.id', 
+            'transaction.tittle', 
+            'transaction.transaction_date', 
+            'transaction.transaction_type', 
+            'transaction.gross_value as transaction_gross_value', 
+            'transaction.discount_value as transaction_discount_value', 
+            'transaction.relevance', 
+            'transaction.description', 
+        ];
+
+        return $likeString ? implode(', ', $columns) : $columns;
+    }
+
+    private function getInstallmentColumns_find(bool $likeString = false) : array|string
+    {
+        $columns = [
+            'installment.transaction', 
+            'installment.installment_number', 
+            'installment.duo_date as installment_duo_date', 
+            'installment.gross_value as installment_gross_value', 
+            'installment.discount_value as installment_discount_value', 
+            'installment.interest_value as installment_interest_value', 
+            'installment.rounding_value as installment_rounding_value', 
+            'installment.destination_wallet as installment_destination_wallet', 
+            'installment.source_wallet as installment_source_wallet', 
+            'installment.payment_method as installment_payment_method', 
+            'installment.payment_date as installment_payment_date', 
+        ];
+
+        return $likeString ? implode(', ', $columns) : $columns;
+    }
+
+    private function getLastId(string $table)
+    {
+        $stmt = self::getPDO()->prepare("select max(id) as id from $table");
+
+        $lastId = 0;
+        if ($stmt->execute()) {
+            if($stmt->rowCount() > 0) {
+                while($row = $stmt->fetch(PDO::FETCH_OBJ)) {
+                    $lastId = $row->id;
+                }
+            } else {
+                throw new UncatalogedException('Could not execute request. Please inform support', 1202005008);
+            }
+        }
+
+        return $lastId;
     }
 
 }
