@@ -4,6 +4,7 @@ namespace financas_api\model\businessObject;
 
 use financas_api\controller\Response;
 use financas_api\exceptions\DataNotExistException;
+use financas_api\exceptions\EmptyValueException;
 use financas_api\exceptions\ValueNotAcceptException;
 use financas_api\model\dataAccess\PaymentMethod as PaymentMethod_dataAccess;
 use financas_api\model\entity\PaymentMethod as PaymentMethod_entity;
@@ -78,13 +79,16 @@ class PaymentMethod
 
     private function findEntity()
     {
+        if (isset($this->id) < 1) 
+            throw new EmptyValueException('You need inform the \'id\'', 1203003002);
+
         $dao = new PaymentMethod_dataAccess();
         $paymentMethods = $dao->findByFilter([
             'id' => $this->id, 
         ], false);
 
         if (count($paymentMethods) < 1) 
-            throw new DataNotExistException('There are no data for this \'id\'', 1203003002);
+            throw new DataNotExistException('There are no data for this \'id\'', 1203003003);
 
         return $paymentMethods[0];
     }

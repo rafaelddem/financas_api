@@ -4,6 +4,7 @@ namespace financas_api\model\businessObject;
 
 use financas_api\controller\Response;
 use financas_api\exceptions\DataNotExistException;
+use financas_api\exceptions\EmptyValueException;
 use financas_api\exceptions\ValueNotAcceptException;
 use financas_api\model\dataAccess\Owner as Owner_dataAccess;
 use financas_api\model\entity\Owner as Owner_entity;
@@ -78,13 +79,16 @@ class Owner
 
     private function findEntity()
     {
+        if (isset($this->id) < 1) 
+            throw new EmptyValueException('You need inform the \'id\'', 1203001002);
+
         $dao = new Owner_dataAccess();
         $owners = $dao->findByFilter([
             'id' => $this->id, 
         ], false);
 
         if (count($owners) < 1) 
-            throw new DataNotExistException('There are no data for this \'id\'', 1203001002);
+            throw new DataNotExistException('There are no data for this \'id\'', 1203001003);
 
         return $owners[0];
     }

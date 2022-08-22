@@ -4,6 +4,7 @@ namespace financas_api\model\businessObject;
 
 use financas_api\controller\Response;
 use financas_api\exceptions\DataNotExistException;
+use financas_api\exceptions\EmptyValueException;
 use financas_api\exceptions\ValueNotAcceptException;
 use financas_api\model\dataAccess\TransactionType as TransactionType_dataAccess;
 use financas_api\model\entity\TransactionType as TransactionType_entity;
@@ -84,13 +85,16 @@ class TransactionType
 
     private function findEntity()
     {
+        if (isset($this->id) < 1) 
+            throw new EmptyValueException('You need inform the \'id\'', 1203004002);
+
         $dao = new TransactionType_dataAccess();
         $transactionTypes = $dao->findByFilter([
             'id' => $this->id, 
         ], false);
 
         if (count($transactionTypes) < 1) 
-            throw new DataNotExistException('There are no data for this \'id\'', 1203004002);
+            throw new DataNotExistException('There are no data for this \'id\'', 1203004003);
 
         return $transactionTypes[0];
     }
