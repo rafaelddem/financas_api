@@ -2,9 +2,9 @@
 
 namespace financas_api\model\dataAccess;
 
-use Exception;
 use financas_api\exceptions\DataNotExistException;
 use financas_api\exceptions\IntegrityException;
+use financas_api\exceptions\UncatalogedException;
 use financas_api\model\entity\Wallet as Wallet_entity;
 use \PDO;
 
@@ -17,7 +17,8 @@ class Wallet extends DataAccessObject
 
     public function insert(Wallet_entity $wallet)
     {
-        self::getPDO()->beginTransaction();
+        if (!self::getPDO()->inTransaction()) 
+            self::getPDO()->beginTransaction();
 
         try {
             $stmt = self::getPDO()->prepare("insert into wallet (name, owner_id, main_wallet, active) values (:name, :owner_id, :main_wallet, :active)");
@@ -30,10 +31,8 @@ class Wallet extends DataAccessObject
             $stmt->bindParam(':main_wallet', $main_wallet, PDO::PARAM_BOOL);
             $stmt->bindParam(':active', $active, PDO::PARAM_BOOL);
 
-            if (!$stmt->execute()) {
-                self::getPDO()->rollback();
-                throw new Exception('An error occurred while creating an \'wallet\'. Please inform support', 1202002001);
-            }
+            if (!$stmt->execute()) 
+                throw new UncatalogedException('Could not execute request. Please inform support', 1202002001);
 
             self::getPDO()->commit();
             return '\'Wallet\' successfully created';
@@ -42,13 +41,14 @@ class Wallet extends DataAccessObject
             throw new IntegrityException($pdoe, 1202002012);
         } catch (\Throwable $th) {
             self::getPDO()->rollback();
-            throw new Exception('An error occurred while creating an \'wallet\'. Please inform support', 1202002002);
+            throw new UncatalogedException('An error occurred while creating an \'wallet\'. Please inform support', 1202002002);
         }
     }
 
     public function update(Wallet_entity $wallet)
     {
-        self::getPDO()->beginTransaction();
+        if (!self::getPDO()->inTransaction()) 
+            self::getPDO()->beginTransaction();
 
         try {
             $stmt = self::getPDO()->prepare("update wallet set active = :active, main_wallet = :main_wallet where id = :id");
@@ -59,10 +59,8 @@ class Wallet extends DataAccessObject
             $stmt->bindParam(':main_wallet', $main_wallet, PDO::PARAM_BOOL);
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 
-            if (!$stmt->execute()) {
-                self::getPDO()->rollback();
-                throw new Exception('An error occurred while updating an \'wallet\'. Please inform support', 1202002003);
-            }
+            if (!$stmt->execute()) 
+                throw new UncatalogedException('Could not execute request. Please inform support', 1202002003);
 
             self::getPDO()->commit();
             return '\'Wallet\' successfully updated';
@@ -71,37 +69,36 @@ class Wallet extends DataAccessObject
             throw new IntegrityException($pdoe, 1202002013);
         } catch (\Throwable $th) {
             self::getPDO()->rollback();
-            throw new Exception('An error occurred while updating an \'wallet\'. Please inform support', 1202002004);
+            throw new UncatalogedException('An error occurred while updating an \'wallet\'. Please inform support', 1202002004);
         }
     }
 
     public function delete(int $id)
     {
-        self::getPDO()->beginTransaction();
+        if (!self::getPDO()->inTransaction()) 
+            self::getPDO()->beginTransaction();
 
         try {
             $stmt = self::getPDO()->prepare("delete from wallet where id = :id");
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 
-            if (!$stmt->execute()) {
-                self::getPDO()->rollback();
-                throw new Exception('An error occurred while deleting an \'wallet\'. Please inform support', 1202002005);
-            }
+            if (!$stmt->execute()) 
+                throw new UncatalogedException('Could not execute request. Please inform support', 1202002005);
 
             if ($stmt->rowCount() <= 0) 
-                throw new DataNotExistException('There are no data for this \'id\'', 1202002007);
+                throw new DataNotExistException('There are no data for this \'id\'', 1202002006);
 
             self::getPDO()->commit();
             return '\'Wallet\' successfully deleted';
         } catch (\PDOException $pdoe) {
             self::getPDO()->rollback();
-            throw new IntegrityException($pdoe, 1202002014);
+            throw new IntegrityException($pdoe, 1202002007);
         } catch (DataNotExistException $ex) {
             self::getPDO()->rollback();
             throw $ex;
         } catch (\Throwable $th) {
             self::getPDO()->rollback();
-            throw new Exception('An error occurred while deleting an \'wallet\'. Please inform support', 1202002010);
+            throw new UncatalogedException('An error occurred while deleting an \'wallet\'. Please inform support', 1202002010);
         }
     }
 
@@ -164,7 +161,7 @@ class Wallet extends DataAccessObject
 
             return $wallets;
         } catch (\Throwable $th) {
-            throw new Exception('An error occurred while looking for an \'owner\'. Please inform support', 1202002011);
+            throw new UncatalogedException('An error occurred while looking for an \'owner\'. Please inform support', 1202002011);
         }
     }
 

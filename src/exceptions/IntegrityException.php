@@ -19,6 +19,9 @@ class IntegrityException extends PDOException
             case 1451:
                 $message = 'Exclusion not allowed. Other data is linked to this data';
                 break;
+            case 1064:
+                $message = "An error occurred on system. Please inform support (code: $pdoCode:$pdoSpecificCode)";
+                break;
 
             default:
                 $message = "Uncataloged error. Please inform support (code: $pdoCode:$pdoSpecificCode)";

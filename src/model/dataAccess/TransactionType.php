@@ -2,9 +2,9 @@
 
 namespace financas_api\model\dataAccess;
 
-use Exception;
 use financas_api\exceptions\DataNotExistException;
 use financas_api\exceptions\IntegrityException;
+use financas_api\exceptions\UncatalogedException;
 use financas_api\model\entity\TransactionType as TransactionType_entity;
 use \PDO;
 
@@ -17,7 +17,8 @@ class TransactionType extends DataAccessObject
 
     public function insert(TransactionType_entity $transactionType)
     {
-        self::getPDO()->beginTransaction();
+        if (!self::getPDO()->inTransaction()) 
+            self::getPDO()->beginTransaction();
 
         try {
             $stmt = self::getPDO()->prepare("insert into transaction_type (name, relevance, active) values (:name, :relevance, :active);");
@@ -28,10 +29,8 @@ class TransactionType extends DataAccessObject
             $stmt->bindParam(':relevance', $relevance, PDO::PARAM_INT);
             $stmt->bindParam(':active', $active, PDO::PARAM_BOOL);
 
-            if (!$stmt->execute()) {
-                self::getPDO()->rollback();
-                throw new Exception('An error occurred while creating an \'transaction type\'. Please inform support', 1202004001);
-            }
+            if (!$stmt->execute()) 
+                throw new UncatalogedException('Could not execute request. Please inform support', 1202004001);
 
             self::getPDO()->commit();
             return '\'Transaction type\' successfully created';
@@ -40,13 +39,14 @@ class TransactionType extends DataAccessObject
             throw new IntegrityException($pdoe, 1202004012);
         } catch (\Throwable $th) {
             self::getPDO()->rollback();
-            throw new Exception('An error occurred while creating an \'transaction type\'. Please inform support', 1202004002);
+            throw new UncatalogedException('An error occurred while creating an \'transaction type\'. Please inform support', 1202004002);
         }
     }
 
     public function update(TransactionType_entity $transactionType)
     {
-        self::getPDO()->beginTransaction();
+        if (!self::getPDO()->inTransaction()) 
+            self::getPDO()->beginTransaction();
 
         try {
             $stmt = self::getPDO()->prepare("update transaction_type set active = :active, relevance = :relevance where id = :id");
@@ -57,10 +57,8 @@ class TransactionType extends DataAccessObject
             $stmt->bindParam(':relevance', $relevance, PDO::PARAM_INT);
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 
-            if (!$stmt->execute()) {
-                self::getPDO()->rollback();
-                throw new Exception('An error occurred while updating an \'transaction type\'. Please inform support', 1202004003);
-            }
+            if (!$stmt->execute()) 
+                throw new UncatalogedException('Could not execute request. Please inform support', 1202004003);
 
             self::getPDO()->commit();
             return '\'Transaction type\' successfully updated';
@@ -69,37 +67,36 @@ class TransactionType extends DataAccessObject
             throw new IntegrityException($pdoe, 1202004013);
         } catch (\Throwable $th) {
             self::getPDO()->rollback();
-            throw new Exception('An error occurred while updating an \'transaction type\'. Please inform support', 1202004004);
+            throw new UncatalogedException('An error occurred while updating an \'transaction type\'. Please inform support', 1202004004);
         }
     }
 
     public function delete(int $id)
     {
-        self::getPDO()->beginTransaction();
+        if (!self::getPDO()->inTransaction()) 
+            self::getPDO()->beginTransaction();
 
         try {
             $stmt = self::getPDO()->prepare("delete from transaction_type where id = :id");
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 
-            if (!$stmt->execute()) {
-                self::getPDO()->rollback();
-                throw new Exception('An error occurred while deleting an \'transaction type\'. Please inform support', 1202004005);
-            }
+            if (!$stmt->execute()) 
+                throw new UncatalogedException('Could not execute request. Please inform support', 1202004005);
 
             if ($stmt->rowCount() <= 0) 
-                throw new DataNotExistException('There are no data for this \'id\'', 1202004007);
+                throw new DataNotExistException('There are no data for this \'id\'', 1202004006);
 
             self::getPDO()->commit();
             return '\'Transaction type\' successfully deleted';
         } catch (\PDOException $pdoe) {
             self::getPDO()->rollback();
-            throw new IntegrityException($pdoe, 1202004014);
+            throw new IntegrityException($pdoe, 1202004007);
         } catch (DataNotExistException $ex) {
             self::getPDO()->rollback();
             throw $ex;
         } catch (\Throwable $th) {
             self::getPDO()->rollback();
-            throw new Exception('An error occurred while deleting an \'transaction type\'. Please inform support', 1202004010);
+            throw new UncatalogedException('An error occurred while deleting an \'transaction type\'. Please inform support', 1202004010);
         }
     }
 
@@ -154,7 +151,7 @@ class TransactionType extends DataAccessObject
 
             return $transactionTypes;
         } catch (\Throwable $th) {
-            throw new Exception('An error occurred while looking for an \'transaction type\'. Please inform support', 1202004011);
+            throw new UncatalogedException('An error occurred while looking for an \'transaction type\'. Please inform support', 1202004011);
         }
     }
 

@@ -2,12 +2,11 @@
 
 namespace financas_api\model\dataAccess;
 
-use Exception;
 use financas_api\exceptions\DataNotExistException;
 use financas_api\exceptions\IntegrityException;
+use financas_api\exceptions\UncatalogedException;
 use financas_api\model\entity\Owner as Owner_entity;
 use \PDO;
-use PDOException;
 
 class Owner extends DataAccessObject
 {
@@ -18,7 +17,8 @@ class Owner extends DataAccessObject
 
     public function insert(Owner_entity $owner)
     {
-        self::getPDO()->beginTransaction();
+        if (!self::getPDO()->inTransaction()) 
+            self::getPDO()->beginTransaction();
 
         try {
             $stmt = self::getPDO()->prepare("insert into owner (name, active) values (:name, :active);");
@@ -27,25 +27,24 @@ class Owner extends DataAccessObject
             $stmt->bindParam(':name', $name, PDO::PARAM_STR);
             $stmt->bindParam(':active', $active, PDO::PARAM_BOOL);
 
-            if (!$stmt->execute()) {
-                self::getPDO()->rollback();
-                throw new Exception('An error occurred while creating an \'owner\'. Please inform support', 1202001001);
-            }
+            if (!$stmt->execute()) 
+                throw new UncatalogedException('Could not execute request. Please inform support', 1202001001);
 
             self::getPDO()->commit();
             return '\'Owner\' successfully created';
-        } catch (PDOException $pdoe) {
+        } catch (\PDOException $pdoe) {
             self::getPDO()->rollback();
             throw new IntegrityException($pdoe, 1202001012);
         } catch (\Throwable $th) {
             self::getPDO()->rollback();
-            throw new Exception('An error occurred while creating an \'owner\'. Please inform support', 1202001002);
+            throw new UncatalogedException('An error occurred while creating an \'owner\'. Please inform support', 1202001002, $th);
         }
     }
 
     public function update(Owner_entity $owner)
     {
-        self::getPDO()->beginTransaction();
+        if (!self::getPDO()->inTransaction()) 
+            self::getPDO()->beginTransaction();
 
         try {
             $stmt = self::getPDO()->prepare("update owner set active = :active where id = :id");
@@ -54,49 +53,46 @@ class Owner extends DataAccessObject
             $stmt->bindParam(':active', $active, PDO::PARAM_BOOL);
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 
-            if (!$stmt->execute()) {
-                self::getPDO()->rollback();
-                throw new Exception('An error occurred while updating an \'owner\'. Please inform support', 1202001003);
-            }
+            if (!$stmt->execute()) 
+                throw new UncatalogedException('Could not execute request. Please inform support', 1202001003);
 
             self::getPDO()->commit();
             return '\'Owner\' successfully updated';
-        } catch (PDOException $pdoe) {
+        } catch (\PDOException $pdoe) {
             self::getPDO()->rollback();
             throw new IntegrityException($pdoe, 1202001013);
         } catch (\Throwable $th) {
             self::getPDO()->rollback();
-            throw new Exception('An error occurred while updating an \'owner\'. Please inform support', 1202001004);
+            throw new UncatalogedException('An error occurred while updating an \'owner\'. Please inform support', 1202001004, $th);
         }
     }
 
     public function delete(int $id)
     {
-        self::getPDO()->beginTransaction();
+        if (!self::getPDO()->inTransaction()) 
+            self::getPDO()->beginTransaction();
 
         try {
             $stmt = self::getPDO()->prepare("delete from owner where id = :id");
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 
-            if (!$stmt->execute()) {
-                self::getPDO()->rollback();
-                throw new Exception('An error occurred while deleting an \'owner\'. Please inform support', 1202001005);
-            }
+            if (!$stmt->execute()) 
+                throw new UncatalogedException('Could not execute request. Please inform support', 1202001005);
 
             if ($stmt->rowCount() <= 0) 
-                throw new DataNotExistException('There are no data for this \'id\'', 1202001007);
+                throw new DataNotExistException('There are no data for this \'id\'', 1202001006);
 
             self::getPDO()->commit();
             return '\'Owner\' successfully deleted';
-        } catch (PDOException $pdoe) {
+        } catch (\PDOException $pdoe) {
             self::getPDO()->rollback();
-            throw new IntegrityException($pdoe, 1202001014);
+            throw new IntegrityException($pdoe, 1202001007);
         } catch (DataNotExistException $ex) {
             self::getPDO()->rollback();
             throw $ex;
         } catch (\Throwable $th) {
             self::getPDO()->rollback();
-            throw new Exception('An error occurred while deleting an \'owner\'. Please inform support', 1202001010);
+            throw new UncatalogedException('An error occurred while deleting an \'owner\'. Please inform support', 1202001010, $th);
         }
     }
 
@@ -143,7 +139,7 @@ class Owner extends DataAccessObject
 
             return $owners;
         } catch (\Throwable $th) {
-            throw new Exception('An error occurred while looking for an \'owner\'. Please inform support', 1202001011);
+            throw new UncatalogedException('An error occurred while looking for an \'owner\'. Please inform support', 1202001011, $th);
         }
     }
 }
