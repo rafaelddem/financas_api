@@ -76,9 +76,10 @@ create table finance_api.installment (
 	payment_method int(3) default null, 
 	payment_date date default null, 
 	primary key (transaction, installment_number), 
-	constraint fk_transaction_payment_method foreign key (payment_method) references payment_method (id), 
-	constraint fk_transaction_source_wallet foreign key (source_wallet) references wallet (id), 
-	constraint fk_transaction_destination_wallet foreign key (destination_wallet) references wallet (id) 
+	constraint fk_installment_transaction foreign key (transaction) references transaction (id) on delete cascade, 
+	constraint fk_installment_payment_method foreign key (payment_method) references payment_method (id), 
+	constraint fk_installment_source_wallet foreign key (source_wallet) references wallet (id), 
+	constraint fk_installment_destination_wallet foreign key (destination_wallet) references wallet (id) 
 );
 -- select * from finance_api.installment;
 -- drop table finance_api.installment;

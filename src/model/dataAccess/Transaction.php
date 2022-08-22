@@ -18,7 +18,7 @@ class Transaction extends DataAccessObject
         parent::__construct();
     }
 
-    public function insert(Transaction_entity $transaction)
+    public function insert(Transaction_entity $transaction) : string
     {
         if (!self::getPDO()->inTransaction()) 
             self::getPDO()->beginTransaction();
@@ -127,6 +127,35 @@ class Transaction extends DataAccessObject
         }
     }
 
+    public function delete(int $id)
+    {
+        if (!self::getPDO()->inTransaction()) 
+            self::getPDO()->beginTransaction();
+
+        try {
+            $stmt = self::getPDO()->prepare("delete from transaction where id = :id");
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+
+            if (!$stmt->execute()) 
+                throw new UncatalogedException('Could not execute request. Please inform support', 1202005007);
+
+            if ($stmt->rowCount() <= 0) 
+                throw new DataNotExistException('There are no data for this \'id\'', 1202005010);
+
+            self::getPDO()->commit();
+            return '\'Transaction\' successfully deleted';
+        } catch (\PDOException $pdoe) {
+            self::getPDO()->rollback();
+            throw new IntegrityException($pdoe, 1202001011);
+        } catch (DataNotExistException $ex) {
+            self::getPDO()->rollback();
+            throw $ex;
+        } catch (\Throwable $th) {
+            self::getPDO()->rollback();
+            throw new UncatalogedException('An error occurred while deleting an \'transaction\'. Please inform support', 1202001012, $th);
+        }
+    }
+
     public function findByFilter(array $filters, bool $convertJson = true)
     {
         try {
@@ -212,15 +241,18 @@ class Transaction extends DataAccessObject
 
                     $installments[] = new Installment_entity($row->transaction, $row->installment_number, $row->installment_duo_date, $row->installment_gross_value, $row->installment_discount_value, $row->installment_interest_value, $row->installment_rounding_value, $row->installment_destination_wallet, $row->installment_source_wallet, $row->installment_payment_method, $row->installment_payment_date);
                 }
-                $transaction_entity = new Transaction_entity($transaction['id'], $transaction['tittle'], $transaction['transaction_date'], $transaction['transaction_type'], $transaction['gross_value'], $transaction['discount_value'], $installments, $transaction['relevance'], $transaction['description']);
-                $transactions[] = ($convertJson) ? $transaction_entity->entityToJson() : $transaction_entity;
+
+                if ($stmt->rowCount() != 0) {
+                    $transaction_entity = new Transaction_entity($transaction['id'], $transaction['tittle'], $transaction['transaction_date'], $transaction['transaction_type'], $transaction['gross_value'], $transaction['discount_value'], $installments, $transaction['relevance'], $transaction['description']);
+                    $transactions[] = ($convertJson) ? $transaction_entity->entityToJson() : $transaction_entity;
+                }
             }
 
             return $transactions;
         } catch (DataNotExistException $dnee) {
             throw $dnee;
-        } catch (\Throwable $th) {
-            throw new UncatalogedException('An error occurred while looking for an \'transaction\'. Please inform support', 1202005007, $th);
+        } catch (\Throwable $th) {print_r($th);exit;
+            throw new UncatalogedException('An error occurred while looking for an \'transaction\'. Please inform support', 1202005013, $th);
         }
     }
 
@@ -270,7 +302,7 @@ class Transaction extends DataAccessObject
                     $lastId = $row->id;
                 }
             } else {
-                throw new UncatalogedException('Could not execute request. Please inform support', 1202005008);
+                throw new UncatalogedException('Could not execute request. Please inform support', 1202005014);
             }
         }
 

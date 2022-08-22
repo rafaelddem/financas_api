@@ -38,7 +38,8 @@ try {
 
     Route::addPost('/transaction', new Controller(Transaction::class, 'create'));
     Route::addPut('/transaction', new Controller(Transaction::class, 'update'));
-    // Route::addDelete('/transaction', new Controller(Transaction::class, 'delete'));delete+insert
+    Route::addDelete('/transaction', new Controller(Transaction::class, 'delete'));
+    // delete+insert
     Route::addGet('/transaction', new Controller(Transaction::class, 'find'));
     
     Route::addPut('/transaction/installment', new Controller(Installment::class, 'update'));
