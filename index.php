@@ -11,6 +11,7 @@ use financas_api\model\businessObject\Home;
 use financas_api\model\businessObject\Installment;
 use financas_api\model\businessObject\Owner;
 use financas_api\model\businessObject\PaymentMethod;
+use financas_api\model\businessObject\Reports;
 use financas_api\model\businessObject\Transaction;
 use financas_api\model\businessObject\TransactionType;
 use financas_api\model\businessObject\Wallet;
@@ -47,6 +48,8 @@ try {
 
     Route::addPut('/transaction/installment', new Controller(Installment::class, 'update'));
     Route::addGet('/transaction/installment', new Controller(Installment::class, 'find'));
+
+    Route::addGet('/reports/calculatesTotals', new Controller(Reports::class, 'calculatesTotals'));
 
     Route::getPath();
 } catch (\Throwable $th) {

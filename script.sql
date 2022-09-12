@@ -84,44 +84,83 @@ create table finance_api.installment (
 -- select * from finance_api.installment;
 -- drop table finance_api.installment;
 
+/** Procedures */
+
+DROP PROCEDURE IF EXISTS finance_api.sum_wallets;
+
+DELIMITER //
+
+CREATE PROCEDURE finance_api.sum_wallets (start_date date, end_date date, start_day int, owner_id int)
+BEGIN
+
+	set @start_day = (select CASE WHEN start_day < 1 THEN "01" WHEN start_day < 10 THEN CONCAT("0", start_day) ELSE start_day END);
+
+	select 
+		CONCAT(DATE_FORMAT(CASE WHEN DATE_FORMAT(i.duo_date, '%d') >= @start_day THEN i.duo_date ELSE DATE_SUB(i.duo_date, INTERVAL 1 MONTH) END, '%Y-%m-'), @start_day) as start_at, 
+		w.id as wallet_id, w.name as wallet_name, 
+		sum(case when w.id = i.destination_wallet then (((i.gross_value + i.interest_value) - i.discount_value) + i.rounding_value) else 0 end) values_in, 
+		sum(case when w.id = i.source_wallet then (((i.gross_value + i.interest_value) - i.discount_value) + i.rounding_value) else 0 end) values_out, 
+		(
+			sum(case when w.id = i.destination_wallet then (((i.gross_value + i.interest_value) - i.discount_value) + i.rounding_value) else 0 end) - 
+			sum(case when w.id = i.source_wallet then (((i.gross_value + i.interest_value) - i.discount_value) + i.rounding_value) else 0 end) 
+		) as values_total
+	from 
+		transaction t 
+			left join installment i on i.transaction = t.id 
+			left join wallet w on w.id = i.source_wallet or w.id = i.destination_wallet
+	where 
+		w.owner_id = owner_id and i.duo_date between start_date and end_date
+	group by 
+		start_at, w.id 
+	order by 
+		start_at;
+
+END;
+
+//
+
+DELIMITER ;
+
+-- CALL finance_api.sum_wallets('2000-01-01', '3000-01-01', 5, 2);
+
+
+
 /*	default data	*/
 
-insert into finance_api.owner (name, active) values ('Rafael', 1);
-insert into finance_api.owner (name, active) values ('Terezinha', 1);
-insert into finance_api.owner (name, active) values ('Márcio', 1);
+-- insert into finance_api.owner (name, active) values ('Rafael', 1);
+-- insert into finance_api.owner (name, active) values ('Terezinha', 1);
+-- insert into finance_api.owner (name, active) values ('Márcio', 1);
 
-insert into finance_api.wallet (name, owner_id, main_wallet, active) values ('Casa', 1, 0, 1);
-insert into finance_api.wallet (name, owner_id, main_wallet, active) values ('NuBank', 1, 0, 1);
-insert into finance_api.wallet (name, owner_id, main_wallet, active) values ('NuConta', 1, 1, 1);
-insert into finance_api.wallet (name, owner_id, main_wallet, active) values ('PicPay', 1, 0, 1);
-insert into finance_api.wallet (name, owner_id, main_wallet, active) values ('Casa', 2, 1, 1);
-insert into finance_api.wallet (name, owner_id, main_wallet, active) values ('Casa', 3, 1, 1);
+-- insert into finance_api.wallet (name, owner_id, main_wallet, active) values ('Casa', 1, 0, 1);
+-- insert into finance_api.wallet (name, owner_id, main_wallet, active) values ('NuBank', 1, 0, 1);
+-- insert into finance_api.wallet (name, owner_id, main_wallet, active) values ('NuConta', 1, 1, 1);
+-- insert into finance_api.wallet (name, owner_id, main_wallet, active) values ('PicPay', 1, 0, 1);
+-- insert into finance_api.wallet (name, owner_id, main_wallet, active) values ('Casa', 2, 1, 1);
+-- insert into finance_api.wallet (name, owner_id, main_wallet, active) values ('Casa', 3, 1, 1);
 
-insert into finance_api.payment_method (name, active) values ('Dinheiro', 1);
-insert into finance_api.payment_method (name, active) values ('Crédito', 1);
-insert into finance_api.payment_method (name, active) values ('Débito', 1);
+-- insert into finance_api.payment_method (name, active) values ('Dinheiro', 1);
+-- insert into finance_api.payment_method (name, active) values ('Crédito', 1);
+-- insert into finance_api.payment_method (name, active) values ('Débito', 1);
 
-insert into finance_api.transaction_type (name, relevance, active) values ('Venda', 2, 1);
-insert into finance_api.transaction_type (name, relevance, active) values ('Compra', 0, 1);
+-- insert into finance_api.transaction_type (name, relevance, active) values ('Venda', 2, 1);
+-- insert into finance_api.transaction_type (name, relevance, active) values ('Compra', 0, 1);
 
+-- insert into finance_api.transaction (tittle, transaction_date, transaction_type, gross_value, discount_value, relevance, description) values 
+-- ('Compra', '2022-05-01', 2, 12.50, 0.00, 2, 'Teste de compra');
 
+-- insert into  finance_api.installment (transaction, installment_number, duo_date, gross_value, discount_value, interest_value, rounding_value, destination_wallet, source_wallet, payment_method, payment_date) values 
+-- (1, 1, '2022-06-01', 12.50, 0.00, 0.00, 0.00, 1,  5, 1, '2022-06-01');
 
-insert into finance_api.transaction (tittle, transaction_date, transaction_type, gross_value, discount_value, relevance, description) values 
-('Compra', '2022-05-01', 2, 12.50, 0.00, 2, 'Teste de compra');
+-- insert into finance_api.transaction (tittle, transaction_date, transaction_type, gross_value, discount_value, relevance, description) values 
+-- ('Venda', '2022-05-01', 1, 12.50, 0.00, 0, 'Teste de venda');
 
-insert into  finance_api.installment (transaction, installment_number, duo_date, gross_value, discount_value, interest_value, rounding_value, destination_wallet, source_wallet, payment_method, payment_date) values 
-(1, 1, '2022-06-01', 12.50, 0.00, 0.00, 0.00, 1,  5, 1, '2022-06-01');
+-- insert into  finance_api.installment (transaction, installment_number, duo_date, gross_value, discount_value, interest_value, rounding_value, destination_wallet, source_wallet, payment_method, payment_date) values 
+-- (2, 1, '2022-06-01', 12.50, 0.00, 0.00, 0.00, 5,  1, 1, '2022-06-01');
 
-insert into finance_api.transaction (tittle, transaction_date, transaction_type, gross_value, discount_value, relevance, description) values 
-('Venda', '2022-05-01', 1, 12.50, 0.00, 0, 'Teste de venda');
+-- insert into finance_api.transaction (tittle, transaction_date, transaction_type, gross_value, discount_value, relevance, description) values 
+-- ('Compra', '2022-07-01', 1, 20.00, 0.00, 0, 'Teste de compra');
 
-insert into  finance_api.installment (transaction, installment_number, duo_date, gross_value, discount_value, interest_value, rounding_value, destination_wallet, source_wallet, payment_method, payment_date) values 
-(2, 1, '2022-06-01', 12.50, 0.00, 0.00, 0.00, 5,  1, 1, '2022-06-01');
-
-insert into finance_api.transaction (tittle, transaction_date, transaction_type, gross_value, discount_value, relevance, description) values 
-('Compra', '2022-07-01', 1, 20.00, 0.00, 0, 'Teste de compra');
-
-insert into  finance_api.installment (transaction, installment_number, duo_date, gross_value, discount_value, interest_value, rounding_value, destination_wallet, source_wallet, payment_method, payment_date) values 
-(3, 1, '2022-08-01', 10.00, 0.00, 0.00, 0.00, 1,  5, 1, '2022-08-01');
-insert into  finance_api.installment (transaction, installment_number, duo_date, gross_value, discount_value, interest_value, rounding_value, destination_wallet) values 
-(3, 2, '2022-09-01', 10.00, 0.00, 0.00, 0.00, 1);
+-- insert into  finance_api.installment (transaction, installment_number, duo_date, gross_value, discount_value, interest_value, rounding_value, destination_wallet, source_wallet, payment_method, payment_date) values 
+-- (3, 1, '2022-08-01', 10.00, 0.00, 0.00, 0.00, 1,  5, 1, '2022-08-01');
+-- insert into  finance_api.installment (transaction, installment_number, duo_date, gross_value, discount_value, interest_value, rounding_value, destination_wallet) values 
+-- (3, 2, '2022-09-01', 10.00, 0.00, 0.00, 0.00, 1);
