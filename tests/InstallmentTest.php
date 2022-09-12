@@ -509,15 +509,15 @@ class InstallmentTest extends TestCase
         $installment = new Installment($data['transaction'], $data['installment_number'], $data['duo_date'], $data['gross_value'], $data['discount_value'], $data['interest_value'], $data['rounding_value'], $data['destination_wallet'], $data['source_wallet'], $data['payment_method'], $data['payment_date']);
     }
 
-    public function testCreateInstallmentWithPaymentDateLowerThanDuoDate()
-    {
-        $this->expectException(Exception::class);
-        $this->expectExceptionMessage('The value for \'payment_date\' cannot be lower than \'duo_date\'');
+    // public function testCreateInstallmentWithPaymentDateLowerThanDuoDate()
+    // {
+    //     $this->expectException(Exception::class);
+    //     $this->expectExceptionMessage('The value for \'payment_date\' cannot be lower than \'duo_date\'');
 
-        $data = $this->defaultData;
-        $data['payment_date'] = '1000-01-01';
-        $installment = new Installment($data['transaction'], $data['installment_number'], $data['duo_date'], $data['gross_value'], $data['discount_value'], $data['interest_value'], $data['rounding_value'], $data['destination_wallet'], $data['source_wallet'], $data['payment_method'], $data['payment_date']);
-    }
+    //     $data = $this->defaultData;
+    //     $data['payment_date'] = '1000-01-01';
+    //     $installment = new Installment($data['transaction'], $data['installment_number'], $data['duo_date'], $data['gross_value'], $data['discount_value'], $data['interest_value'], $data['rounding_value'], $data['destination_wallet'], $data['source_wallet'], $data['payment_method'], $data['payment_date']);
+    // }
 
     public function testCreateInstallmentWithGrossValueEmpty()
     {

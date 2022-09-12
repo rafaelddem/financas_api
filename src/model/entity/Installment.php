@@ -140,7 +140,7 @@ class Installment
 
     public function calculateNetValue()
     {
-        $net_value = round(($this->gross_value - $this->discount_value + $this->interest_value) + $this->rounding_value, 2);
+        $net_value = round(($this->gross_value + $this->interest_value - $this->discount_value) + $this->rounding_value, 2);
 
         if ($net_value <= 0.0) 
             throw new ValueNotAcceptException('The sum of value need to be positive', 1201006011);
@@ -200,8 +200,8 @@ class Installment
             throw new DateCreateException('The value for \'payment_date\' are not accept, confirm value and format (\'yyyy-mm-dd\')', 1201006003);
         }
 
-        if ($this->duo_date > $this->payment_date) 
-            throw new DateCreateException('The value for \'payment_date\' cannot be lower than \'duo_date\'', 1201006004);
+        // if ($this->duo_date > $this->payment_date) 
+        //     throw new DateCreateException('The value for \'payment_date\' cannot be lower than \'duo_date\'', 1201006004);
     }
 
     public function getPaymentDate() : string

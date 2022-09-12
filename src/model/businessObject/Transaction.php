@@ -89,6 +89,24 @@ class Transaction
         }
     }
 
+    private function updateTransactionSensitiveData()
+    {
+        try {
+            $transaction = self::findEntity();
+            $resultMessage = self::createEntity();
+            $resultMessage = self::deleteEntity();
+
+            $dao = new Transaction_dataAccess();
+            Response::send(['message' => '\'Transaction\' successfully updated'], true, 200);
+        } catch (\Exception $ex) {
+            Response::send(['code' => $ex->getCode(), 'message' => $ex->getMessage()], true, 404);
+        } catch (\TypeError $te) {
+            Response::send(['message' => 'data provided not accepted, please, see the api manual'], true, 406);
+        } catch (\Throwable $th) {
+            Response::send(['message' => 'bad request'], true, 400);
+        }
+    }
+
     private function updateTransactionNonSensitiveData()
     {
         try {
@@ -117,24 +135,6 @@ class Transaction
 
             $dao = new Transaction_dataAccess();
             Response::send(['message' => $dao->update($transaction)], true, 200);
-        } catch (\Exception $ex) {
-            Response::send(['code' => $ex->getCode(), 'message' => $ex->getMessage()], true, 404);
-        } catch (\TypeError $te) {
-            Response::send(['message' => 'data provided not accepted, please, see the api manual'], true, 406);
-        } catch (\Throwable $th) {
-            Response::send(['message' => 'bad request'], true, 400);
-        }
-    }
-
-    private function updateTransactionSensitiveData()
-    {
-        try {
-            $transaction = self::findEntity();
-            $resultMessage = self::createEntity();
-            $resultMessage = self::deleteEntity();
-
-            $dao = new Transaction_dataAccess();
-            Response::send(['message' => '\'Transaction\' successfully updated'], true, 200);
         } catch (\Exception $ex) {
             Response::send(['code' => $ex->getCode(), 'message' => $ex->getMessage()], true, 404);
         } catch (\TypeError $te) {
