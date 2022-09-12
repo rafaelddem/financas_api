@@ -7,6 +7,7 @@ require_once "vendor/autoload.php";
 use financas_api\controller\Controller;
 use financas_api\controller\Response;
 use financas_api\controller\Route;
+use financas_api\model\businessObject\Home;
 use financas_api\model\businessObject\Installment;
 use financas_api\model\businessObject\Owner;
 use financas_api\model\businessObject\PaymentMethod;
@@ -15,11 +16,14 @@ use financas_api\model\businessObject\TransactionType;
 use financas_api\model\businessObject\Wallet;
 
 try {
+    Route::addGet('/', new Controller(Home::class, 'home'));
+    Route::addGet('/home', new Controller(Home::class, 'home'));
+    Route::addGet('/backup', new Controller(Home::class, 'backup'));
+
     Route::addPost('/owner', new Controller(Owner::class, 'create'));
     Route::addPut('/owner', new Controller(Owner::class, 'update'));
     Route::addDelete('/owner', new Controller(Owner::class, 'delete'));
     Route::addGet('/owner', new Controller(Owner::class, 'find'));
-    // Route::add('/owner/wallets', new Controller(Owner::class, 'findWallets'));
 
     Route::addPost('/wallet', new Controller(Wallet::class, 'create'));
     Route::addPut('/wallet', new Controller(Wallet::class, 'update'));
@@ -39,9 +43,8 @@ try {
     Route::addPost('/transaction', new Controller(Transaction::class, 'create'));
     Route::addPut('/transaction', new Controller(Transaction::class, 'update'));
     Route::addDelete('/transaction', new Controller(Transaction::class, 'delete'));
-    // delete+insert
     Route::addGet('/transaction', new Controller(Transaction::class, 'find'));
-    
+
     Route::addPut('/transaction/installment', new Controller(Installment::class, 'update'));
     Route::addGet('/transaction/installment', new Controller(Installment::class, 'find'));
 
