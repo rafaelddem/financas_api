@@ -14,10 +14,34 @@ class Reports extends DataAccessObject
         parent::__construct();
     }
 
-    public function calculatesTotals(DateTime $start_date, DateTime $end_date, int $owner)
+    public function calculatesWalletsTotals_byPeriod(DateTime $start_date, DateTime $end_date, int $owner)
     {
         try {
-            $sql  = "CALL finance_api.sum_wallets(:start_date, :end_date, :start_day, :owner)";
+            $sql  = "CALL finance_api.sum_wallets_by_period(:start_date, :end_date, :owner)";
+            $stmt = self::getPDO()->prepare($sql);
+            $start_date = $start_date->format('Y-m-d');
+            $end_date = $end_date->format('Y-m-d');
+            $stmt->bindParam(':start_date', $start_date, PDO::PARAM_STR);
+            $stmt->bindParam(':end_date', $end_date, PDO::PARAM_STR);
+            $stmt->bindParam(':owner', $owner, PDO::PARAM_INT);
+
+            $result = array();
+            if ($stmt->execute()) {
+                while($row = $stmt->fetch(PDO::FETCH_OBJ)) {
+                    $result[$row->wallet_id] = ['in' => $row->values_in, 'out' => $row->values_out, 'total' => $row->values_total];
+                }
+            }
+
+            return $result;
+        } catch (\Throwable $th) {
+            throw new UncatalogedException('An error occurred while looking for an \'owner\'. Please inform support', 1202002011);
+        }
+    }
+
+    public function calculatesWalletsTotals_byMonths(DateTime $start_date, DateTime $end_date, int $owner)
+    {
+        try {
+            $sql  = "CALL finance_api.sum_wallets_by_months(:start_date, :end_date, :start_day, :owner)";
             $stmt = self::getPDO()->prepare($sql);
             $start_date = $start_date->format('Y-m-d');
             $end_date = $end_date->format('Y-m-d');
@@ -30,7 +54,31 @@ class Reports extends DataAccessObject
             $result = array();
             if ($stmt->execute()) {
                 while($row = $stmt->fetch(PDO::FETCH_OBJ)) {
-                    $result[$row->start_at][$row->wallet_id] = $row->values_total;
+                    $result[$row->start_at][$row->wallet_id] = ['in' => $row->values_in, 'out' => $row->values_out, 'total' => $row->values_total];
+                }
+            }
+
+            return $result;
+        } catch (\Throwable $th) {
+            throw new UncatalogedException('An error occurred while looking for an \'owner\'. Please inform support', 1202002011);
+        }
+    }
+
+    public function calculatesWalletsTotals_byDays(DateTime $start_date, DateTime $end_date, int $owner)
+    {
+        try {
+            $sql  = "CALL finance_api.sum_wallets_by_days(:start_date, :end_date, :owner)";
+            $stmt = self::getPDO()->prepare($sql);
+            $start_date = $start_date->format('Y-m-d');
+            $end_date = $end_date->format('Y-m-d');
+            $stmt->bindParam(':start_date', $start_date, PDO::PARAM_STR);
+            $stmt->bindParam(':end_date', $end_date, PDO::PARAM_STR);
+            $stmt->bindParam(':owner', $owner, PDO::PARAM_INT);
+
+            $result = array();
+            if ($stmt->execute()) {
+                while($row = $stmt->fetch(PDO::FETCH_OBJ)) {
+                    $result[$row->duo_date][$row->wallet_id] = ['in' => $row->values_in, 'out' => $row->values_out, 'total' => $row->values_total];
                 }
             }
 

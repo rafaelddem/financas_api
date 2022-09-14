@@ -9,17 +9,23 @@ use financas_api\model\dataAccess\Reports as Reports_dataAccess;
 class Reports
 {
     private $owner_id;
+    private $start_date;
+    private $end_date;
 
     public function __construct(array $parameters = null)
     {
         $this->owner_id = isset($parameters['owner_id']) ? $parameters['owner_id'] : null;
+        $this->start_date = isset($parameters['start_date']) ? $parameters['start_date'] : null;
+        $this->end_date = isset($parameters['end_date']) ? $parameters['end_date'] : null;
     }
 
     public function calculatesTotals()
     {
         try {
             $dao = new Reports_dataAccess();
-            $totals = $dao->calculatesTotals(new DateTime('2022-01-01'), new DateTime('2022-05-01'), $this->owner_id);
+            // $totals = $dao->calculatesWalletsTotals_byPeriod(new DateTime($this->start_date), new DateTime($this->end_date), $this->owner_id);
+            // $totals = $dao->calculatesWalletsTotals_byMonths(new DateTime($this->start_date), new DateTime($this->end_date), $this->owner_id);
+            $totals = $dao->calculatesWalletsTotals_byDays(new DateTime($this->start_date), new DateTime($this->end_date), $this->owner_id);
 
             Response::send(['response' => $totals], true, 200);
         } catch (\Exception $ex) {

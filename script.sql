@@ -86,17 +86,16 @@ create table finance_api.installment (
 
 /** Procedures */
 
-DROP PROCEDURE IF EXISTS finance_api.sum_wallets;
+DROP PROCEDURE IF EXISTS finance_api.sum_wallets_by_period;
+DROP PROCEDURE IF EXISTS finance_api.sum_wallets_by_months;
+DROP PROCEDURE IF EXISTS finance_api.sum_wallets_by_days;
 
 DELIMITER //
 
-CREATE PROCEDURE finance_api.sum_wallets (start_date date, end_date date, start_day int, owner_id int)
+CREATE PROCEDURE finance_api.sum_wallets_by_period (start_date date, end_date date, owner_id int)
 BEGIN
 
-	set @start_day = (select CASE WHEN start_day < 1 THEN "01" WHEN start_day < 10 THEN CONCAT("0", start_day) ELSE start_day END);
-
-	select 
-		CONCAT(DATE_FORMAT(CASE WHEN DATE_FORMAT(i.duo_date, '%d') >= @start_day THEN i.duo_date ELSE DATE_SUB(i.duo_date, INTERVAL 1 MONTH) END, '%Y-%m-'), @start_day) as start_at, 
+	select  
 		w.id as wallet_id, w.name as wallet_name, 
 		sum(case when w.id = i.destination_wallet then (((i.gross_value + i.interest_value) - i.discount_value) + i.rounding_value) else 0 end) values_in, 
 		sum(case when w.id = i.source_wallet then (((i.gross_value + i.interest_value) - i.discount_value) + i.rounding_value) else 0 end) values_out, 
@@ -111,9 +110,73 @@ BEGIN
 	where 
 		w.owner_id = owner_id and i.duo_date between start_date and end_date
 	group by 
+		w.id 
+	order by 
+		w.id;
+
+END;
+
+//
+
+CREATE PROCEDURE finance_api.sum_wallets_by_months (start_date date, end_date date, month_start_day int, owner_id int)
+BEGIN
+
+	set @month_start_day = (select CASE WHEN month_start_day < 1 THEN "01" WHEN month_start_day < 10 THEN CONCAT("0", month_start_day) ELSE month_start_day END);
+	set @start_date = CONCAT(DATE_FORMAT(start_date, '%Y-%m-'), @month_start_day);
+	set @end_date = DATE_ADD(DATE_SUB(CONCAT(DATE_FORMAT(end_date, '%Y-%m-'), @month_start_day), INTERVAL 1 DAY), INTERVAL 1 MONTH);
+
+	select  
+		CONCAT(
+			DATE_FORMAT(
+				CASE 
+					WHEN DATE_FORMAT(i.duo_date, '%d') >= @month_start_day THEN i.duo_date 
+					ELSE DATE_SUB(i.duo_date, INTERVAL 1 MONTH) 
+				END, '%Y-%m-'
+			), @month_start_day
+		) as start_at, 
+		w.id as wallet_id, w.name as wallet_name, 
+		sum(case when w.id = i.destination_wallet then (((i.gross_value + i.interest_value) - i.discount_value) + i.rounding_value) else 0 end) values_in, 
+		sum(case when w.id = i.source_wallet then (((i.gross_value + i.interest_value) - i.discount_value) + i.rounding_value) else 0 end) values_out, 
+		(
+			sum(case when w.id = i.destination_wallet then (((i.gross_value + i.interest_value) - i.discount_value) + i.rounding_value) else 0 end) - 
+			sum(case when w.id = i.source_wallet then (((i.gross_value + i.interest_value) - i.discount_value) + i.rounding_value) else 0 end) 
+		) as values_total
+	from 
+		transaction t 
+			left join installment i on i.transaction = t.id 
+			left join wallet w on w.id = i.source_wallet or w.id = i.destination_wallet
+	where 
+		w.owner_id = owner_id and i.duo_date between @start_date and @end_date
+	group by 
 		start_at, w.id 
 	order by 
-		start_at;
+		start_at, w.id;
+
+END;
+
+//
+
+CREATE PROCEDURE finance_api.sum_wallets_by_days (start_date date, end_date date, owner_id int)
+BEGIN
+
+	select  
+		i.duo_date, w.id as wallet_id, w.name as wallet_name, 
+		sum(case when w.id = i.destination_wallet then (((i.gross_value + i.interest_value) - i.discount_value) + i.rounding_value) else 0 end) values_in, 
+		sum(case when w.id = i.source_wallet then (((i.gross_value + i.interest_value) - i.discount_value) + i.rounding_value) else 0 end) values_out, 
+		(
+			sum(case when w.id = i.destination_wallet then (((i.gross_value + i.interest_value) - i.discount_value) + i.rounding_value) else 0 end) - 
+			sum(case when w.id = i.source_wallet then (((i.gross_value + i.interest_value) - i.discount_value) + i.rounding_value) else 0 end) 
+		) as values_total
+	from 
+		transaction t 
+			left join installment i on i.transaction = t.id 
+			left join wallet w on w.id = i.source_wallet or w.id = i.destination_wallet
+	where 
+		w.owner_id = owner_id and i.duo_date between start_date and end_date
+	group by 
+		i.duo_date, w.id 
+	order by 
+		i.duo_date, w.id;
 
 END;
 
@@ -121,7 +184,9 @@ END;
 
 DELIMITER ;
 
--- CALL finance_api.sum_wallets('2000-01-01', '3000-01-01', 5, 2);
+-- CALL finance_api.sum_wallets_by_period('2022-01-01', '2022-05-01', 2);
+-- CALL finance_api.sum_wallets_by_months('2000-01-01', '3000-01-01', 5, 2);
+-- CALL finance_api.sum_wallets_by_days('2022-01-01', '2022-05-01', 2);
 
 
 
