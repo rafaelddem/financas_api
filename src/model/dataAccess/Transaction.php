@@ -251,7 +251,7 @@ class Transaction extends DataAccessObject
             return $transactions;
         } catch (DataNotExistException $dnee) {
             throw $dnee;
-        } catch (\Throwable $th) {print_r($th);exit;
+        } catch (\Throwable $th) {
             throw new UncatalogedException('An error occurred while looking for an \'transaction\'. Please inform support', 1202005013, $th);
         }
     }
