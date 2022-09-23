@@ -88,7 +88,7 @@ class Installment extends DataAccessObject
             $installments = array();
             if ($stmt->execute()) {
                 while($row = $stmt->fetch(PDO::FETCH_OBJ)) {
-                    $installment = new Installment_entity($row->transaction, $row->installment_number, $row->installment_duo_date, $row->installment_gross_value, $row->installment_discount_value, $row->installment_interest_value, $row->installment_rounding_value, $row->installment_destination_wallet, $row->installment_source_wallet, $row->installment_payment_method, $row->installment_payment_date);
+                    $installment = new Installment_entity($row->transaction, $row->installment_number, $row->installment_due_date, $row->installment_gross_value, $row->installment_discount_value, $row->installment_interest_value, $row->installment_rounding_value, $row->installment_destination_wallet, $row->installment_source_wallet, $row->installment_payment_method, $row->installment_payment_date);
                     $installments[] = ($convertJson) ? $installment->entityToJson() : $installment;
                 }
             }
@@ -106,7 +106,7 @@ class Installment extends DataAccessObject
         $columns = [
             'installment.transaction', 
             'installment.installment_number', 
-            'installment.duo_date as installment_duo_date', 
+            'installment.due_date as installment_due_date', 
             'installment.gross_value as installment_gross_value', 
             'installment.discount_value as installment_discount_value', 
             'installment.interest_value as installment_interest_value', 

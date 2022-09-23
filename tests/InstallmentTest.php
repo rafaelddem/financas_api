@@ -19,7 +19,7 @@ class InstallmentTest extends TestCase
         $this->defaultData = [
             'transaction' => 1,
             'installment_number' => 1,
-            'duo_date' => '2022-05-13',
+            'due_date' => '2022-05-13',
             'gross_value' => '10.00',
             'discount_value' => '1.0',
             'interest_value' => '0.0',
@@ -33,7 +33,7 @@ class InstallmentTest extends TestCase
         $this->installment = new Installment(
             1, //transaction
             1, //installment_number
-            '2022-05-13', //duo_date
+            '2022-05-13', //due_date
             10.00, //gross_value
             1.0, //discount_value
             0.0, //interest_value
@@ -54,7 +54,7 @@ class InstallmentTest extends TestCase
                 'paymentDateEmpty' => [
                     'transaction' => 1,
                     'installment_number' => 1,
-                    'duo_date' => '2022-05-13',
+                    'due_date' => '2022-05-13',
                     'gross_value' => '10.00',
                     'gross_value_after_rounded' => '10.00',
                     'discount_value' => '0.0',
@@ -71,10 +71,10 @@ class InstallmentTest extends TestCase
                 ],
             ], 
             [
-                'duoDateEqualsPaymentDate' => [
+                'dueDateEqualsPaymentDate' => [
                     'transaction' => 1,
                     'installment_number' => 1,
-                    'duo_date' => '2022-05-13',
+                    'due_date' => '2022-05-13',
                     'gross_value' => '10.00',
                     'gross_value_after_rounded' => '10.00',
                     'discount_value' => '0.0',
@@ -91,10 +91,10 @@ class InstallmentTest extends TestCase
                 ],
             ], 
             [
-                'duoDateLowerThanPaymentDate' => [
+                'dueDateLowerThanPaymentDate' => [
                     'transaction' => 1,
                     'installment_number' => 1,
-                    'duo_date' => '2022-05-13',
+                    'due_date' => '2022-05-13',
                     'gross_value' => '10.00',
                     'gross_value_after_rounded' => '10.00',
                     'discount_value' => '0.0',
@@ -114,7 +114,7 @@ class InstallmentTest extends TestCase
                 'grossValueRoundedDown' => [
                     'transaction' => 1,
                     'installment_number' => 1,
-                    'duo_date' => '2022-05-13',
+                    'due_date' => '2022-05-13',
                     'gross_value' => '10.123456',
                     'gross_value_after_rounded' => '10.12',
                     'discount_value' => '0.0',
@@ -134,7 +134,7 @@ class InstallmentTest extends TestCase
                 'grossValueRoundedUp' => [
                     'transaction' => 1,
                     'installment_number' => 1,
-                    'duo_date' => '2022-05-13',
+                    'due_date' => '2022-05-13',
                     'gross_value' => '10.987654',
                     'gross_value_after_rounded' => '10.99',
                     'discount_value' => '0.0',
@@ -154,7 +154,7 @@ class InstallmentTest extends TestCase
                 'dataWithDiscount' => [
                     'transaction' => 1,
                     'installment_number' => 1,
-                    'duo_date' => '2022-05-13',
+                    'due_date' => '2022-05-13',
                     'gross_value' => '10.00',
                     'gross_value_after_rounded' => '10.00',
                     'discount_value' => '1.0',
@@ -174,7 +174,7 @@ class InstallmentTest extends TestCase
                 'dataWithDiscountRoundedDown' => [
                     'transaction' => 1,
                     'installment_number' => 1,
-                    'duo_date' => '2022-05-13',
+                    'due_date' => '2022-05-13',
                     'gross_value' => '10.00',
                     'gross_value_after_rounded' => '10.00',
                     'discount_value' => '1.123456',
@@ -194,7 +194,7 @@ class InstallmentTest extends TestCase
                 'dataWithDiscountRoundedUp' => [
                     'transaction' => 1,
                     'installment_number' => 1,
-                    'duo_date' => '2022-05-13',
+                    'due_date' => '2022-05-13',
                     'gross_value' => '10.00',
                     'gross_value_after_rounded' => '10.00',
                     'discount_value' => '1.987654',
@@ -214,7 +214,7 @@ class InstallmentTest extends TestCase
                 'dataWithInterest' => [
                     'transaction' => 1,
                     'installment_number' => 1,
-                    'duo_date' => '2022-05-13',
+                    'due_date' => '2022-05-13',
                     'gross_value' => '10.00',
                     'gross_value_after_rounded' => '10.00',
                     'discount_value' => '0.0',
@@ -234,7 +234,7 @@ class InstallmentTest extends TestCase
                 'dataWithInterestRoundedDown' => [
                     'transaction' => 1,
                     'installment_number' => 1,
-                    'duo_date' => '2022-05-13',
+                    'due_date' => '2022-05-13',
                     'gross_value' => '10.00',
                     'gross_value_after_rounded' => '10.00',
                     'discount_value' => '0.0',
@@ -254,7 +254,7 @@ class InstallmentTest extends TestCase
                 'dataWithInterestRoundedUp' => [
                     'transaction' => 1,
                     'installment_number' => 1,
-                    'duo_date' => '2022-05-13',
+                    'due_date' => '2022-05-13',
                     'gross_value' => '10.00',
                     'gross_value_after_rounded' => '10.00',
                     'discount_value' => '0.0',
@@ -274,7 +274,7 @@ class InstallmentTest extends TestCase
                 'dataWithRoundValue' => [
                     'transaction' => 1,
                     'installment_number' => 1,
-                    'duo_date' => '2022-05-13',
+                    'due_date' => '2022-05-13',
                     'gross_value' => '10.99',
                     'gross_value_after_rounded' => '10.99',
                     'discount_value' => '0.0',
@@ -294,7 +294,7 @@ class InstallmentTest extends TestCase
             //     'dataWithRoundValueRoundedDown' => [
             //         'transaction' => 1,
             //         'installment_number' => 1,
-            //         'duo_date' => '2022-05-13',
+            //         'due_date' => '2022-05-13',
             //         'gross_value' => '10.00',
             //         'gross_value_after_rounded' => '10.00',
             //         'discount_value' => '0.0',
@@ -314,7 +314,7 @@ class InstallmentTest extends TestCase
             //     'dataWithRoundValueRoundedUp' => [
             //         'transaction' => 1,
             //         'installment_number' => 1,
-            //         'duo_date' => '2022-05-13',
+            //         'due_date' => '2022-05-13',
             //         'gross_value' => '10.00',
             //         'gross_value_after_rounded' => '10.00',
             //         'discount_value' => '0.0',
@@ -334,7 +334,7 @@ class InstallmentTest extends TestCase
                 'dataWithRoundValue' => [
                     'transaction' => 0,
                     'installment_number' => 0,
-                    'duo_date' => '2020-05-01',
+                    'due_date' => '2020-05-01',
                     'gross_value' => '3.99',
                     'gross_value_after_rounded' => '3.99',
                     'discount_value' => '0.0',
@@ -354,7 +354,7 @@ class InstallmentTest extends TestCase
                 'sourceWalletEmpty' => [
                     'transaction' => 1,
                     'installment_number' => 1,
-                    'duo_date' => '2022-05-13',
+                    'due_date' => '2022-05-13',
                     'gross_value' => '10.00',
                     'gross_value_after_rounded' => '10.00',
                     'discount_value' => '0.0',
@@ -374,7 +374,7 @@ class InstallmentTest extends TestCase
                 'paymentMethodEmpty' => [
                     'transaction' => 1,
                     'installment_number' => 1,
-                    'duo_date' => '2022-05-13',
+                    'due_date' => '2022-05-13',
                     'gross_value' => '10.00',
                     'gross_value_after_rounded' => '10.00',
                     'discount_value' => '0.0',
@@ -394,7 +394,7 @@ class InstallmentTest extends TestCase
                 'paymentDateEmpty' => [
                     'transaction' => 1,
                     'installment_number' => 1,
-                    'duo_date' => '2022-05-13',
+                    'due_date' => '2022-05-13',
                     'gross_value' => '10.00',
                     'gross_value_after_rounded' => '10.00',
                     'discount_value' => '0.0',
@@ -433,10 +433,10 @@ class InstallmentTest extends TestCase
     public function testCreateInstallmentWithAcceptedValues(array $defaultData)
     {
         $data = $defaultData;
-        $installment = new Installment($data['transaction'], $data['installment_number'], $data['duo_date'], $data['gross_value'], $data['discount_value'], $data['interest_value'], $data['rounding_value'], $data['destination_wallet'], $data['source_wallet'], $data['payment_method'], $data['payment_date']);
+        $installment = new Installment($data['transaction'], $data['installment_number'], $data['due_date'], $data['gross_value'], $data['discount_value'], $data['interest_value'], $data['rounding_value'], $data['destination_wallet'], $data['source_wallet'], $data['payment_method'], $data['payment_date']);
         self::assertEquals($data['transaction'], $installment->getTransaction());
         self::assertEquals($data['installment_number'], $installment->getInstallmentNumber());
-        self::assertEquals($data['duo_date'], $installment->getDuoDate());
+        self::assertEquals($data['due_date'], $installment->getDueDate());
         self::assertEquals($data['payment_date'], $installment->getPaymentDate());
         self::assertEquals($data['gross_value_after_rounded'], $installment->getGrossValue());
         self::assertEquals($data['discount_value_after_rounded'], $installment->getDiscountValue());
@@ -464,35 +464,35 @@ class InstallmentTest extends TestCase
         self::assertEquals(9.00, $this->installment->getNetValue());
     }
 
-    public function testCreateInstallmentWithDuoDateEmpty()
+    public function testCreateInstallmentWithDueDateEmpty()
     {
         $this->expectException(Exception::class);
-        $this->expectExceptionMessage('The value for \'duo_date\' need to be informed');
+        $this->expectExceptionMessage('The value for \'due_date\' need to be informed');
 
         $data = $this->defaultData;
-        $data['duo_date'] = '';
-        $installment = new Installment($data['transaction'], $data['installment_number'], $data['duo_date'], $data['gross_value'], $data['discount_value'], $data['interest_value'], $data['rounding_value'], $data['destination_wallet'], $data['source_wallet'], $data['payment_method'], $data['payment_date']);
+        $data['due_date'] = '';
+        $installment = new Installment($data['transaction'], $data['installment_number'], $data['due_date'], $data['gross_value'], $data['discount_value'], $data['interest_value'], $data['rounding_value'], $data['destination_wallet'], $data['source_wallet'], $data['payment_method'], $data['payment_date']);
     }
 
     /**
      * @dataProvider dataForDateInvalid
      */
-    public function testCreateInstallmentWithDuoDateInvalid(string $date)
+    public function testCreateInstallmentWithDueDateInvalid(string $date)
     {
         $this->expectException(Exception::class);
-        $this->expectExceptionMessage('The value for \'duo_date\' are not accept, confirm value and format (\'yyyy-mm-dd\')');
+        $this->expectExceptionMessage('The value for \'due_date\' are not accept, confirm value and format (\'yyyy-mm-dd\')');
 
         $data = $this->defaultData;
-        $data['duo_date'] = $date;
+        $data['due_date'] = $date;
         $data['payment_date'] = '';
-        $installment = new Installment($data['transaction'], $data['installment_number'], $data['duo_date'], $data['gross_value'], $data['discount_value'], $data['interest_value'], $data['rounding_value'], $data['destination_wallet'], $data['source_wallet'], $data['payment_method'], $data['payment_date']);
+        $installment = new Installment($data['transaction'], $data['installment_number'], $data['due_date'], $data['gross_value'], $data['discount_value'], $data['interest_value'], $data['rounding_value'], $data['destination_wallet'], $data['source_wallet'], $data['payment_method'], $data['payment_date']);
     }
 
     public function testCreateInstallmentWithPaymentDateEmpty()
     {
         $data = $this->defaultData;
         $data['payment_date'] = $payment_date = '';
-        $installment = new Installment($data['transaction'], $data['installment_number'], $data['duo_date'], $data['gross_value'], $data['discount_value'], $data['interest_value'], $data['rounding_value'], $data['destination_wallet'], $data['source_wallet'], $data['payment_method'], $data['payment_date']);
+        $installment = new Installment($data['transaction'], $data['installment_number'], $data['due_date'], $data['gross_value'], $data['discount_value'], $data['interest_value'], $data['rounding_value'], $data['destination_wallet'], $data['source_wallet'], $data['payment_method'], $data['payment_date']);
         self::assertEquals($payment_date, $installment->getPaymentDate());
     }
 
@@ -506,17 +506,17 @@ class InstallmentTest extends TestCase
 
         $data = $this->defaultData;
         $data['payment_date'] = $date;
-        $installment = new Installment($data['transaction'], $data['installment_number'], $data['duo_date'], $data['gross_value'], $data['discount_value'], $data['interest_value'], $data['rounding_value'], $data['destination_wallet'], $data['source_wallet'], $data['payment_method'], $data['payment_date']);
+        $installment = new Installment($data['transaction'], $data['installment_number'], $data['due_date'], $data['gross_value'], $data['discount_value'], $data['interest_value'], $data['rounding_value'], $data['destination_wallet'], $data['source_wallet'], $data['payment_method'], $data['payment_date']);
     }
 
-    // public function testCreateInstallmentWithPaymentDateLowerThanDuoDate()
+    // public function testCreateInstallmentWithPaymentDateLowerThanDueDate()
     // {
     //     $this->expectException(Exception::class);
-    //     $this->expectExceptionMessage('The value for \'payment_date\' cannot be lower than \'duo_date\'');
+    //     $this->expectExceptionMessage('The value for \'payment_date\' cannot be lower than \'due_date\'');
 
     //     $data = $this->defaultData;
     //     $data['payment_date'] = '1000-01-01';
-    //     $installment = new Installment($data['transaction'], $data['installment_number'], $data['duo_date'], $data['gross_value'], $data['discount_value'], $data['interest_value'], $data['rounding_value'], $data['destination_wallet'], $data['source_wallet'], $data['payment_method'], $data['payment_date']);
+    //     $installment = new Installment($data['transaction'], $data['installment_number'], $data['due_date'], $data['gross_value'], $data['discount_value'], $data['interest_value'], $data['rounding_value'], $data['destination_wallet'], $data['source_wallet'], $data['payment_method'], $data['payment_date']);
     // }
 
     public function testCreateInstallmentWithGrossValueEmpty()
@@ -526,7 +526,7 @@ class InstallmentTest extends TestCase
 
         $data = $this->defaultData;
         $data['gross_value'] = 0.0;
-        $installment = new Installment($data['transaction'], $data['installment_number'], $data['duo_date'], $data['gross_value'], $data['discount_value'], $data['interest_value'], $data['rounding_value'], $data['destination_wallet'], $data['source_wallet'], $data['payment_method'], $data['payment_date']);
+        $installment = new Installment($data['transaction'], $data['installment_number'], $data['due_date'], $data['gross_value'], $data['discount_value'], $data['interest_value'], $data['rounding_value'], $data['destination_wallet'], $data['source_wallet'], $data['payment_method'], $data['payment_date']);
     }
 
     public function testCreateInstallmentWithGrossValueNegative()
@@ -536,7 +536,7 @@ class InstallmentTest extends TestCase
 
         $data = $this->defaultData;
         $data['gross_value'] = -10.0;
-        $installment = new Installment($data['transaction'], $data['installment_number'], $data['duo_date'], $data['gross_value'], $data['discount_value'], $data['interest_value'], $data['rounding_value'], $data['destination_wallet'], $data['source_wallet'], $data['payment_method'], $data['payment_date']);
+        $installment = new Installment($data['transaction'], $data['installment_number'], $data['due_date'], $data['gross_value'], $data['discount_value'], $data['interest_value'], $data['rounding_value'], $data['destination_wallet'], $data['source_wallet'], $data['payment_method'], $data['payment_date']);
     }
 
     public function testCreateInstallmentWithDiscountValueNegative()
@@ -546,7 +546,7 @@ class InstallmentTest extends TestCase
 
         $data = $this->defaultData;
         $data['discount_value'] = -10.0;
-        $installment = new Installment($data['transaction'], $data['installment_number'], $data['duo_date'], $data['gross_value'], $data['discount_value'], $data['interest_value'], $data['rounding_value'], $data['destination_wallet'], $data['source_wallet'], $data['payment_method'], $data['payment_date']);
+        $installment = new Installment($data['transaction'], $data['installment_number'], $data['due_date'], $data['gross_value'], $data['discount_value'], $data['interest_value'], $data['rounding_value'], $data['destination_wallet'], $data['source_wallet'], $data['payment_method'], $data['payment_date']);
     }
 
     public function testCreateInstallmentWithDiscountValueEqualGrossValue()
@@ -557,7 +557,7 @@ class InstallmentTest extends TestCase
         $data = $this->defaultData;
         $data['gross_value'] = 10.0;
         $data['discount_value'] = 10.0;
-        $installment = new Installment($data['transaction'], $data['installment_number'], $data['duo_date'], $data['gross_value'], $data['discount_value'], $data['interest_value'], $data['rounding_value'], $data['destination_wallet'], $data['source_wallet'], $data['payment_method'], $data['payment_date']);
+        $installment = new Installment($data['transaction'], $data['installment_number'], $data['due_date'], $data['gross_value'], $data['discount_value'], $data['interest_value'], $data['rounding_value'], $data['destination_wallet'], $data['source_wallet'], $data['payment_method'], $data['payment_date']);
     }
 
     public function testCreateInstallmentWithDiscountValueGreaterThanGrossValue()
@@ -568,7 +568,7 @@ class InstallmentTest extends TestCase
         $data = $this->defaultData;
         $data['gross_value'] = 10.0;
         $data['discount_value'] = 11.0;
-        $installment = new Installment($data['transaction'], $data['installment_number'], $data['duo_date'], $data['gross_value'], $data['discount_value'], $data['interest_value'], $data['rounding_value'], $data['destination_wallet'], $data['source_wallet'], $data['payment_method'], $data['payment_date']);
+        $installment = new Installment($data['transaction'], $data['installment_number'], $data['due_date'], $data['gross_value'], $data['discount_value'], $data['interest_value'], $data['rounding_value'], $data['destination_wallet'], $data['source_wallet'], $data['payment_method'], $data['payment_date']);
     }
 
     public function testCreateInstallmentWithInterestValueNegative()
@@ -578,7 +578,7 @@ class InstallmentTest extends TestCase
 
         $data = $this->defaultData;
         $data['interest_value'] = -1.0;
-        $installment = new Installment($data['transaction'], $data['installment_number'], $data['duo_date'], $data['gross_value'], $data['discount_value'], $data['interest_value'], $data['rounding_value'], $data['destination_wallet'], $data['source_wallet'], $data['payment_method'], $data['payment_date']);
+        $installment = new Installment($data['transaction'], $data['installment_number'], $data['due_date'], $data['gross_value'], $data['discount_value'], $data['interest_value'], $data['rounding_value'], $data['destination_wallet'], $data['source_wallet'], $data['payment_method'], $data['payment_date']);
     }
 
     public function testCreateInstallmentWithTotalValueSumNegative()
@@ -591,7 +591,7 @@ class InstallmentTest extends TestCase
         $data['discount_value'] = 5.0;
         $data['interest_value'] = 2.0;
         $data['rounding_value'] = -7.0;
-        $installment = new Installment($data['transaction'], $data['installment_number'], $data['duo_date'], $data['gross_value'], $data['discount_value'], $data['interest_value'], $data['rounding_value'], $data['destination_wallet'], $data['source_wallet'], $data['payment_method'], $data['payment_date']);
+        $installment = new Installment($data['transaction'], $data['installment_number'], $data['due_date'], $data['gross_value'], $data['discount_value'], $data['interest_value'], $data['rounding_value'], $data['destination_wallet'], $data['source_wallet'], $data['payment_method'], $data['payment_date']);
     }
 }
 

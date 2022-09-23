@@ -39,7 +39,7 @@ class Transaction
             $installment = array();
             $installment['transaction'] = isset($json_installment['transaction']) ? $json_installment['transaction'] : null;
             $installment['installment_number'] = isset($json_installment['installment_number']) ? $json_installment['installment_number'] : null;
-            $installment['duo_date'] = isset($json_installment['duo_date']) ? $json_installment['duo_date'] : null;
+            $installment['due_date'] = isset($json_installment['due_date']) ? $json_installment['due_date'] : null;
             $installment['gross_value'] = isset($json_installment['gross_value']) ? $json_installment['gross_value'] : null;
             $installment['discount_value'] = isset($json_installment['discount_value']) ? $json_installment['discount_value'] : null;
             $installment['interest_value'] = isset($json_installment['interest_value']) ? $json_installment['interest_value'] : null;
@@ -70,7 +70,7 @@ class Transaction
     {
         $installments = array();
         foreach ($this->installments as $installment) {
-            $installments[] = new Installment_entity(0, $installment['installment_number'], $installment['duo_date'], 
+            $installments[] = new Installment_entity(0, $installment['installment_number'], $installment['due_date'], 
                 $installment['gross_value'], $installment['discount_value'], $installment['interest_value'], $installment['rounding_value'], 
                 $installment['destination_wallet'], $installment['source_wallet'], $installment['payment_method'], $installment['payment_date']);
         }

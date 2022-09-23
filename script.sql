@@ -66,7 +66,7 @@ create table finance_api.transaction (
 create table finance_api.installment (
 	transaction int(6) not null, 
 	installment_number int(2) not null, 
-	duo_date date not null, 
+	due_date date not null, 
 	gross_value double(7,2) not null, 
 	discount_value double(7,2) not null, 
 	interest_value double(7,2) not null, 
@@ -108,7 +108,7 @@ BEGIN
 			left join installment i on i.transaction = t.id 
 			left join wallet w on w.id = i.source_wallet or w.id = i.destination_wallet
 	where 
-		w.owner_id = owner_id and i.duo_date between start_date and end_date
+		w.owner_id = owner_id and i.due_date between start_date and end_date
 	group by 
 		w.id 
 	order by 
@@ -129,8 +129,8 @@ BEGIN
 		CONCAT(
 			DATE_FORMAT(
 				CASE 
-					WHEN DATE_FORMAT(i.duo_date, '%d') >= @month_start_day THEN i.duo_date 
-					ELSE DATE_SUB(i.duo_date, INTERVAL 1 MONTH) 
+					WHEN DATE_FORMAT(i.due_date, '%d') >= @month_start_day THEN i.due_date 
+					ELSE DATE_SUB(i.due_date, INTERVAL 1 MONTH) 
 				END, '%Y-%m-'
 			), @month_start_day
 		) as start_at, 
@@ -146,7 +146,7 @@ BEGIN
 			left join installment i on i.transaction = t.id 
 			left join wallet w on w.id = i.source_wallet or w.id = i.destination_wallet
 	where 
-		w.owner_id = owner_id and i.duo_date between @start_date and @end_date
+		w.owner_id = owner_id and i.due_date between @start_date and @end_date
 	group by 
 		start_at, w.id 
 	order by 
@@ -160,7 +160,7 @@ CREATE PROCEDURE finance_api.sum_wallets_by_days (start_date date, end_date date
 BEGIN
 
 	select  
-		i.duo_date, w.id as wallet_id, w.name as wallet_name, 
+		i.due_date, w.id as wallet_id, w.name as wallet_name, 
 		sum(case when w.id = i.destination_wallet then (((i.gross_value + i.interest_value) - i.discount_value) + i.rounding_value) else 0 end) values_in, 
 		sum(case when w.id = i.source_wallet then (((i.gross_value + i.interest_value) - i.discount_value) + i.rounding_value) else 0 end) values_out, 
 		(
@@ -172,11 +172,11 @@ BEGIN
 			left join installment i on i.transaction = t.id 
 			left join wallet w on w.id = i.source_wallet or w.id = i.destination_wallet
 	where 
-		w.owner_id = owner_id and i.duo_date between start_date and end_date
+		w.owner_id = owner_id and i.due_date between start_date and end_date
 	group by 
-		i.duo_date, w.id 
+		i.due_date, w.id 
 	order by 
-		i.duo_date, w.id;
+		i.due_date, w.id;
 
 END;
 
@@ -213,19 +213,19 @@ DELIMITER ;
 -- insert into finance_api.transaction (tittle, transaction_date, transaction_type, gross_value, discount_value, relevance, description) values 
 -- ('Compra', '2022-05-01', 2, 12.50, 0.00, 2, 'Teste de compra');
 
--- insert into  finance_api.installment (transaction, installment_number, duo_date, gross_value, discount_value, interest_value, rounding_value, destination_wallet, source_wallet, payment_method, payment_date) values 
+-- insert into  finance_api.installment (transaction, installment_number, due_date, gross_value, discount_value, interest_value, rounding_value, destination_wallet, source_wallet, payment_method, payment_date) values 
 -- (1, 1, '2022-06-01', 12.50, 0.00, 0.00, 0.00, 1,  5, 1, '2022-06-01');
 
 -- insert into finance_api.transaction (tittle, transaction_date, transaction_type, gross_value, discount_value, relevance, description) values 
 -- ('Venda', '2022-05-01', 1, 12.50, 0.00, 0, 'Teste de venda');
 
--- insert into  finance_api.installment (transaction, installment_number, duo_date, gross_value, discount_value, interest_value, rounding_value, destination_wallet, source_wallet, payment_method, payment_date) values 
+-- insert into  finance_api.installment (transaction, installment_number, due_date, gross_value, discount_value, interest_value, rounding_value, destination_wallet, source_wallet, payment_method, payment_date) values 
 -- (2, 1, '2022-06-01', 12.50, 0.00, 0.00, 0.00, 5,  1, 1, '2022-06-01');
 
 -- insert into finance_api.transaction (tittle, transaction_date, transaction_type, gross_value, discount_value, relevance, description) values 
 -- ('Compra', '2022-07-01', 1, 20.00, 0.00, 0, 'Teste de compra');
 
--- insert into  finance_api.installment (transaction, installment_number, duo_date, gross_value, discount_value, interest_value, rounding_value, destination_wallet, source_wallet, payment_method, payment_date) values 
+-- insert into  finance_api.installment (transaction, installment_number, due_date, gross_value, discount_value, interest_value, rounding_value, destination_wallet, source_wallet, payment_method, payment_date) values 
 -- (3, 1, '2022-08-01', 10.00, 0.00, 0.00, 0.00, 1,  5, 1, '2022-08-01');
--- insert into  finance_api.installment (transaction, installment_number, duo_date, gross_value, discount_value, interest_value, rounding_value, destination_wallet) values 
+-- insert into  finance_api.installment (transaction, installment_number, due_date, gross_value, discount_value, interest_value, rounding_value, destination_wallet) values 
 -- (3, 2, '2022-09-01', 10.00, 0.00, 0.00, 0.00, 1);

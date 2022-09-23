@@ -12,7 +12,7 @@ class Installment
 {
     private int $transaction;
     private int $installment_number;
-    private DateTime $duo_date;
+    private DateTime $due_date;
     private float $gross_value = 0.0;
     private float $discount_value = 0.0;
     private float $interest_value = 0.0;
@@ -23,14 +23,14 @@ class Installment
     private int|null $payment_method;
     private DateTime $payment_date;
 
-    public function __construct(int $transaction, int $installment_number, string $duo_date, 
+    public function __construct(int $transaction, int $installment_number, string $due_date, 
         float $gross_value, float $discount_value, float $interest_value, float $rounding_value, 
         int $destination_wallet, int $source_wallet = null, int $payment_method = null, string $payment_date = null
     )
     {
         self::setTransaction($transaction);
         self::setInstallmentNumber($installment_number);
-        self::setDuoDate($duo_date);
+        self::setDueDate($due_date);
         self::setGrossValue($gross_value);
         self::setDiscountValue($discount_value);
         self::setInterestValue($interest_value);
@@ -64,22 +64,22 @@ class Installment
         return $this->installment_number;
     }
 
-    private function setDuoDate(string $duo_date)
+    private function setDueDate(string $due_date)
     {
-        if ($duo_date == '') 
-            throw new EmptyValueException('The value for \'duo_date\' need to be informed', 1201006001);
+        if ($due_date == '') 
+            throw new EmptyValueException('The value for \'due_date\' need to be informed', 1201006001);
 
         try {
-            $this->duo_date = new DateTime($duo_date);
+            $this->due_date = new DateTime($due_date);
             // self::calculateNetValue();
         } catch (\Exception $ex) {
-            throw new DateCreateException('The value for \'duo_date\' are not accept, confirm value and format (\'yyyy-mm-dd\')', 1201006002);
+            throw new DateCreateException('The value for \'due_date\' are not accept, confirm value and format (\'yyyy-mm-dd\')', 1201006002);
         }
     }
     
-    public function getDuoDate() : string
+    public function getDueDate() : string
     {
-        return $this->duo_date->format('Y-m-d');
+        return $this->due_date->format('Y-m-d');
     }
 
     private function setGrossValue(float $gross_value)
@@ -200,8 +200,8 @@ class Installment
             throw new DateCreateException('The value for \'payment_date\' are not accept, confirm value and format (\'yyyy-mm-dd\')', 1201006003);
         }
 
-        // if ($this->duo_date > $this->payment_date) 
-        //     throw new DateCreateException('The value for \'payment_date\' cannot be lower than \'duo_date\'', 1201006004);
+        // if ($this->due_date > $this->payment_date) 
+        //     throw new DateCreateException('The value for \'payment_date\' cannot be lower than \'due_date\'', 1201006004);
     }
 
     public function getPaymentDate() : string
@@ -217,7 +217,7 @@ class Installment
         $json = [
             'transaction' => $this->getTransaction(), 
             'installment_number' => $this->getInstallmentNumber(), 
-            'duo_date' => $this->getDuoDate(), 
+            'due_date' => $this->getDueDate(), 
             'gross_value' => $this->getGrossValue(), 
             'discount_value' => $this->getDiscountValue(), 
             'interest_value' => $this->getInterestValue(), 

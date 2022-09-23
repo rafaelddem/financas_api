@@ -49,15 +49,15 @@ class Transaction extends DataAccessObject
             $transaction_id = self::getLastId('transaction');
 
             $sql  = "insert into installment ";
-            $sql .= "(transaction, installment_number, duo_date, gross_value, discount_value, interest_value, rounding_value, destination_wallet, source_wallet, payment_method, payment_date) ";
+            $sql .= "(transaction, installment_number, due_date, gross_value, discount_value, interest_value, rounding_value, destination_wallet, source_wallet, payment_method, payment_date) ";
             $sql .= "values ";
-            $sql .= "(:transaction, :installment_number, :duo_date, :gross_value, :discount_value, :interest_value, :rounding_value, :destination_wallet, :source_wallet, :payment_method, :payment_date);";
+            $sql .= "(:transaction, :installment_number, :due_date, :gross_value, :discount_value, :interest_value, :rounding_value, :destination_wallet, :source_wallet, :payment_method, :payment_date);";
             $stmt = self::getPDO()->prepare($sql);
             
             foreach ($transaction->getInstallments() as $installment) {
                 $transaction = $transaction_id;
                 $installment_number = $installment->getInstallmentNumber();
-                $duo_date = $installment->getDuoDate();
+                $due_date = $installment->getDueDate();
                 $gross_value = $installment->getGrossValue();
                 $discount_value = $installment->getDiscountValue();
                 $interest_value = $installment->getInterestValue();
@@ -69,7 +69,7 @@ class Transaction extends DataAccessObject
 
                 $stmt->bindParam(':transaction', $transaction, PDO::PARAM_INT);
                 $stmt->bindParam(':installment_number', $installment_number, PDO::PARAM_INT);
-                $stmt->bindParam(':duo_date', $duo_date, PDO::PARAM_STR);
+                $stmt->bindParam(':due_date', $due_date, PDO::PARAM_STR);
                 $stmt->bindParam(':gross_value', $gross_value, PDO::PARAM_STR);
                 $stmt->bindParam(':discount_value', $discount_value, PDO::PARAM_STR);
                 $stmt->bindParam(':interest_value', $interest_value, PDO::PARAM_STR);
@@ -239,7 +239,7 @@ class Transaction extends DataAccessObject
                     $transaction['relevance'] = $row->relevance;
                     $transaction['description'] = $row->description;
 
-                    $installments[] = new Installment_entity($row->transaction, $row->installment_number, $row->installment_duo_date, $row->installment_gross_value, $row->installment_discount_value, $row->installment_interest_value, $row->installment_rounding_value, $row->installment_destination_wallet, $row->installment_source_wallet, $row->installment_payment_method, $row->installment_payment_date);
+                    $installments[] = new Installment_entity($row->transaction, $row->installment_number, $row->installment_due_date, $row->installment_gross_value, $row->installment_discount_value, $row->installment_interest_value, $row->installment_rounding_value, $row->installment_destination_wallet, $row->installment_source_wallet, $row->installment_payment_method, $row->installment_payment_date);
                 }
 
                 if ($stmt->rowCount() != 0) {
@@ -277,7 +277,7 @@ class Transaction extends DataAccessObject
         $columns = [
             'installment.transaction', 
             'installment.installment_number', 
-            'installment.duo_date as installment_duo_date', 
+            'installment.due_date as installment_due_date', 
             'installment.gross_value as installment_gross_value', 
             'installment.discount_value as installment_discount_value', 
             'installment.interest_value as installment_interest_value', 

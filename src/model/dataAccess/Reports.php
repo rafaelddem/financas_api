@@ -78,7 +78,7 @@ class Reports extends DataAccessObject
             $result = array();
             if ($stmt->execute()) {
                 while($row = $stmt->fetch(PDO::FETCH_OBJ)) {
-                    $result[$row->duo_date][$row->wallet_id] = ['in' => $row->values_in, 'out' => $row->values_out, 'total' => $row->values_total];
+                    $result[$row->due_date][$row->wallet_id] = ['in' => $row->values_in, 'out' => $row->values_out, 'total' => $row->values_total];
                 }
             }
 
