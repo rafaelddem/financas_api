@@ -45,7 +45,7 @@ class Reports extends DataAccessObject
             $stmt = self::getPDO()->prepare($sql);
             $start_date = $start_date->format('Y-m-d');
             $end_date = $end_date->format('Y-m-d');
-            $start_day = Parameters::$FIRST_DAY_OF_MONTH;
+            $start_day = Parameters::FIRST_DAY_OF_MONTH;
             $stmt->bindParam(':start_date', $start_date, PDO::PARAM_STR);
             $stmt->bindParam(':end_date', $end_date, PDO::PARAM_STR);
             $stmt->bindParam(':start_day', $start_day, PDO::PARAM_INT);

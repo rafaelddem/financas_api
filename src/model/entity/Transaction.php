@@ -99,12 +99,12 @@ class Transaction
         if (empty($gross_value) || $gross_value <= 0.0) 
             throw new ValueNotAcceptException('The value for \'gross_value\' need to be positive', 1201005005);
 
-        $this->gross_value = round($gross_value, Parameters::$DECIMAL_PRECISION);
+        $this->gross_value = round($gross_value, Parameters::DECIMAL_PRECISION);
     }
 
     public function getGrossValue() : float
     {
-        return round($this->gross_value, Parameters::$DECIMAL_PRECISION);
+        return round($this->gross_value, Parameters::DECIMAL_PRECISION);
     }
 
     private function setDiscountValue(float $discount_value)
@@ -115,13 +115,13 @@ class Transaction
         if ($discount_value >= $this->gross_value) 
             throw new ValueNotAcceptException('The value for \'discount_value\' need to be lower than \'gross_value\'', 1201005007);
 
-        $this->discount_value = round($discount_value, Parameters::$DECIMAL_PRECISION);
+        $this->discount_value = round($discount_value, Parameters::DECIMAL_PRECISION);
     }
 
     public function getDiscountValue() : float
     {
         $discount = $this->discount_value + $this->installments_discount_value;
-        return round($discount, Parameters::$DECIMAL_PRECISION);
+        return round($discount, Parameters::DECIMAL_PRECISION);
     }
 
     private function setInstallments(array $installments)
@@ -159,22 +159,22 @@ class Transaction
 
     private function getInstallmentsGrossValue() : float
     {
-        return round($this->installments_gross_value, Parameters::$DECIMAL_PRECISION);
+        return round($this->installments_gross_value, Parameters::DECIMAL_PRECISION);
     }
 
     public function getInterestValue() : float
     {
-        return round($this->installments_interest_value, Parameters::$DECIMAL_PRECISION);
+        return round($this->installments_interest_value, Parameters::DECIMAL_PRECISION);
     }
 
     public function getRoundingValue() : float
     {
-        return round($this->installments_rounding_value, Parameters::$DECIMAL_PRECISION);
+        return round($this->installments_rounding_value, Parameters::DECIMAL_PRECISION);
     }
 
     public function getNetValue() : float
     {
-        return round($this->net_value, Parameters::$DECIMAL_PRECISION);
+        return round($this->net_value, Parameters::DECIMAL_PRECISION);
     }
 
     private function calculateValues()

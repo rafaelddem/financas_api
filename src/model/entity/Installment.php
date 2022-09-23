@@ -87,7 +87,7 @@ class Installment
         if (empty($gross_value) || $gross_value <= 0.0) 
             throw new ValueNotAcceptException('The value for \'gross_value\' need to be positive', 1201006005);
 
-        $this->gross_value = round($gross_value, Parameters::$DECIMAL_PRECISION);
+        $this->gross_value = round($gross_value, Parameters::DECIMAL_PRECISION);
         // self::calculateNetValue();
     }
 
@@ -104,7 +104,7 @@ class Installment
         if ($discount_value >= $this->gross_value) 
             throw new ValueNotAcceptException('The value for \'discount_value\' need to be lower than \'gross_value\'', 1201006007);
 
-        $this->discount_value = round($discount_value, Parameters::$DECIMAL_PRECISION);
+        $this->discount_value = round($discount_value, Parameters::DECIMAL_PRECISION);
         self::calculateNetValue();
     }
 
@@ -118,7 +118,7 @@ class Installment
         if ($interest_value < 0.0) 
             throw new ValueNotAcceptException('The value for \'interest_value\' need to be positive', 1201006010);
 
-        $this->interest_value = round($interest_value, Parameters::$DECIMAL_PRECISION);
+        $this->interest_value = round($interest_value, Parameters::DECIMAL_PRECISION);
         self::calculateNetValue();
     }
 
@@ -129,7 +129,7 @@ class Installment
 
     public function setRoundingValue(float $rounding_value)
     {
-        $this->rounding_value = round($rounding_value, Parameters::$DECIMAL_PRECISION);
+        $this->rounding_value = round($rounding_value, Parameters::DECIMAL_PRECISION);
         self::calculateNetValue();
     }
 
@@ -150,7 +150,7 @@ class Installment
 
     public function getNetValue() : float
     {
-        return round($this->net_value, Parameters::$DECIMAL_PRECISION);
+        return round($this->net_value, Parameters::DECIMAL_PRECISION);
     }
 
     private function setDestinationWallet(int $destination_wallet)
