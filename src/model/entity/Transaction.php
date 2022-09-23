@@ -54,7 +54,7 @@ class Transaction
 
     public function setTittle(string $tittle)
     {
-        if(strlen($tittle) < 2 or strlen($tittle) > 50)
+        if(strlen($tittle) < 2 OR strlen($tittle) > 50)
             throw new ValueNotAcceptException('The \'tittle\' attribute need to be between 2 and 50 characters', 1201005001);
         else if (preg_match('/[!@#$%&*{}$?<>:;|\/]/', $tittle))
             throw new ValueNotAcceptException('The \'tittle\' attribute only accepts letters and numbers', 1201005002);
@@ -96,7 +96,7 @@ class Transaction
 
     private function setGrossValue(float $gross_value)
     {
-        if (empty($gross_value) || $gross_value <= 0.0) 
+        if (empty($gross_value) OR $gross_value <= 0.0) 
             throw new ValueNotAcceptException('The value for \'gross_value\' need to be positive', 1201005005);
 
         $this->gross_value = round($gross_value, Parameters::DECIMAL_PRECISION);

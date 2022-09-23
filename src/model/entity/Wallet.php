@@ -33,7 +33,7 @@ class Wallet
 
     private function setName(string $name)
     {
-        if(strlen($name) < 3 or strlen($name) > 30)
+        if(strlen($name) < 3 OR strlen($name) > 30)
             throw new ValueNotAcceptException('The \'name\' attribute need to be between 3 and 30 characters', 1201002001);
         else if (preg_match('/[!@#$%&*{}$?<>:;|\/]/', $name))
             throw new ValueNotAcceptException('The \'name\' attribute only accepts letters and numbers', 1201002001);

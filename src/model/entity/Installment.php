@@ -84,7 +84,7 @@ class Installment
 
     private function setGrossValue(float $gross_value)
     {
-        if (empty($gross_value) || $gross_value <= 0.0) 
+        if (empty($gross_value) OR $gross_value <= 0.0) 
             throw new ValueNotAcceptException('The value for \'gross_value\' need to be positive', 1201006005);
 
         $this->gross_value = round($gross_value, Parameters::DECIMAL_PRECISION);

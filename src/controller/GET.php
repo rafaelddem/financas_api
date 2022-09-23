@@ -30,7 +30,7 @@ class GET extends BaseMethod
 
             $parameter_array = explode('=', $parameter);
 
-            if (count($parameter_array) != 2 || $parameter_array[0] == '' || $parameter_array[1] == '') 
+            if (count($parameter_array) != 2 OR $parameter_array[0] == '' OR $parameter_array[1] == '') 
                 throw new Exception();
 
             $this->url_parameters_array[$parameter_array[0]] = $parameter_array[1];
