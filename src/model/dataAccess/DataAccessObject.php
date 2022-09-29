@@ -18,8 +18,6 @@ class DataAccessObject
     {
         return $this->pdo;
     }
-
-    // protected function
         
 }
     

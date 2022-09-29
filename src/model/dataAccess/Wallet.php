@@ -2,7 +2,9 @@
 
 namespace financas_api\model\dataAccess;
 
+use financas_api\conf\Parameters;
 use financas_api\exceptions\DataNotExistException;
+use financas_api\exceptions\GenerationExceptionCode;
 use financas_api\exceptions\IntegrityException;
 use financas_api\exceptions\UncatalogedException;
 use financas_api\model\entity\Wallet as Wallet_entity;
@@ -10,9 +12,12 @@ use \PDO;
 
 class Wallet extends DataAccessObject
 {
+    private $codeErrorGenerator;
+
     public function __construct()
     {
         parent::__construct();
+        $this->codeErrorGenerator = new GenerationExceptionCode(Parameters::EXCEPTIONCODE_LEVEL_MODEL, Parameters::EXCEPTIONCODE_SUBLEVEL_DATAACCESS, Parameters::EXCEPTIONCODE_CLASS_WALLET);
     }
 
     public function insert(Wallet_entity $wallet)
@@ -34,16 +39,16 @@ class Wallet extends DataAccessObject
             $stmt->bindParam(':description', $description, PDO::PARAM_STR);
 
             if (!$stmt->execute()) 
-                throw new UncatalogedException('Could not execute request. Please inform support', 1202002001);
+                throw new UncatalogedException('Could not execute request. Please inform support', $this->codeErrorGenerator->generate(1));
 
             self::getPDO()->commit();
             return '\'Wallet\' successfully created';
         } catch (\PDOException $pdoe) {
             self::getPDO()->rollback();
-            throw new IntegrityException($pdoe, 1202002012);
+            throw new IntegrityException($pdoe, $this->codeErrorGenerator->generate(2));
         } catch (\Throwable $th) {
             self::getPDO()->rollback();
-            throw new UncatalogedException('An error occurred while creating an \'wallet\'. Please inform support', 1202002002);
+            throw new UncatalogedException('An error occurred while creating an \'wallet\'. Please inform support', $this->codeErrorGenerator->generate(3));
         }
     }
 

@@ -2,15 +2,19 @@
 
 namespace financas_api\model\businessObject;
 
+use financas_api\conf\Parameters;
 use financas_api\controller\Response;
 use financas_api\exceptions\DataNotExistException;
 use financas_api\exceptions\EmptyValueException;
+use financas_api\exceptions\GenerationExceptionCode;
 use financas_api\exceptions\ValueNotAcceptException;
 use financas_api\model\dataAccess\Wallet as Wallet_dataAccess;
 use financas_api\model\entity\Wallet as Wallet_entity;
 
 class Wallet
 {
+    private $codeErrorGenerator;
+
     private $id;
     private $name;
     private $owner_id;
@@ -20,6 +24,8 @@ class Wallet
 
     public function __construct(array $parameters = null)
     {
+        $this->codeErrorGenerator = new GenerationExceptionCode(Parameters::EXCEPTIONCODE_LEVEL_MODEL, Parameters::EXCEPTIONCODE_SUBLEVEL_BUSINESSOBJECT, Parameters::EXCEPTIONCODE_CLASS_WALLET);
+
         $this->id = isset($parameters['id']) ? $parameters['id'] : null;
         $this->name = isset($parameters['name']) ? $parameters['name'] : null;
         $this->owner_id = isset($parameters['owner_id']) ? $parameters['owner_id'] : null;
@@ -65,7 +71,7 @@ class Wallet
             }
 
             if (!$hasUpdate) 
-                throw new ValueNotAcceptException('Parameters must be informed for the update', 1203002001);
+                throw new ValueNotAcceptException('Parameters must be informed for the update', $this->codeErrorGenerator->generate(1));
 
             $dao = new Wallet_dataAccess();
             Response::send(['response' => $dao->update($wallet)], true, 200);
