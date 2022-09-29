@@ -21,6 +21,7 @@ create table finance_api.wallet (
 	owner_id int(3) not null, 
 	main_wallet char(1) not null, 
 	active char(1) not null, 
+	description varchar(255) default null, 
 	primary key (id), 
 	constraint fk_wallet_owner foreign key (owner_id) references owner (id) 
 );

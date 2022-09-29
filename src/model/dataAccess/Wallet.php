@@ -21,15 +21,17 @@ class Wallet extends DataAccessObject
             self::getPDO()->beginTransaction();
 
         try {
-            $stmt = self::getPDO()->prepare("insert into wallet (name, owner_id, main_wallet, active) values (:name, :owner_id, :main_wallet, :active)");
+            $stmt = self::getPDO()->prepare("insert into wallet (name, owner_id, main_wallet, active, description) values (:name, :owner_id, :main_wallet, :active, :description)");
             $name = $wallet->getName();
             $owner_id = $wallet->getOwnerId();
             $main_wallet = $wallet->getMainWallet();
             $active = $wallet->getActive();
+            $description = empty($wallet->getDescription()) ? null : $wallet->getDescription();
             $stmt->bindParam(':name', $name, PDO::PARAM_STR);
             $stmt->bindParam(':owner_id', $owner_id, PDO::PARAM_INT);
             $stmt->bindParam(':main_wallet', $main_wallet, PDO::PARAM_BOOL);
             $stmt->bindParam(':active', $active, PDO::PARAM_BOOL);
+            $stmt->bindParam(':description', $description, PDO::PARAM_STR);
 
             if (!$stmt->execute()) 
                 throw new UncatalogedException('Could not execute request. Please inform support', 1202002001);
@@ -51,13 +53,15 @@ class Wallet extends DataAccessObject
             self::getPDO()->beginTransaction();
 
         try {
-            $stmt = self::getPDO()->prepare("update wallet set active = :active, main_wallet = :main_wallet where id = :id");
+            $stmt = self::getPDO()->prepare("update wallet set active = :active, main_wallet = :main_wallet, description = :description where id = :id");
             $active = $wallet->getActive();
             $main_wallet = $wallet->getMainWallet();
             $id = $wallet->getId();
+            $description = $wallet->getDescription();
             $stmt->bindParam(':active', $active, PDO::PARAM_BOOL);
             $stmt->bindParam(':main_wallet', $main_wallet, PDO::PARAM_BOOL);
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            $stmt->bindParam(':description', $description, PDO::PARAM_STR);
 
             if (!$stmt->execute()) 
                 throw new UncatalogedException('Could not execute request. Please inform support', 1202002003);
@@ -154,7 +158,8 @@ class Wallet extends DataAccessObject
             $wallets = array();
             if ($stmt->execute()) {
                 while($row = $stmt->fetch(PDO::FETCH_OBJ)) {
-                    $wallet = new Wallet_entity($row->id, $row->name, $row->owner_id, boolval($row->main_wallet), boolval($row->active));
+                    $description = isset($row->description) ? $row->description : '';
+                    $wallet = new Wallet_entity($row->id, $row->name, $row->owner_id, boolval($row->main_wallet), boolval($row->active), $description);
                     $wallets[] = $convertJson ? $wallet->entityToJson() : $wallet;
                 }
             }

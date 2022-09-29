@@ -16,6 +16,7 @@ class Wallet
     private $owner_id;
     private $main_wallet;
     private $active;
+	private $description;
 
     public function __construct(array $parameters = null)
     {
@@ -24,12 +25,14 @@ class Wallet
         $this->owner_id = isset($parameters['owner_id']) ? $parameters['owner_id'] : null;
         $this->main_wallet = isset($parameters['main_wallet']) ? ($parameters['main_wallet'] == 'true' OR $parameters['main_wallet'] == 1) : null;
         $this->active = isset($parameters['active']) ? ($parameters['active'] == 'true' OR $parameters['active'] == 1) : null;
+        $this->description = isset($parameters['description']) ? $parameters['description'] : null;
     }
 
     public function create()
     {
         try {
-            $wallet = new Wallet_entity(0, $this->name, $this->owner_id, $this->main_wallet, $this->active);
+            $description = isset($this->description) ? $this->description : '';
+            $wallet = new Wallet_entity(0, $this->name, $this->owner_id, $this->main_wallet, $this->active, $description);
             $dao = new Wallet_dataAccess();
 
             Response::send(['response' => $dao->insert($wallet)], true, 200);
@@ -54,6 +57,10 @@ class Wallet
             }
             if (isset($this->active)) {
                 $wallet->setActive($this->active);
+                $hasUpdate = true;
+            }
+            if (isset($this->description)) {
+                $wallet->setDescription($this->description);
                 $hasUpdate = true;
             }
 
@@ -111,6 +118,7 @@ class Wallet
                 'owner_id' => $this->owner_id, 
                 'main_wallet' => $this->main_wallet, 
                 'active' => $this->active, 
+                'description' => $this->description, 
             ]);
 
             Response::send(['response' => $wallets], true, 200);

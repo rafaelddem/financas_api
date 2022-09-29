@@ -11,14 +11,16 @@ class Wallet
     private int $owner_id;
     private bool $main_wallet;
     private bool $active;
+	private string $description;
 
-    public function __construct(int $id, string $name, int $owner_id, bool $main_wallet, bool $active)
+    public function __construct(int $id, string $name, int $owner_id, bool $main_wallet, bool $active, string $description = '')
     {
         self::setId($id);
         self::setName($name);
         self::setOwnerId($owner_id);
         self::setMainWallet($main_wallet);
         self::setActive($active);
+        self::setDescription($description);
     }
 
     private function setId(int $id)
@@ -36,7 +38,7 @@ class Wallet
         if(strlen($name) < 3 OR strlen($name) > 30)
             throw new ValueNotAcceptException('The \'name\' attribute need to be between 3 and 30 characters', 1201002001);
         else if (preg_match('/[!@#$%&*{}$?<>:;|\/]/', $name))
-            throw new ValueNotAcceptException('The \'name\' attribute only accepts letters and numbers', 1201002001);
+            throw new ValueNotAcceptException('The \'name\' attribute only accepts letters and numbers', 1201002002);
         
         $this->name = $name;
     }
@@ -76,6 +78,21 @@ class Wallet
         return $this->active;
     }
 
+    public function setDescription(string $description)
+    {
+        if(strlen($description) > 255)
+            throw new ValueNotAcceptException('The \'description\' attribute must be a maximum of 255 characters', 1201002003);
+        else if (preg_match('/[!@#$%&*{}$?<>:;|\/]/', $description))
+            throw new ValueNotAcceptException('The \'description\' attribute only accepts letters and numbers', 1201002004);
+
+        $this->description = $description;
+    }
+
+    public function getDescription() : string
+    {
+        return $this->description;
+    }
+
     public function entityToJson()
     {
         return [
@@ -83,6 +100,7 @@ class Wallet
             'name' => $this->getName(), 
             'owner_id' => $this->getOwnerId(), 
             'main_wallet' => $this->getMainWallet(), 
+            'description' => $this->getDescription(), 
             'active' => $this->getActive(), 
         ];
     }
