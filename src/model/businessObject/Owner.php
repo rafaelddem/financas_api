@@ -30,7 +30,7 @@ class Owner
 
             Response::send(['response' => $dao->insert($owner)], true, 200);
         } catch (\Exception $ex) {
-            Response::send(['code' => $ex->getCode(), 'message' => $ex->getMessage()], true, 404);
+            Response::send(['message' => $ex->getMessage(), 'code' => $ex->getCode()], true, 404);
         } catch (\TypeError $te) {
             Response::send(['message' => 'data provided not accepted, please, see the api manual'], true, 406);
         } catch (\Throwable $th) {
@@ -53,9 +53,9 @@ class Owner
                 throw new ValueNotAcceptException('Parameters must be informed for the update', 1203001001);
 
             $dao = new Owner_dataAccess();
-            Response::send(['message' => $dao->update($owner)], true, 200);
+            Response::send(['response' => $dao->update($owner)], true, 200);
         } catch (\Exception $ex) {
-            Response::send(['code' => $ex->getCode(), 'message' => $ex->getMessage()], true, 404);
+            Response::send(['message' => $ex->getMessage(), 'code' => $ex->getCode()], true, 404);
         } catch (\TypeError $te) {
             Response::send(['message' => 'data provided not accepted, please, see the api manual'], true, 406);
         } catch (\Throwable $th) {
@@ -67,9 +67,9 @@ class Owner
     {
         try {
             $dao = new Owner_dataAccess();
-            Response::send(['message' => $dao->delete($this->id)], true, 200);
+            Response::send(['response' => $dao->delete($this->id)], true, 200);
         } catch (\Exception $ex) {
-            Response::send(['code' => $ex->getCode(), 'message' => $ex->getMessage()], true, 404);
+            Response::send(['message' => $ex->getMessage(), 'code' => $ex->getCode()], true, 404);
         } catch (\TypeError $te) {
             Response::send(['message' => 'data provided not accepted, please, see the api manual'], true, 406);
         } catch (\Throwable $th) {
@@ -105,7 +105,7 @@ class Owner
 
             Response::send(['response' => $owners], true, 200);
         } catch (\Exception $ex) {
-            Response::send(['code' => $ex->getCode(), 'message' => $ex->getMessage()], true, 404);
+            Response::send(['message' => $ex->getMessage(), 'code' => $ex->getCode()], true, 404);
         } catch (\TypeError $te) {
             Response::send(['message' => 'data provided not accepted, please, see the api manual'], true, 406);
         } catch (\Throwable $th) {

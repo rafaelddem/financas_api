@@ -56,9 +56,9 @@ class Transaction
     {
         try {
             $resultMessage = self::createEntity();
-            Response::send(['message' => $resultMessage], true, 200);
+            Response::send(['response' => $resultMessage], true, 200);
         } catch (\Exception $ex) {
-            Response::send(['code' => $ex->getCode(), 'message' => $ex->getMessage()], true, 404);
+            Response::send(['message' => $ex->getMessage(), 'code' => $ex->getCode()], true, 404);
         } catch (\TypeError $te) {
             Response::send(['message' => 'data provided not accepted, please, see the api manual'], true, 406);
         } catch (\Throwable $th) {
@@ -97,9 +97,9 @@ class Transaction
             $resultMessage = self::deleteEntity();
 
             $dao = new Transaction_dataAccess();
-            Response::send(['message' => '\'Transaction\' successfully updated'], true, 200);
+            Response::send(['response' => '\'Transaction\' successfully updated'], true, 200);
         } catch (\Exception $ex) {
-            Response::send(['code' => $ex->getCode(), 'message' => $ex->getMessage()], true, 404);
+            Response::send(['message' => $ex->getMessage(), 'code' => $ex->getCode()], true, 404);
         } catch (\TypeError $te) {
             Response::send(['message' => 'data provided not accepted, please, see the api manual'], true, 406);
         } catch (\Throwable $th) {
@@ -134,9 +134,9 @@ class Transaction
                 throw new ValueNotAcceptException('Parameters must be informed for the update', 1203005001);
 
             $dao = new Transaction_dataAccess();
-            Response::send(['message' => $dao->update($transaction)], true, 200);
+            Response::send(['response' => $dao->update($transaction)], true, 200);
         } catch (\Exception $ex) {
-            Response::send(['code' => $ex->getCode(), 'message' => $ex->getMessage()], true, 404);
+            Response::send(['message' => $ex->getMessage(), 'code' => $ex->getCode()], true, 404);
         } catch (\TypeError $te) {
             Response::send(['message' => 'data provided not accepted, please, see the api manual'], true, 406);
         } catch (\Throwable $th) {
@@ -148,9 +148,9 @@ class Transaction
     {
         try {
             $resultMessage = self::deleteEntity();
-            Response::send(['message' => $resultMessage], true, 200);
+            Response::send(['response' => $resultMessage], true, 200);
         } catch (\Exception $ex) {
-            Response::send(['code' => $ex->getCode(), 'message' => $ex->getMessage()], true, 404);
+            Response::send(['message' => $ex->getMessage(), 'code' => $ex->getCode()], true, 404);
         } catch (\TypeError $te) {
             Response::send(['message' => 'data provided not accepted, please, see the api manual'], true, 406);
         } catch (\Throwable $th) {
@@ -197,7 +197,7 @@ class Transaction
 
             Response::send(['response' => $transactions], true, 200);
         } catch (\Exception $ex) {
-            Response::send(['code' => $ex->getCode(), 'message' => $ex->getMessage()], true, 404);
+            Response::send(['message' => $ex->getMessage(), 'code' => $ex->getCode()], true, 404);
         } catch (\TypeError $te) {
             Response::send(['message' => 'data provided not accepted, please, see the api manual'], true, 406);
         } catch (\Throwable $th) {

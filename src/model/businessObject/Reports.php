@@ -29,7 +29,7 @@ class Reports
 
             Response::send(['response' => $totals], true, 200);
         } catch (\Exception $ex) {
-            Response::send(['code' => $ex->getCode(), 'message' => $ex->getMessage()], true, 404);
+            Response::send(['message' => $ex->getMessage(), 'code' => $ex->getCode()], true, 404);
         } catch (\TypeError $te) {
             Response::send(['message' => 'data provided not accepted, please, see the api manual'], true, 406);
         } catch (\Throwable $th) {

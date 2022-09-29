@@ -32,7 +32,7 @@ class TransactionType
 
             Response::send(['response' => $dao->insert($transactionType)], true, 200);
         } catch (\Exception $ex) {
-            Response::send(['code' => $ex->getCode(), 'message' => $ex->getMessage()], true, 404);
+            Response::send(['message' => $ex->getMessage(), 'code' => $ex->getCode()], true, 404);
         } catch (\TypeError $te) {
             Response::send(['message' => 'data provided not accepted, please, see the api manual'], true, 406);
         } catch (\Throwable $th) {
@@ -59,9 +59,9 @@ class TransactionType
                 throw new ValueNotAcceptException('Parameters must be informed for the update', 1203004001);
 
             $dao = new TransactionType_dataAccess();
-            Response::send(['message' => $dao->update($transactionType)], true, 200);
+            Response::send(['response' => $dao->update($transactionType)], true, 200);
         } catch (\Exception $ex) {
-            Response::send(['code' => $ex->getCode(), 'message' => $ex->getMessage()], true, 404);
+            Response::send(['message' => $ex->getMessage(), 'code' => $ex->getCode()], true, 404);
         } catch (\TypeError $te) {
             Response::send(['message' => 'data provided not accepted, please, see the api manual'], true, 406);
         } catch (\Throwable $th) {
@@ -73,9 +73,9 @@ class TransactionType
     {
         try {
             $dao = new TransactionType_dataAccess();
-            Response::send(['message' => $dao->delete($this->id)], true, 200);
+            Response::send(['response' => $dao->delete($this->id)], true, 200);
         } catch (\Exception $ex) {
-            Response::send(['code' => $ex->getCode(), 'message' => $ex->getMessage()], true, 404);
+            Response::send(['message' => $ex->getMessage(), 'code' => $ex->getCode()], true, 404);
         } catch (\TypeError $te) {
             Response::send(['message' => 'data provided not accepted, please, see the api manual'], true, 406);
         } catch (\Throwable $th) {
@@ -112,7 +112,7 @@ class TransactionType
 
             Response::send(['response' => $transactionTypes], true, 200);
         } catch (\Exception $ex) {
-            Response::send(['code' => $ex->getCode(), 'message' => $ex->getMessage()], true, 404);
+            Response::send(['message' => $ex->getMessage(), 'code' => $ex->getCode()], true, 404);
         } catch (\TypeError $te) {
             Response::send(['message' => 'data provided not accepted, please, see the api manual'], true, 406);
         } catch (\Throwable $th) {
