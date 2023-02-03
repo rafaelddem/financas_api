@@ -2,9 +2,10 @@
 
 namespace financas_api\model\dataAccess;
 
+use financas_api\conf\Parameters;
 use \PDO;
 
-class Conection
+class Connection
 {
     private string $dataBaseName;
     private string $server;
@@ -13,10 +14,10 @@ class Conection
         
     public function __construct()
     {
-        $this->dataBaseName = "finance_api";
-        $this->server = "127.0.0.1";
-        $this->user = "root";
-        $this->password = "root";
+        $this->dataBaseName = Parameters::CONNECT_DATA_DATABASENAME;
+        $this->server = Parameters::CONNECT_DATA_SERVER;
+        $this->user = Parameters::CONNECT_DATA_USER;
+        $this->password = Parameters::CONNECT_DATA_PASSWORD;
     }
         
     public function setDataBaseName(string $dataBaseName)
