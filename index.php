@@ -4,9 +4,7 @@ error_reporting(E_ALL ^ E_WARNING);
 
 require_once "vendor/autoload.php";
 
-use financas_api\controller\Controller;
-use financas_api\controller\Response;
-use financas_api\controller\Route;
+use api\controller\Route;
 use financas_api\model\businessObject\Home;
 use financas_api\model\businessObject\Installment;
 use financas_api\model\businessObject\Owner;
@@ -16,44 +14,40 @@ use financas_api\model\businessObject\Transaction;
 use financas_api\model\businessObject\TransactionType;
 use financas_api\model\businessObject\Wallet;
 
-try {
-    Route::addGet('/', new Controller(Home::class, 'home'));
-    Route::addGet('/home', new Controller(Home::class, 'home'));
-    Route::addGet('/backup', new Controller(Home::class, 'backup'));
+Route::addGet('/', Home::class, 'home');
+Route::addGet('/home', Home::class, 'home');
+Route::addGet('/backup', Home::class, 'backup');
 
-    Route::addPost('/owner', new Controller(Owner::class, 'create'));
-    Route::addPut('/owner', new Controller(Owner::class, 'update'));
-    Route::addDelete('/owner', new Controller(Owner::class, 'delete'));
-    Route::addGet('/owner', new Controller(Owner::class, 'find'));
+Route::addPost('/owner', Owner::class, 'create');
+Route::addPut('/owner', Owner::class, 'update');
+Route::addDelete('/owner', Owner::class, 'delete');
+Route::addGet('/owner', Owner::class, 'find');
 
-    Route::addPost('/wallet', new Controller(Wallet::class, 'create'));
-    Route::addPut('/wallet', new Controller(Wallet::class, 'update'));
-    Route::addDelete('/wallet', new Controller(Wallet::class, 'delete'));
-    Route::addGet('/wallet', new Controller(Wallet::class, 'find'));
+Route::addPost('/wallet', Wallet::class, 'create');
+Route::addPut('/wallet', Wallet::class, 'update');
+Route::addDelete('/wallet', Wallet::class, 'delete');
+Route::addGet('/wallet', Wallet::class, 'find');
 
-    Route::addPost('/payment_method', new Controller(PaymentMethod::class, 'create'));
-    Route::addPut('/payment_method', new Controller(PaymentMethod::class, 'update'));
-    Route::addDelete('/payment_method', new Controller(PaymentMethod::class, 'delete'));
-    Route::addGet('/payment_method', new Controller(PaymentMethod::class, 'find'));
+Route::addPost('/payment_method', PaymentMethod::class, 'create');
+Route::addPut('/payment_method', PaymentMethod::class, 'update');
+Route::addDelete('/payment_method', PaymentMethod::class, 'delete');
+Route::addGet('/payment_method', PaymentMethod::class, 'find');
 
-    Route::addPost('/transaction_type', new Controller(TransactionType::class, 'create'));
-    Route::addPut('/transaction_type', new Controller(TransactionType::class, 'update'));
-    Route::addDelete('/transaction_type', new Controller(TransactionType::class, 'delete'));
-    Route::addGet('/transaction_type', new Controller(TransactionType::class, 'find'));
+Route::addPost('/transaction_type', TransactionType::class, 'create');
+Route::addPut('/transaction_type', TransactionType::class, 'update');
+Route::addDelete('/transaction_type', TransactionType::class, 'delete');
+Route::addGet('/transaction_type', TransactionType::class, 'find');
 
-    Route::addPost('/transaction', new Controller(Transaction::class, 'create'));
-    Route::addPut('/transaction', new Controller(Transaction::class, 'update'));
-    Route::addDelete('/transaction', new Controller(Transaction::class, 'delete'));
-    Route::addGet('/transaction', new Controller(Transaction::class, 'find'));
+Route::addPost('/transaction', Transaction::class, 'create');
+Route::addPut('/transaction', Transaction::class, 'update');
+Route::addDelete('/transaction', Transaction::class, 'delete');
+Route::addGet('/transaction', Transaction::class, 'find');
 
-    Route::addPut('/transaction/installment', new Controller(Installment::class, 'update'));
-    Route::addGet('/transaction/installment', new Controller(Installment::class, 'find'));
+Route::addPut('/transaction/installment', Installment::class, 'update');
+Route::addGet('/transaction/installment', Installment::class, 'find');
 
-    Route::addGet('/reports/calculatesTotals', new Controller(Reports::class, 'calculatesTotals'));
+Route::addGet('/reports/calculatesTotals', Reports::class, 'calculatesTotals');
 
-    Route::getPath();
-} catch (\Throwable $th) {
-    Response::send(['code' => $th->getCode(), 'message' => $th->getMessage()], true, 404);
-}
+Route::getPath();
 
 ?>

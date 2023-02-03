@@ -2,7 +2,7 @@
 
 namespace financas_api\model\businessObject;
 
-use financas_api\controller\Response;
+use api\controller\Response;
 use financas_api\exceptions\DataNotExistException;
 use financas_api\exceptions\EmptyValueException;
 use financas_api\exceptions\ValueNotAcceptException;

@@ -10,8 +10,8 @@ class DataAccessObject
 
     protected function __construct()
     {
-        $conexao = new Conection();
-        $this->pdo = $conexao->criaPDO();
+        $connection = new Connection();
+        $this->pdo = $connection->criaPDO();
     }
 
     protected function getPDO() : PDO

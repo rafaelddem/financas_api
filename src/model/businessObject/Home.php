@@ -2,7 +2,7 @@
 
 namespace financas_api\model\businessObject;
 
-use financas_api\controller\Response;
+use api\controller\Response;
 
 class Home
 {

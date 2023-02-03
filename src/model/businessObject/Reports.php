@@ -3,7 +3,7 @@
 namespace financas_api\model\businessObject;
 
 use DateTime;
-use financas_api\controller\Response;
+use api\controller\Response;
 use financas_api\model\dataAccess\Reports as Reports_dataAccess;
 
 class Reports
