@@ -212,7 +212,7 @@ class Installment
         return $this->payment_date->format('Y-m-d');
     }
 
-    public function entityToJson()
+    public function entityToArray() : array
     {
         $json = [
             'transaction' => $this->getTransaction(), 

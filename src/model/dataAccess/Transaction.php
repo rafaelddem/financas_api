@@ -225,7 +225,7 @@ class Transaction extends DataAccessObject
                 while($row = $stmt->fetch(PDO::FETCH_OBJ)) {
                     if ($transaction_id != $row->id AND $transaction_id != 0) {
                         $transaction_entity = new Transaction_entity($transaction['id'], $transaction['tittle'], $transaction['transaction_date'], $transaction['transaction_type'], $transaction['gross_value'], $transaction['discount_value'], $installments, $transaction['relevance'], $transaction['description']);
-                        $transactions[] = ($convertJson) ? $transaction_entity->entityToJson() : $transaction_entity;
+                        $transactions[] = ($convertJson) ? $transaction_entity->entityToArray() : $transaction_entity;
                         $installments = array();
                     }
                     $transaction_id = $row->id;
@@ -244,7 +244,7 @@ class Transaction extends DataAccessObject
 
                 if ($stmt->rowCount() != 0) {
                     $transaction_entity = new Transaction_entity($transaction['id'], $transaction['tittle'], $transaction['transaction_date'], $transaction['transaction_type'], $transaction['gross_value'], $transaction['discount_value'], $installments, $transaction['relevance'], $transaction['description']);
-                    $transactions[] = ($convertJson) ? $transaction_entity->entityToJson() : $transaction_entity;
+                    $transactions[] = ($convertJson) ? $transaction_entity->entityToArray() : $transaction_entity;
                 }
             }
 

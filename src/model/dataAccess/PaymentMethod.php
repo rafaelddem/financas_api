@@ -133,7 +133,7 @@ class PaymentMethod extends DataAccessObject
             if ($stmt->execute()) {
                 while($row = $stmt->fetch(PDO::FETCH_OBJ)) {
                     $paymentMethod = new PaymentMethod_entity($row->id, $row->name, boolval($row->active));
-                    $paymentMethods[] = $convertJson ? $paymentMethod->entityToJson() : $paymentMethod;
+                    $paymentMethods[] = $convertJson ? $paymentMethod->entityToArray() : $paymentMethod;
                 }
             }
 

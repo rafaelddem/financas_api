@@ -234,12 +234,12 @@ class Transaction
         return $this->description;
     }
 
-    public function entityToJson()
+    public function entityToArray() : array
     {
         $installments_entity = self::getInstallments();
         $installments_json = array();
         foreach ($installments_entity as $installment_entity) {
-            $installments_json[] = $installment_entity->entityToJson();
+            $installments_json[] = $installment_entity->entityToArray();
         }
 
         return [

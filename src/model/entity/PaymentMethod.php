@@ -52,7 +52,7 @@ class PaymentMethod
         return $this->active;
     }
 
-    public function entityToJson()
+    public function entityToArray() : array
     {
         return [
             'id' => $this->getId(), 

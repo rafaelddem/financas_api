@@ -145,7 +145,7 @@ class TransactionType extends DataAccessObject
             if ($stmt->execute()) {
                 while($row = $stmt->fetch(PDO::FETCH_OBJ)) {
                     $transactionType = new TransactionType_entity($row->id, $row->name, $row->relevance, boolval($row->active));
-                    $transactionTypes[] = $convertJson ? $transactionType->entityToJson() : $transactionType;
+                    $transactionTypes[] = $convertJson ? $transactionType->entityToArray() : $transactionType;
                 }
             }
 

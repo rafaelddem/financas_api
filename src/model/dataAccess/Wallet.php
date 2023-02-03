@@ -160,7 +160,7 @@ class Wallet extends DataAccessObject
                 while($row = $stmt->fetch(PDO::FETCH_OBJ)) {
                     $description = isset($row->description) ? $row->description : '';
                     $wallet = new Wallet_entity($row->id, $row->name, $row->owner_id, boolval($row->main_wallet), boolval($row->active), $description);
-                    $wallets[] = $convertJson ? $wallet->entityToJson() : $wallet;
+                    $wallets[] = $convertJson ? $wallet->entityToArray() : $wallet;
                 }
             }
 

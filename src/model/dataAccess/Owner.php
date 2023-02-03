@@ -133,7 +133,7 @@ class Owner extends DataAccessObject
             if ($stmt->execute()) {
                 while($row = $stmt->fetch(PDO::FETCH_OBJ)) {
                     $owner = new Owner_entity($row->id, $row->name, boolval($row->active));
-                    $owners[] = $convertJson ? $owner->entityToJson() : $owner;
+                    $owners[] = $convertJson ? $owner->entityToArray() : $owner;
                 }
             }
 

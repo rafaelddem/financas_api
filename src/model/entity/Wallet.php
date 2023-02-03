@@ -93,7 +93,7 @@ class Wallet
         return $this->description;
     }
 
-    public function entityToJson()
+    public function entityToArray() : array
     {
         return [
             'id' => $this->getId(), 
