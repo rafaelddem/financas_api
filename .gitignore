@@ -2,4 +2,3 @@
 .phpunit.result.cache
 tests_results.txt
 backup.php
-composer.lock
