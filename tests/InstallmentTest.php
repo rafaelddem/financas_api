@@ -2,7 +2,7 @@
 
 namespace financas_api\tests;
 
-require_once 'src/conf/parameters.php';
+require_once 'src/conf/Parameters.php';
 
 use Exception;
 use financas_api\model\entity\Installment;
