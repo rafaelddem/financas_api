@@ -56,7 +56,7 @@ class Transaction
     {
         if(strlen($tittle) < 2 OR strlen($tittle) > 50)
             throw new ValueNotAcceptException('The \'tittle\' attribute need to be between 2 and 50 characters', 1201005001);
-        else if (preg_match('/[!@#$%&*{}$?<>:;|\/]/', $tittle))
+        else if (preg_match('/[!@#%&*{}?<>:;|\/]/', $tittle))
             throw new ValueNotAcceptException('The \'tittle\' attribute only accepts letters and numbers', 1201005002);
         
         $this->tittle = $tittle;
@@ -223,7 +223,7 @@ class Transaction
     {
         if(strlen($description) > 255)
             throw new ValueNotAcceptException('The \'description\' attribute must be a maximum of 255 characters', 1201005015);
-        else if (preg_match('/[!@#$%&*{}$?<>:;|\/]/', $description))
+        else if (preg_match('/[!@#%&*{}?<>:;|\/]/', $description))
             throw new ValueNotAcceptException('The \'description\' attribute only accepts letters and numbers', 1201005016);
 
         $this->description = $description;
