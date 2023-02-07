@@ -53,6 +53,7 @@ create table finance_api.transaction (
 	id int(6) not null auto_increment, 
 	tittle varchar(50) not null, 
 	transaction_date date not null, 
+	processing_date date not null, 
 	transaction_type int(4) not null, 
 	gross_value double(7,2) not null, 
 	discount_value double(7,2) not null, 

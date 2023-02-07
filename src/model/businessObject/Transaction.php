@@ -15,6 +15,7 @@ class Transaction
     private $id;
     private $tittle;
     private $transaction_date;
+    private $processing_date;
     private $transaction_type;
     private $gross_value;
     private $discount_value;
@@ -27,6 +28,7 @@ class Transaction
         $this->id = isset($parameters['id']) ? $parameters['id'] : null;
         $this->tittle = isset($parameters['tittle']) ? $parameters['tittle'] : null;
         $this->transaction_date = isset($parameters['transaction_date']) ? $parameters['transaction_date'] : null;
+        $this->processing_date = isset($parameters['processing_date']) ? $parameters['processing_date'] : null;
         $this->transaction_type = isset($parameters['transaction_type']) ? $parameters['transaction_type'] : null;
         $this->gross_value = isset($parameters['gross_value']) ? $parameters['gross_value'] : null;
         $this->discount_value = isset($parameters['discount_value']) ? $parameters['discount_value'] : null;
@@ -74,7 +76,7 @@ class Transaction
                 $installment['gross_value'], $installment['discount_value'], $installment['interest_value'], $installment['rounding_value'], 
                 $installment['destination_wallet'], $installment['source_wallet'], $installment['payment_method'], $installment['payment_date']);
         }
-        $transaction = new Transaction_entity(0, $this->tittle, $this->transaction_date, $this->transaction_type, $this->gross_value, $this->discount_value, $installments, $this->relevance, $this->description);
+        $transaction = new Transaction_entity(0, $this->tittle, $this->transaction_date, $this->processing_date, $this->transaction_type, $this->gross_value, $this->discount_value, $installments, $this->relevance, $this->description);
         $dao = new Transaction_dataAccess();
 
         return $dao->insert($transaction);
@@ -190,6 +192,7 @@ class Transaction
                 'id' => $this->id, 
                 'tittle' => $this->tittle, 
                 'transaction_date' => $this->transaction_date, 
+                'processing_date' => $this->processing_date, 
                 'transaction_type' => $this->transaction_type, 
                 'relevance' => $this->relevance, 
                 'description' => $this->description, 
@@ -210,6 +213,9 @@ class Transaction
         $changeNecessary = false;
 
         if (isset($this->transaction_date)) {
+            $changeNecessary = true;
+        }
+        if (isset($this->processing_date)) {
             $changeNecessary = true;
         }
         if (isset($this->gross_value)) {
