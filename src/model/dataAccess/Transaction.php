@@ -24,12 +24,13 @@ class Transaction extends DataAccessObject
             self::getPDO()->beginTransaction();
 
         try {
-            $sql  = "insert into transaction (tittle, transaction_date, transaction_type, gross_value, discount_value, relevance, description) ";
-            $sql .= "values (:tittle, :transaction_date, :transaction_type, :gross_value, :discount_value, :relevance, :description);";
+            $sql  = "insert into transaction (tittle, transaction_date, processing_date, transaction_type, gross_value, discount_value, relevance, description) ";
+            $sql .= "values (:tittle, :transaction_date, :processing_date, :transaction_type, :gross_value, :discount_value, :relevance, :description);";
             $stmt = self::getPDO()->prepare($sql);
             
             $tittle = $transaction->getTittle();
             $transaction_date = $transaction->getTransactionDate();
+            $processing_date = $transaction->getProcessingDate();
             $transaction_type = $transaction->getTransactionType();
             $gross_value = $transaction->getGrossValue();
             $discount_value = $transaction->getDiscountValue();
@@ -37,6 +38,7 @@ class Transaction extends DataAccessObject
             $description = $transaction->getDescription();
             $stmt->bindParam(':tittle', $tittle, PDO::PARAM_STR);
             $stmt->bindParam(':transaction_date', $transaction_date, PDO::PARAM_STR);
+            $stmt->bindParam(':processing_date', $processing_date, PDO::PARAM_STR);
             $stmt->bindParam(':transaction_type', $transaction_type, PDO::PARAM_INT);
             $stmt->bindParam(':gross_value', $gross_value, PDO::PARAM_STR);
             $stmt->bindParam(':discount_value', $discount_value, PDO::PARAM_STR);
@@ -172,6 +174,10 @@ class Transaction extends DataAccessObject
                 $where .= $where == "" ? " where" : " and";
                 $where .= " transaction_date = :transaction_date";
             }
+            if (isset($filters['processing_date'])) {
+                $where .= $where == "" ? " where" : " and";
+                $where .= " processing_date = :processing_date";
+            }
             if (isset($filters['transaction_type'])) {
                 $where .= $where == "" ? " where" : " and";
                 $where .= " transaction_type = :transaction_type";
@@ -204,6 +210,10 @@ class Transaction extends DataAccessObject
                 $transaction_date = $filters['transaction_date'];
                 $stmt->bindParam(':transaction_date', $transaction_date, PDO::PARAM_STR);
             }
+            if (isset($filters['processing_date'])) {
+                $processing_date = $filters['processing_date'];
+                $stmt->bindParam(':processing_date', $processing_date, PDO::PARAM_STR);
+            }
             if (isset($filters['transaction_type'])) {
                 $transaction_type = $filters['transaction_type'];
                 $stmt->bindParam(':transaction_type', $transaction_type, PDO::PARAM_INT);
@@ -224,7 +234,7 @@ class Transaction extends DataAccessObject
             if ($stmt->execute()) {
                 while($row = $stmt->fetch(PDO::FETCH_OBJ)) {
                     if ($transaction_id != $row->id AND $transaction_id != 0) {
-                        $transaction_entity = new Transaction_entity($transaction['id'], $transaction['tittle'], $transaction['transaction_date'], $transaction['transaction_type'], $transaction['gross_value'], $transaction['discount_value'], $installments, $transaction['relevance'], $transaction['description']);
+                        $transaction_entity = new Transaction_entity($transaction['id'], $transaction['tittle'], $transaction['transaction_date'], $transaction['processing_date'], $transaction['transaction_type'], $transaction['gross_value'], $transaction['discount_value'], $installments, $transaction['relevance'], $transaction['description']);
                         $transactions[] = ($convertJson) ? $transaction_entity->entityToArray() : $transaction_entity;
                         $installments = array();
                     }
@@ -233,6 +243,7 @@ class Transaction extends DataAccessObject
                     $transaction['id'] = $row->id;
                     $transaction['tittle'] = $row->tittle;
                     $transaction['transaction_date'] = $row->transaction_date;
+                    $transaction['processing_date'] = $row->processing_date;
                     $transaction['transaction_type'] = $row->transaction_type;
                     $transaction['gross_value'] = $row->transaction_gross_value;
                     $transaction['discount_value'] = $row->transaction_discount_value;
@@ -243,7 +254,7 @@ class Transaction extends DataAccessObject
                 }
 
                 if ($stmt->rowCount() != 0) {
-                    $transaction_entity = new Transaction_entity($transaction['id'], $transaction['tittle'], $transaction['transaction_date'], $transaction['transaction_type'], $transaction['gross_value'], $transaction['discount_value'], $installments, $transaction['relevance'], $transaction['description']);
+                    $transaction_entity = new Transaction_entity($transaction['id'], $transaction['tittle'], $transaction['transaction_date'], $transaction['processing_date'], $transaction['transaction_type'], $transaction['gross_value'], $transaction['discount_value'], $installments, $transaction['relevance'], $transaction['description']);
                     $transactions[] = ($convertJson) ? $transaction_entity->entityToArray() : $transaction_entity;
                 }
             }
@@ -262,6 +273,7 @@ class Transaction extends DataAccessObject
             'transaction.id', 
             'transaction.tittle', 
             'transaction.transaction_date', 
+            'transaction.processing_date', 
             'transaction.transaction_type', 
             'transaction.gross_value as transaction_gross_value', 
             'transaction.discount_value as transaction_discount_value', 

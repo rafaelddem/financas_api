@@ -14,6 +14,7 @@ class Transaction
     private int $id;
     private string $tittle;
     private DateTime $transaction_date;
+    private DateTime $processing_date;
     private int $transaction_type;
     private float $gross_value = 0.0;
     private float $installments_gross_value = 0.0;
@@ -26,11 +27,12 @@ class Transaction
     private int $relevance;
     private string $description;
 
-    public function __construct(int $id, string $tittle, string $transaction_date, int $transaction_type, float $gross_value, float $discount_value, array $installments, int $relevance = 0, string $description = '')
+    public function __construct(int $id, string $tittle, string $transaction_date, string $processing_date, int $transaction_type, float $gross_value, float $discount_value, array $installments, int $relevance = 0, string $description = '')
     {
         self::setId($id);
         self::setTittle($tittle);
         self::setTransactionDate($transaction_date);
+        self::setProcessingDate($processing_date);
         self::setTransactionType($transaction_type);
         self::setGrossValue($gross_value);
         self::setDiscountValue($discount_value);
@@ -82,6 +84,23 @@ class Transaction
     public function getTransactionDate() : string
     {
         return $this->transaction_date->format('Y-m-d');
+    }
+
+    private function setProcessingDate(string $processing_date)
+    {
+        if ($processing_date == '') 
+            throw new EmptyValueException('The value for \'processing_date\' need to be informed', 1201005017);
+
+        try {
+            $this->processing_date = new DateTime($processing_date);
+        } catch (\Exception $ex) {
+            throw new DateCreateException('The value for \'processing_date\' are not accept, confirm value and format (\'yyyy-mm-dd\')', 1201005018);
+        }
+    }
+
+    public function getProcessingDate() : string
+    {
+        return $this->processing_date->format('Y-m-d');
     }
 
     public function setTransactionType(int $transaction_type)
@@ -245,6 +264,7 @@ class Transaction
         return [
             'tittle' => $this->getTittle(), 
             'transaction_date' => $this->getTransactionDate(), 
+            'processing_date' => $this->getProcessingDate(), 
             'transaction_type' => $this->getTransactionType(), 
             'gross_value' => $this->getGrossValue(), 
             'discount_value' => $this->getDiscountValue(), 

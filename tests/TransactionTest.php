@@ -19,6 +19,7 @@ class TransactionTest extends TestCase
             'id' => 0,
             'tittle' => 'Transacao',
             'transaction_date' => '2020-01-01',
+            'processing_date' => '2020-01-01',
             'transaction_type' => 1,
             'gross_value' => 10.0,
             'discount_value' => 0.0,
@@ -32,6 +33,7 @@ class TransactionTest extends TestCase
         $id = 0;
         $tittle = 'Transacao';
         $transaction_date = '2020-01-01';
+        $processing_date = '2020-01-01';
         $transaction_type = 1;
         $gross_value = 10.0;
         $discount_value = 0.0;
@@ -41,7 +43,7 @@ class TransactionTest extends TestCase
         $relevance = 0;
         $description = '';
 
-        $this->transaction = new Transaction($id, $tittle, $transaction_date, $transaction_type, $gross_value, $discount_value, $installments, $relevance, $description);
+        $this->transaction = new Transaction($id, $tittle, $transaction_date, $processing_date, $transaction_type, $gross_value, $discount_value, $installments, $relevance, $description);
     }
 
     /** Data Providers */
@@ -124,6 +126,7 @@ class TransactionTest extends TestCase
                     'id' => 0,
                     'tittle' => 'Transacao',
                     'transaction_date' => '2020-01-01',
+                    'processing_date' => '2020-01-01',
                     'transaction_type' => 1,
                     'gross_value' => 10.0,
                     'discount_value' => 0.0,
@@ -144,6 +147,7 @@ class TransactionTest extends TestCase
                     'id' => 0,
                     'tittle' => 'Transacao',
                     'transaction_date' => '2020-01-01',
+                    'processing_date' => '2020-01-01',
                     'transaction_type' => 1,
                     'gross_value' => 10.0,
                     'discount_value' => 0.0,
@@ -165,6 +169,7 @@ class TransactionTest extends TestCase
                     'id' => 0,
                     'tittle' => 'Transacao',
                     'transaction_date' => '2020-01-01',
+                    'processing_date' => '2020-01-01',
                     'transaction_type' => 1,
                     'gross_value' => 10.0,
                     'discount_value' => 0.0,
@@ -186,6 +191,7 @@ class TransactionTest extends TestCase
                     'id' => 0,
                     'tittle' => 'Transacao',
                     'transaction_date' => '2020-01-01',
+                    'processing_date' => '2020-01-01',
                     'transaction_type' => 1,
                     'gross_value' => 10.0,
                     'discount_value' => 0.0,
@@ -210,6 +216,7 @@ class TransactionTest extends TestCase
                     'id' => 0,
                     'tittle' => 'Transacao',
                     'transaction_date' => '2020-01-01',
+                    'processing_date' => '2020-01-01',
                     'transaction_type' => 1,
                     'gross_value' => 10.0,
                     'discount_value' => 2.0,
@@ -230,6 +237,7 @@ class TransactionTest extends TestCase
                     'id' => 0,
                     'tittle' => 'Transacao',
                     'transaction_date' => '2020-01-01',
+                    'processing_date' => '2020-01-01',
                     'transaction_type' => 1,
                     'gross_value' => 10.0,
                     'discount_value' => 2.0,
@@ -251,6 +259,7 @@ class TransactionTest extends TestCase
                     'id' => 0,
                     'tittle' => 'Transacao',
                     'transaction_date' => '2020-01-01',
+                    'processing_date' => '2020-01-01',
                     'transaction_type' => 1,
                     'gross_value' => 10.0,
                     'discount_value' => 4.0,
@@ -272,6 +281,7 @@ class TransactionTest extends TestCase
                     'id' => 0,
                     'tittle' => 'Transacao',
                     'transaction_date' => '2020-01-01',
+                    'processing_date' => '2020-01-01',
                     'transaction_type' => 1,
                     'gross_value' => 20.99,
                     'discount_value' => 1.0,
@@ -296,6 +306,7 @@ class TransactionTest extends TestCase
                     'id' => 0,
                     'tittle' => 'Transacao',
                     'transaction_date' => '2020-01-01',
+                    'processing_date' => '2020-01-01',
                     'transaction_type' => 1,
                     'gross_value' => 20.99,
                     'discount_value' => 1.00,
@@ -320,6 +331,7 @@ class TransactionTest extends TestCase
                     'id' => 0,
                     'tittle' => 'Transacao',
                     'transaction_date' => '2020-01-01',
+                    'processing_date' => '2020-01-01',
                     'transaction_type' => 1,
                     'gross_value' => 10.0,
                     'discount_value' => 0.0,
@@ -340,6 +352,7 @@ class TransactionTest extends TestCase
                     'id' => 0,
                     'tittle' => 'Transacao',
                     'transaction_date' => '2020-01-01',
+                    'processing_date' => '2020-01-01',
                     'transaction_type' => 1,
                     'gross_value' => 10.0,
                     'discount_value' => 0.0,
@@ -361,6 +374,7 @@ class TransactionTest extends TestCase
                     'id' => 0,
                     'tittle' => 'Transacao',
                     'transaction_date' => '2020-01-01',
+                    'processing_date' => '2020-01-01',
                     'transaction_type' => 1,
                     'gross_value' => 10.0,
                     'discount_value' => 0.0,
@@ -382,6 +396,7 @@ class TransactionTest extends TestCase
                     'id' => 0,
                     'tittle' => 'Transacao',
                     'transaction_date' => '2020-01-01',
+                    'processing_date' => '2020-01-01',
                     'transaction_type' => 1,
                     'gross_value' => 20.99,
                     'discount_value' => 0.0,
@@ -406,6 +421,7 @@ class TransactionTest extends TestCase
                     'id' => 0,
                     'tittle' => 'Transacao',
                     'transaction_date' => '2020-01-01',
+                    'processing_date' => '2020-01-01',
                     'transaction_type' => 1,
                     'gross_value' => 10.99,
                     'discount_value' => 0.0,
@@ -426,6 +442,7 @@ class TransactionTest extends TestCase
                     'id' => 0,
                     'tittle' => 'Transacao',
                     'transaction_date' => '2020-01-01',
+                    'processing_date' => '2020-01-01',
                     'transaction_type' => 1,
                     'gross_value' => 10.10,
                     'discount_value' => 0.0,
@@ -447,6 +464,7 @@ class TransactionTest extends TestCase
                     'id' => 0,
                     'tittle' => 'Transacao',
                     'transaction_date' => '2020-01-01',
+                    'processing_date' => '2020-01-01',
                     'transaction_type' => 1,
                     'gross_value' => 10.5,
                     'discount_value' => 0.0,
@@ -468,6 +486,7 @@ class TransactionTest extends TestCase
                     'id' => 0,
                     'tittle' => 'Transacao',
                     'transaction_date' => '2020-01-01',
+                    'processing_date' => '2020-01-01',
                     'transaction_type' => 1,
                     'gross_value' => 20.99,
                     'discount_value' => 0.0,
@@ -492,6 +511,7 @@ class TransactionTest extends TestCase
                     'id' => 0,
                     'tittle' => 'Transacao',
                     'transaction_date' => '2020-01-01',
+                    'processing_date' => '2020-01-01',
                     'transaction_type' => 1,
                     'gross_value' => 59.99,
                     'discount_value' => 5.0,
@@ -545,10 +565,11 @@ class TransactionTest extends TestCase
     public function testCreateInstallmentWithAcceptedValues(array $defaultData)
     {
         $data = $defaultData;
-        $transaction = new Transaction($data['id'], $data['tittle'], $data['transaction_date'], $data['transaction_type'], $data['gross_value'], $data['discount_value'], $data['installments'], $data['relevance'], $data['description']);
+        $transaction = new Transaction($data['id'], $data['tittle'], $data['transaction_date'], $data['processing_date'], $data['transaction_type'], $data['gross_value'], $data['discount_value'], $data['installments'], $data['relevance'], $data['description']);
         self::assertEquals($data['id'], $transaction->getId());
         self::assertEquals($data['tittle'], $transaction->getTittle());
         self::assertEquals($data['transaction_date'], $transaction->getTransactionDate());
+        self::assertEquals($data['processing_date'], $transaction->getProcessingDate());
         self::assertEquals($data['transaction_type'], $transaction->getTransactionType());
         self::assertEquals($data['gross_value'], $transaction->getGrossValue());
         self::assertEquals($data['discount_value_total'], $transaction->getDiscountValue());
@@ -564,7 +585,7 @@ class TransactionTest extends TestCase
     public function testCreateTransactionWithTittleWithAcceptedSizeAndCharacters(string $tittle)
     {
         $data = $this->defaultData;
-        $transaction = new Transaction($data['id'], $tittle, $data['transaction_date'], $data['transaction_type'], $data['gross_value'], $data['discount_value'], $data['installments'], $data['relevance'], $data['description']);
+        $transaction = new Transaction($data['id'], $tittle, $data['transaction_date'], $data['processing_date'], $data['transaction_type'], $data['gross_value'], $data['discount_value'], $data['installments'], $data['relevance'], $data['description']);
         self::assertEquals($tittle, $transaction->getTittle());
     }
 
@@ -577,7 +598,7 @@ class TransactionTest extends TestCase
         $this->expectExceptionMessage('The \'tittle\' attribute need to be between 2 and 50 characters');
 
         $data = $this->defaultData;
-        $transaction = new Transaction($data['id'], $tittle, $data['transaction_date'], $data['transaction_type'], $data['gross_value'], $data['discount_value'], $data['installments'], $data['relevance'], $data['description']);
+        $transaction = new Transaction($data['id'], $tittle, $data['transaction_date'], $data['processing_date'], $data['transaction_type'], $data['gross_value'], $data['discount_value'], $data['installments'], $data['relevance'], $data['description']);
     }
 
     /**
@@ -589,7 +610,7 @@ class TransactionTest extends TestCase
         $this->expectExceptionMessage('The \'tittle\' attribute only accepts letters and numbers');
 
         $data = $this->defaultData;
-        $transaction = new Transaction($data['id'], $tittle, $data['transaction_date'], $data['transaction_type'], $data['gross_value'], $data['discount_value'], $data['installments'], $data['relevance'], $data['description']);
+        $transaction = new Transaction($data['id'], $tittle, $data['transaction_date'], $data['processing_date'], $data['transaction_type'], $data['gross_value'], $data['discount_value'], $data['installments'], $data['relevance'], $data['description']);
     }
 
     public function testCreateInstallmentWithTransactionDateEmpty()
@@ -599,7 +620,7 @@ class TransactionTest extends TestCase
 
         $data = $this->defaultData;
         $data['transaction_date'] = '';
-        $transaction = new Transaction($data['id'], $data['tittle'], $data['transaction_date'], $data['transaction_type'], $data['gross_value'], $data['discount_value'], $data['installments'], $data['relevance'], $data['description']);
+        $transaction = new Transaction($data['id'], $data['tittle'], $data['transaction_date'], $data['processing_date'], $data['transaction_type'], $data['gross_value'], $data['discount_value'], $data['installments'], $data['relevance'], $data['description']);
     }
 
     /**
@@ -612,7 +633,7 @@ class TransactionTest extends TestCase
 
         $data = $this->defaultData;
         $data['transaction_date'] = $date;
-        $transaction = new Transaction($data['id'], $data['tittle'], $data['transaction_date'], $data['transaction_type'], $data['gross_value'], $data['discount_value'], $data['installments'], $data['relevance'], $data['description']);
+        $transaction = new Transaction($data['id'], $data['tittle'], $data['transaction_date'], $data['processing_date'], $data['transaction_type'], $data['gross_value'], $data['discount_value'], $data['installments'], $data['relevance'], $data['description']);
     }
 
     /**
@@ -622,7 +643,7 @@ class TransactionTest extends TestCase
     {
         $data = $this->defaultData;
         $data['relevance'] = $relevance;
-        $transaction = new Transaction($data['id'], $data['tittle'], $data['transaction_date'], $data['transaction_type'], $data['gross_value'], $data['discount_value'], $data['installments'], $data['relevance'], $data['description']);
+        $transaction = new Transaction($data['id'], $data['tittle'], $data['transaction_date'], $data['processing_date'], $data['transaction_type'], $data['gross_value'], $data['discount_value'], $data['installments'], $data['relevance'], $data['description']);
 
         self::assertEquals($relevance, $transaction->getRelevance());
     }
@@ -637,7 +658,7 @@ class TransactionTest extends TestCase
 
         $data = $this->defaultData;
         $data['relevance'] = $relevance;
-        $transaction = new Transaction($data['id'], $data['tittle'], $data['transaction_date'], $data['transaction_type'], $data['gross_value'], $data['discount_value'], $data['installments'], $data['relevance'], $data['description']);
+        $transaction = new Transaction($data['id'], $data['tittle'], $data['transaction_date'], $data['processing_date'], $data['transaction_type'], $data['gross_value'], $data['discount_value'], $data['installments'], $data['relevance'], $data['description']);
     }
 
     /**
@@ -647,7 +668,7 @@ class TransactionTest extends TestCase
     {
         $data = $this->defaultData;
         $data['description'] = $description;
-        $transaction = new Transaction($data['id'], $data['tittle'], $data['transaction_date'], $data['transaction_type'], $data['gross_value'], $data['discount_value'], $data['installments'], $data['relevance'], $data['description']);
+        $transaction = new Transaction($data['id'], $data['tittle'], $data['transaction_date'], $data['processing_date'], $data['transaction_type'], $data['gross_value'], $data['discount_value'], $data['installments'], $data['relevance'], $data['description']);
         self::assertEquals($description, $transaction->getdescription());
     }
 
@@ -661,7 +682,7 @@ class TransactionTest extends TestCase
 
         $data = $this->defaultData;
         $data['description'] = $description;
-        $transaction = new Transaction($data['id'], $data['tittle'], $data['transaction_date'], $data['transaction_type'], $data['gross_value'], $data['discount_value'], $data['installments'], $data['relevance'], $data['description']);
+        $transaction = new Transaction($data['id'], $data['tittle'], $data['transaction_date'], $data['processing_date'], $data['transaction_type'], $data['gross_value'], $data['discount_value'], $data['installments'], $data['relevance'], $data['description']);
     }
 
     /**
@@ -674,7 +695,7 @@ class TransactionTest extends TestCase
 
         $data = $this->defaultData;
         $data['description'] = $description;
-        $transaction = new Transaction($data['id'], $data['tittle'], $data['transaction_date'], $data['transaction_type'], $data['gross_value'], $data['discount_value'], $data['installments'], $data['relevance'], $data['description']);
+        $transaction = new Transaction($data['id'], $data['tittle'], $data['transaction_date'], $data['processing_date'], $data['transaction_type'], $data['gross_value'], $data['discount_value'], $data['installments'], $data['relevance'], $data['description']);
     }
 }
 ?>
