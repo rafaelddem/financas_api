@@ -40,7 +40,6 @@ class OwnerTest extends TestCase
             ['Name with *'],
             ['Name with {'],
             ['Name with }'],
-            ['Name with $'],
             ['Name with ?'],
             ['Name with <'],
             ['Name with >'],

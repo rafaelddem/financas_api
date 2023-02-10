@@ -3,10 +3,10 @@
 namespace financas_api\tests;
 
 use Exception;
-use financas_api\model\entity\Wallet;
+use financas_api\model\entity\Card;
 use PHPUnit\Framework\TestCase;
 
-class WalletTest extends TestCase
+class CardTest extends TestCase
 {
 
     /** Data Providers */
@@ -15,7 +15,7 @@ class WalletTest extends TestCase
     {
         return [
             'shortName' => ['Nam'],
-            'longName' => ['Big name but with accept size.'],
+            'longName' => ['Big name accept size'],
         ];
     }
 
@@ -23,7 +23,7 @@ class WalletTest extends TestCase
     {
         return [
             'veryShortName' => ['Na'],
-            'veryLongName' => ['A big name with unaccept value.'],
+            'veryLongName' => ['Big name unaccept siz'],
         ];
     }
 
@@ -53,38 +53,35 @@ class WalletTest extends TestCase
         ];
     }
 
-    /** Tests */
-
     /**
      * @dataProvider dataForNameWithAcceptedSizeAndCharacters
      */
-    public function testCreateWalletWithNameWithAcceptedSizeAndCharacters(string $name)
+    public function testCreateCardWithNameWithAcceptedSizeAndCharacters(string $name)
     {
-        $wallet = new Wallet(0, $name, 1, true, true);
-        self::assertEquals($name, $wallet->getName());
+        $card = new Card(0, 1, $name, 1, 10, true);
+        self::assertEquals($name, $card->getName());
     }
 
     /**
      * @dataProvider dataForNameWithNotAcceptedSize
      */
-    public function testCreateWalletWithNameWithNotAcceptedSize(string $name)
+    public function testCreateCardWithNameWithNotAcceptedSize(string $name)
     {
         $this->expectException(Exception::class);
-        $this->expectExceptionMessage('The \'name\' attribute need to be between 3 and 30 characters');
+        $this->expectExceptionMessage('The \'name\' attribute need to be between 3 and 20 characters');
 
-        $wallet = new Wallet(0, $name, 1, true, true);
+        $card = new Card(0, 1, $name, 1, 10, true);
     }
 
     /**
      * @dataProvider dataForNameWithNotAcceptedCharacters
      */
-    public function testCreateWalletWithNameWithNotAcceptedCharacters(string $name)
+    public function testCreateCardWithNameWithNotAcceptedCharacters(string $name)
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('The \'name\' attribute only accepts letters and numbers');
 
-        $wallet = new Wallet(0, $name, 1, true, true);
+        $card = new Card(0, 1, $name, 1, 10, true);
     }
-
 }
 ?>

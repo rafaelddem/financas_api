@@ -31,7 +31,7 @@ create table finance_api.wallet (
 create table finance_api.card (
 	id int(3) not null auto_increment, 
 	wallet_id int(4) not null, 
-	name varchar(30) not null, 
+	name varchar(20) not null, 
 	first_day_month int(2) not null, 
 	days_to_expiration int(2) not null, 
 	active char(1) not null, 
@@ -42,15 +42,15 @@ create table finance_api.card (
 -- select * from finance_api.card;
 -- drop table finance_api.card;
 
-create table finance_api.card_dates (
+create table finance_api.card_date (
 	card_id int(3) not null, 
 	start_date date not null, 
 	end_date date not null, 
-	primary key (card_id), 
-	constraint fk_card_dates_card foreign key (card_id) references card (id) 
+	primary key (card_id, start_date, end_date), 
+	constraint fk_card_date_card foreign key (card_id) references card (id) 
 );
--- select * from finance_api.card_dates;
--- drop table finance_api.card_dates;
+-- select * from finance_api.card_date;
+-- drop table finance_api.card_date;
 
 create table finance_api.payment_method (
 	id int(3) not null auto_increment, 

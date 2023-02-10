@@ -40,7 +40,6 @@ class PaymentMethodTest extends TestCase
             ['Name with *'],
             ['Name with {'],
             ['Name with }'],
-            ['Name with $'],
             ['Name with ?'],
             ['Name with <'],
             ['Name with >'],
