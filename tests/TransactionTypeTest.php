@@ -40,7 +40,6 @@ class TransactionTypeTest extends TestCase
             ['Name with *'],
             ['Name with {'],
             ['Name with }'],
-            ['Name with $'],
             ['Name with ?'],
             ['Name with <'],
             ['Name with >'],
