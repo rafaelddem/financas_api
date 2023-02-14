@@ -46,8 +46,59 @@ class CardDate extends DataAccessObject
     public function findByFilter(array $filters, bool $convertJson = true)
     {
         try {
-            $sql  = "select * from cardDate order by end_date desc limit 24";
+            $where = "";
+            if (isset($filters['card_id'])) {
+                $where .= $where == "" ? " where" : " and";
+                $where .= " card_id = :card_id";
+            }
+            if (isset($filters['start_date'])) {
+                $where .= $where == "" ? " where" : " and";
+                $where .= " start_date like :start_date";
+            }
+            if (isset($filters['limit_start_date'])) {
+                $where .= $where == "" ? " where" : " and";
+                $where .= " start_date >= :limit_start_date";
+            }
+            if (isset($filters['end_date'])) {
+                $where .= $where == "" ? " where" : " and";
+                $where .= " end_date like :end_date";
+            }
+            if (isset($filters['limit_end_date'])) {
+                $where .= $where == "" ? " where" : " and";
+                $where .= " end_date <= :limit_end_date";
+            }
+            if (isset($filters['especific_date'])) {
+                $where .= $where == "" ? " where" : " and";
+                $where .= " :especific_date between start_date and end_date";
+            }
+
+            $sql  = "select * from card_date $where";
             $stmt = self::getPDO()->prepare($sql);
+
+            if (isset($filters['card_id'])) {
+                $card_id = $filters['card_id'];
+                $stmt->bindParam(':card_id', $card_id, PDO::PARAM_INT);
+            }
+            if (isset($filters['start_date'])) {
+                $start_date = $filters['start_date'];
+                $stmt->bindParam(':start_date', $start_date, PDO::PARAM_STR);
+            }
+            if (isset($filters['limit_start_date'])) {
+                $limit_start_date = $filters['limit_start_date'];
+                $stmt->bindParam(':limit_start_date', $limit_start_date, PDO::PARAM_STR);
+            }
+            if (isset($filters['end_date'])) {
+                $end_date = $filters['end_date'];
+                $stmt->bindParam(':end_date', $end_date, PDO::PARAM_STR);
+            }
+            if (isset($filters['limit_end_date'])) {
+                $limit_end_date = $filters['limit_end_date'];
+                $stmt->bindParam(':limit_end_date', $limit_end_date, PDO::PARAM_STR);
+            }
+            if (isset($filters['especific_date'])) {
+                $especific_date = $filters['especific_date'];
+                $stmt->bindParam(':especific_date', $especific_date, PDO::PARAM_STR);
+            }
 
             $cardDates = array();
             if ($stmt->execute()) {

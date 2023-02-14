@@ -6,6 +6,7 @@ require_once "vendor/autoload.php";
 
 use api\controller\Route;
 use financas_api\model\businessObject\Card;
+use financas_api\model\businessObject\CardDate;
 use financas_api\model\businessObject\Home;
 use financas_api\model\businessObject\Installment;
 use financas_api\model\businessObject\Owner;
@@ -33,6 +34,8 @@ Route::addPost('/card', Card::class, 'create');
 Route::addPut('/card', Card::class, 'update');
 Route::addDelete('/card', Card::class, 'delete');
 Route::addGet('/card', Card::class, 'find');
+
+Route::addGet('/card_date', CardDate::class, 'find');
 
 Route::addPost('/payment_method', PaymentMethod::class, 'create');
 Route::addPut('/payment_method', PaymentMethod::class, 'update');

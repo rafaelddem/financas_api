@@ -95,7 +95,7 @@ class Card
         }
     }
 
-    private function findEntity()
+    public function findEntity()
     {
         if (isset($this->id) < 1) 
             throw new EmptyValueException('You need inform the \'id\'', 1203007002);
