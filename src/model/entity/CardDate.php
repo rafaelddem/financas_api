@@ -65,7 +65,7 @@ class CardDate
     public function entityToArray() : array
     {
         return [
-            'card_id' => $this->getId(), 
+            'card_id' => $this->getCardId(), 
             'start_date' => $this->getStartDate(), 
             'end_date' => $this->getEndDate(), 
         ];

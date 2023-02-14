@@ -60,6 +60,9 @@ class Card
 
     public function setFirstDayMonth(int $first_day_month)
     {
+        if ($first_day_month < 1 OR $first_day_month > 28) 
+            throw new ValueNotAcceptException('The attribute \'first_day_month\' need to be between 1 and 28', 1201007003);
+
         $this->first_day_month = $first_day_month;
     }
 

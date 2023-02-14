@@ -115,6 +115,8 @@ create table finance_api.installment (
 DROP PROCEDURE IF EXISTS finance_api.sum_wallets_by_period;
 DROP PROCEDURE IF EXISTS finance_api.sum_wallets_by_months;
 DROP PROCEDURE IF EXISTS finance_api.sum_wallets_by_days;
+DROP PROCEDURE IF EXISTS finance_api.confirm_card_date;
+DROP PROCEDURE IF EXISTS finance_api.create_card_date;
 
 DELIMITER //
 
@@ -208,8 +210,58 @@ END;
 
 //
 
+CREATE PROCEDURE finance_api.confirm_card_date ()
+BEGIN
+
+	set @card_id = (select min(id) from card where active = true);
+	set @max_id = (select max(id) from card where active = true);
+
+	WHILE @card_id <= @max_id DO
+		set @has_date = (select count(*) from card_date cd where cd.card_id = @card_id and cd.start_date <= now() and cd.end_date >= now());
+
+		IF @has_date = 0 THEN
+			CALL finance_api.create_card_date(@card_id);
+		END IF;
+		SET @card_id = @card_id + 1;
+	END WHILE;
+END;
+
+//
+
+CREATE PROCEDURE finance_api.create_card_date (card_id int)
+BEGIN
+	
+	set @used_card = (select count(*) from card_date cd where cd.card_id = card_id);
+ 	set @first_day_month = (select c.first_day_month from card c where c.id = card_id);
+ 	set @end_date_next_month = (DATE_FORMAT(NOW(), '%d') > @first_day_month);
+
+	IF @end_date_next_month THEN
+		set @end_date = DATE_ADD(LAST_DAY(now()), INTERVAL @first_day_month DAY);
+	ELSE
+		set @end_date = DATE_ADD(DATE_SUB(DATE_ADD(LAST_DAY(now()), INTERVAL 1 DAY), INTERVAL 1 MONTH), INTERVAL (@first_day_month -1) DAY);
+	END IF;
+
+	IF @used_card THEN
+		set @last_end_date = (select end_date from card_date cd where cd.card_id = card_id order by end_date desc limit 1);
+		set @start_date = DATE_ADD(@last_end_date, INTERVAL 1 DAY);
+	ELSE
+		set @start_date = DATE_SUB(@end_date, INTERVAL 1 MONTH);
+	END IF;
+
+	INSERT INTO card_date values (card_id, @start_date, @end_date);
+END;
+
+//
+
 DELIMITER ;
 
+DROP EVENT IF EXISTS finance_api.create_card_dates;
+
+CREATE EVENT finance_api.create_card_dates ON SCHEDULE 
+	AT '2023-01-01 00:00:00.000' + INTERVAL 1 DAY
+    	DO call finance_api.confirm_card_date();
+
+-- CALL finance_api.confirm_card_date();
 -- CALL finance_api.sum_wallets_by_period('2022-01-01', '2022-05-01', 2);
 -- CALL finance_api.sum_wallets_by_months('2000-01-01', '3000-01-01', 5, 2);
 -- CALL finance_api.sum_wallets_by_days('2022-01-01', '2022-05-01', 2);
