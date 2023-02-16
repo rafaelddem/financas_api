@@ -9,18 +9,20 @@ class Card
     private int $id;
     private int $wallet_id;
     private string $name;
+    private bool $allow_credit;
     private int $first_day_month;
     private int $days_to_expiration;
     private bool $active;
 
-    public function __construct(int $id, int $wallet_id, string $name, int $first_day_month, int $days_to_expiration, bool $active)
+    public function __construct(int $id, int $wallet_id, string $name, bool $active, bool $allow_credit, int $first_day_month = 0, int $days_to_expiration = 0)
     {
         self::setId($id);
         self::setWalletId($wallet_id);
         self::setName($name);
+        self::setActive($active);
+        self::setAllowCredit($allow_credit);
         self::setFirstDayMonth($first_day_month);
         self::setDaysToExpiration($days_to_expiration);
-        self::setActive($active);
     }
 
     private function setId(int $id)
@@ -58,10 +60,30 @@ class Card
         return $this->name;
     }
 
+    public function setActive(bool $active)
+    {
+        $this->active = $active;
+    }
+
+    public function getActive() : bool
+    {
+        return $this->active;
+    }
+
+    private function setAllowCredit(bool $allow_credit)
+    {
+        $this->allow_credit = $allow_credit;
+    }
+
+    public function getAllowCredit() : bool
+    {
+        return $this->allow_credit;
+    }
+
     public function setFirstDayMonth(int $first_day_month)
     {
-        if ($first_day_month < 1 OR $first_day_month > 28) 
-            throw new ValueNotAcceptException('The attribute \'first_day_month\' need to be between 1 and 28', 1201007003);
+        if ($first_day_month < 0 OR $first_day_month > 28) 
+            throw new ValueNotAcceptException('The attribute \'first_day_month\' need to be between 1 and 28 (or 0 for debit)', 1201007003);
 
         $this->first_day_month = $first_day_month;
     }
@@ -81,25 +103,16 @@ class Card
         return $this->days_to_expiration;
     }
 
-    public function setActive(bool $active)
-    {
-        $this->active = $active;
-    }
-
-    public function getActive() : bool
-    {
-        return $this->active;
-    }
-
     public function entityToArray() : array
     {
         return [
             'id' => $this->getId(), 
             'wallet_id' => $this->getWalletId(), 
             'name' => $this->getName(), 
+            'active' => $this->getActive(), 
+            'allow_credit' => getAllowCredit(), 
             'first_day_month' => $this->getFirstDayMonth(), 
             'days_to_expiration' => $this->getDaysToExpiration(), 
-            'active' => $this->getActive(), 
         ];
     }
 

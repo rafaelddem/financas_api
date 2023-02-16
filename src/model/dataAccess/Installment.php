@@ -30,9 +30,9 @@ class Installment extends DataAccessObject
             $discount_value = $installment->getDiscountValue();
             $interest_value = $installment->getInterestValue();
             $rounding_value = $installment->getRoundingValue();
-            $source_wallet = $installment->getSourceWallet();
-            $payment_method = $installment->getPaymentMethod();
-            $payment_date = $installment->getPaymentDate();
+            $source_wallet = empty($installment->getSourceWallet()) ? null : $installment->getSourceWallet();
+            $payment_method = empty($installment->getPaymentMethod()) ? null : $installment->getPaymentMethod();
+            $payment_date = empty($installment->getPaymentDate()) ? null : $installment->getPaymentDate();
             $transaction = $installment->getTransaction();
             $installment_number = $installment->getInstallmentNumber();
             $stmt->bindParam(':discount_value', $discount_value, PDO::PARAM_STR);

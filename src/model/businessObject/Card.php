@@ -14,6 +14,7 @@ class Card
     private $id;
     private $wallet_id;
     private $name;
+    private $allow_credit;
     private $first_day_month;
     private $days_to_expiration;
     private $active;
@@ -23,15 +24,16 @@ class Card
         $this->id = isset($parameters['id']) ? $parameters['id'] : null;
         $this->wallet_id = isset($parameters['wallet_id']) ? $parameters['wallet_id'] : null;
         $this->name = isset($parameters['name']) ? $parameters['name'] : null;
+        $this->active = isset($parameters['active']) ? ($parameters['active'] == 'true' OR $parameters['active'] == 1) : null;
+        $this->allow_credit = isset($parameters['allow_credit']) ? ($parameters['allow_credit'] == 'true' OR $parameters['allow_credit'] == 1) : null;
         $this->first_day_month = isset($parameters['first_day_month']) ? $parameters['first_day_month'] : null;
         $this->days_to_expiration = isset($parameters['days_to_expiration']) ? $parameters['days_to_expiration'] : null;
-        $this->active = isset($parameters['active']) ? ($parameters['active'] == 'true' OR $parameters['active'] == 1) : null;
     }
 
     public function create()
     {
         try {
-            $card = new Card_entity(0, $this->wallet_id, $this->name, $this->first_day_month, $this->days_to_expiration, $this->active);
+            $card = new Card_entity(0, $this->wallet_id, $this->name, $this->active, $this->allow_credit, $this->first_day_month, $this->days_to_expiration);
             $dao = new Card_dataAccess();
 
             Response::send(['response' => $dao->insert($card)], true, 200);
@@ -52,6 +54,10 @@ class Card
             $hasUpdate = false;
             if (isset($this->name)) {
                 $card->setName($this->name);
+                $hasUpdate = true;
+            }
+            if (isset($this->allow_credit)) {
+                $card->setAllowCredit($this->allow_credit);
                 $hasUpdate = true;
             }
             if (isset($this->first_day_month)) {
@@ -95,7 +101,7 @@ class Card
         }
     }
 
-    public function findEntity()
+    private function findEntity()
     {
         if (isset($this->id) < 1) 
             throw new EmptyValueException('You need inform the \'id\'', 1203007002);
@@ -119,9 +125,10 @@ class Card
                 'id' => $this->id, 
                 'wallet_id' => $this->wallet_id, 
                 'name' => $this->name, 
+                'active' => $this->active, 
+                'allow_credit' => $this->allow_credit, 
                 'first_day_month' => $this->first_day_month, 
                 'days_to_expiration' => $this->days_to_expiration, 
-                'active' => $this->active, 
             ]);
 
             Response::send(['response' => $cards], true, 200);

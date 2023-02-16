@@ -21,14 +21,16 @@ class Card extends DataAccessObject
             self::getPDO()->beginTransaction();
 
         try {
-            $stmt = self::getPDO()->prepare("insert into card (wallet_id, name, first_day_month, days_to_expiration, active) values (:wallet_id, :name, :first_day_month, :days_to_expiration, :active);");
+            $stmt = self::getPDO()->prepare("insert into card (wallet_id, name, allow_credit, first_day_month, days_to_expiration, active) values (:wallet_id, :name, :allow_credit, :first_day_month, :days_to_expiration, :active);");
             $wallet_id = $card->getWalletId();
             $name = $card->getName();
-            $first_day_month = $card->getFirstDayMonth();
-            $days_to_expiration = $card->getDaysToExpiration();
+            $allow_credit = $card->getAllowCredit();
+            $first_day_month = empty($card->getFirstDayMonth()) ? null : $card->getFirstDayMonth();
+            $days_to_expiration = empty($card->getDaysToExpiration()) ? null : $card->getDaysToExpiration();
             $active = $card->getActive();
             $stmt->bindParam(':wallet_id', $wallet_id, PDO::PARAM_INT);
             $stmt->bindParam(':name', $name, PDO::PARAM_STR);
+            $stmt->bindParam(':allow_credit', $allow_credit, PDO::PARAM_BOOL);
             $stmt->bindParam(':first_day_month', $first_day_month, PDO::PARAM_INT);
             $stmt->bindParam(':days_to_expiration', $days_to_expiration, PDO::PARAM_INT);
             $stmt->bindParam(':active', $active, PDO::PARAM_BOOL);
@@ -53,13 +55,15 @@ class Card extends DataAccessObject
             self::getPDO()->beginTransaction();
 
         try {
-            $stmt = self::getPDO()->prepare("update card set name = :name, first_day_month = :first_day_month, days_to_expiration = :days_to_expiration, active = :active where id = :id");
+            $stmt = self::getPDO()->prepare("update card set name = :name, allow_credit = :allow_credit, first_day_month = :first_day_month, days_to_expiration = :days_to_expiration, active = :active where id = :id");
             $name = $card->getName();
-            $first_day_month = $card->getFirstDayMonth();
-            $days_to_expiration = $card->getDaysToExpiration();
+            $allow_credit = $card->getAllowCredit();
+            $first_day_month = empty($card->getFirstDayMonth()) ? null : $card->getFirstDayMonth();
+            $days_to_expiration = empty($card->getDaysToExpiration()) ? null : $card->getDaysToExpiration();
             $active = $card->getActive();
             $id = $card->getId();
             $stmt->bindParam(':name', $name, PDO::PARAM_STR);
+            $stmt->bindParam(':allow_credit', $allow_credit, PDO::PARAM_BOOL);
             $stmt->bindParam(':first_day_month', $first_day_month, PDO::PARAM_INT);
             $stmt->bindParam(':days_to_expiration', $days_to_expiration, PDO::PARAM_INT);
             $stmt->bindParam(':active', $active, PDO::PARAM_BOOL);
@@ -120,6 +124,10 @@ class Card extends DataAccessObject
                 $where .= $where == "" ? " where" : " and";
                 $where .= " name like :name";
             }
+            if (isset($filters['allow_credit'])) {
+                $where .= $where == "" ? " where" : " and";
+                $where .= " allow_credit = :allow_credit";
+            }
             if (isset($filters['active'])) {
                 $where .= $where == "" ? " where" : " and";
                 $where .= " active = :active";
@@ -136,6 +144,10 @@ class Card extends DataAccessObject
                 $name = '%' . $filters['name'] . '%';
                 $stmt->bindParam(':name', $name, PDO::PARAM_STR);
             }
+            if (isset($filters['allow_credit'])) {
+                $allow_credit = $filters['allow_credit'];
+                $stmt->bindParam(':allow_credit', $allow_credit, PDO::PARAM_BOOL);
+            }
             if (isset($filters['active'])) {
                 $active = $filters['active'];
                 $stmt->bindParam(':active', $active, PDO::PARAM_BOOL);
@@ -144,7 +156,7 @@ class Card extends DataAccessObject
             $cards = array();
             if ($stmt->execute()) {
                 while($row = $stmt->fetch(PDO::FETCH_OBJ)) {
-                    $card = new Card_entity($row->id, $row->wallet_id, $row->name, $row->first_day_month, $row->days_to_expiration, $row->active);
+                    $card = new Card_entity($row->id, $row->wallet_id, $row->name, $row->active, $row->allow_credit, $row->first_day_month, $row->days_to_expiration);
                     $cards[] = $convertJson ? $card->entityToArray() : $card;
                 }
             }

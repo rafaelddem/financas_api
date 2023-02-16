@@ -56,6 +56,7 @@ class CardTest extends TestCase
     public function dataForFirstDayMonthWithAcceptedValues()
     {
         return [
+            [0],
             [1],
             [2],
             [3],
@@ -100,7 +101,6 @@ class CardTest extends TestCase
             [-3],
             [-2],
             [-1],
-            [0],
             [29],
             [30],
             [31],
@@ -120,7 +120,7 @@ class CardTest extends TestCase
      */
     public function testCreateCardWithNameWithAcceptedSizeAndCharacters(string $name)
     {
-        $card = new Card(0, 1, $name, 1, 10, true);
+        $card = new Card(0, 1, $name, true, true, 5, 14);
         self::assertEquals($name, $card->getName());
     }
 
@@ -132,7 +132,7 @@ class CardTest extends TestCase
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('The \'name\' attribute need to be between 3 and 20 characters');
 
-        $card = new Card(0, 1, $name, 1, 10, true);
+        $card = new Card(0, 1, $name, true, true, 5, 14);
     }
 
     /**
@@ -143,7 +143,7 @@ class CardTest extends TestCase
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('The \'name\' attribute only accepts letters and numbers');
 
-        $card = new Card(0, 1, $name, 1, 10, true);
+        $card = new Card(0, 1, $name, true, true, 5, 14);
     }
 
     /**
@@ -151,7 +151,7 @@ class CardTest extends TestCase
      */
     public function testCreateCardWithFirstDayMonthWithAcceptedValues(int $firstDayMonth)
     {
-        $card = new Card(0, 1, 'Nome do cartao', $firstDayMonth, 1, true);
+        $card = new Card(0, 1, 'Nome do cartao', true, true, $firstDayMonth, 1);
         self::assertEquals($firstDayMonth, $card->getFirstDayMonth());
     }
 
@@ -161,9 +161,9 @@ class CardTest extends TestCase
     public function testCreateCardWithFirstDayMonthWithNotAcceptedValues(int $firstDayMonth)
     {
         $this->expectException(Exception::class);
-        $this->expectExceptionMessage('The attribute \'first_day_month\' need to be between 1 and 28');
+        $this->expectExceptionMessage('The attribute \'first_day_month\' need to be between 1 and 28 (or 0 for debit)');
 
-        $card = new Card(0, 1, 'Nome do cartao', $firstDayMonth, 1, true);
+        $card = new Card(0, 1, 'Nome do cartao', true, true, $firstDayMonth, 1);
     }
 }
 ?>
