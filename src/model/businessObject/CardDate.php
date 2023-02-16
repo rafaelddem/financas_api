@@ -42,21 +42,21 @@ class CardDate
         Response::send(['response' => $cardDate], true, 200);
     }
 
-    // public function create()
-    // {
-    //     try {
-    //         $cardDate = new CardDate_entity($this->card_id, $this->start_date, $this->end_date);
-    //         $dao = new CardDate_dataAccess();
+    public function create()
+    {
+        try {
+            $cardDate = new CardDate_entity($this->card_id, $this->start_date, $this->end_date);
+            $dao = new CardDate_dataAccess();
 
-    //         Response::send(['response' => $dao->insert($cardDate)], true, 200);
-    //     } catch (\Exception $ex) {
-    //         Response::send(['message' => $ex->getMessage(), 'code' => $ex->getCode()], true, 404);
-    //     } catch (\TypeError $te) {
-    //         Response::send(['message' => 'data provided not accepted, please, see the api manual'], true, 406);
-    //     } catch (\Throwable $th) {
-    //         Response::send(['message' => 'bad request'], true, 400);
-    //     }
-    // }
+            Response::send(['response' => $dao->insert($cardDate)], true, 200);
+        } catch (\Exception $ex) {
+            Response::send(['message' => $ex->getMessage(), 'code' => $ex->getCode()], true, 404);
+        } catch (\TypeError $te) {
+            Response::send(['message' => 'data provided not accepted, please, see the api manual'], true, 406);
+        } catch (\Throwable $th) {
+            Response::send(['message' => 'bad request'], true, 400);
+        }
+    }
 
 }
 

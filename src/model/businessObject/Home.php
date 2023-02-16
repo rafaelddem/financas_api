@@ -14,6 +14,7 @@ class Home
     public function backup()
     {
         try {
+            include_once "backup_system_data.php";
             include_once "backup.php";
 
             Response::send(['response' => 'Backup successfully executed'], true, 200);

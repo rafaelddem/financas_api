@@ -32,8 +32,9 @@ create table finance_api.card (
 	id int(3) not null auto_increment, 
 	wallet_id int(4) not null, 
 	name varchar(20) not null, 
-	first_day_month int(2) not null, 
-	days_to_expiration int(2) not null, 
+	allow_credit char(1) not null, 
+	first_day_month int(2) default null, 
+	days_to_expiration int(2) default null, 
 	active char(1) not null, 
 	primary key (id), 
 	unique(name), 
@@ -213,13 +214,14 @@ END;
 CREATE PROCEDURE finance_api.confirm_card_date ()
 BEGIN
 
-	set @card_id = (select min(id) from card where active = true);
-	set @max_id = (select max(id) from card where active = true);
+	set @card_id = (select min(id) from card where active = true and allow_credit = true);
+	set @max_id = (select max(id) from card where active = true and allow_credit = true);
 
 	WHILE @card_id <= @max_id DO
+		set @is_credit_card = (select allow_credit from card where id = @card_id);
 		set @has_date = (select count(*) from card_date cd where cd.card_id = @card_id and cd.start_date <= now() and cd.end_date >= now());
 
-		IF @has_date = 0 THEN
+		IF @is_credit_card AND @has_date = 0 THEN
 			CALL finance_api.create_card_date(@card_id);
 		END IF;
 		SET @card_id = @card_id + 1;
@@ -261,49 +263,3 @@ CREATE EVENT finance_api.create_card_dates ON SCHEDULE
 	AT '2023-01-01 00:00:00.000' + INTERVAL 1 DAY
     	DO call finance_api.confirm_card_date();
 
--- CALL finance_api.confirm_card_date();
--- CALL finance_api.sum_wallets_by_period('2022-01-01', '2022-05-01', 2);
--- CALL finance_api.sum_wallets_by_months('2000-01-01', '3000-01-01', 5, 2);
--- CALL finance_api.sum_wallets_by_days('2022-01-01', '2022-05-01', 2);
-
-
-
-/*	default data	*/
-
--- insert into finance_api.owner (name, active) values ('Rafael', 1);
--- insert into finance_api.owner (name, active) values ('Terezinha', 1);
--- insert into finance_api.owner (name, active) values ('Márcio', 1);
-
--- insert into finance_api.wallet (name, owner_id, main_wallet, active) values ('Casa', 1, 0, 1);
--- insert into finance_api.wallet (name, owner_id, main_wallet, active) values ('NuBank', 1, 0, 1);
--- insert into finance_api.wallet (name, owner_id, main_wallet, active) values ('NuConta', 1, 1, 1);
--- insert into finance_api.wallet (name, owner_id, main_wallet, active) values ('PicPay', 1, 0, 1);
--- insert into finance_api.wallet (name, owner_id, main_wallet, active) values ('Casa', 2, 1, 1);
--- insert into finance_api.wallet (name, owner_id, main_wallet, active) values ('Casa', 3, 1, 1);
-
--- insert into finance_api.payment_method (name, active) values ('Dinheiro', 1);
--- insert into finance_api.payment_method (name, active) values ('Crédito', 1);
--- insert into finance_api.payment_method (name, active) values ('Débito', 1);
-
--- insert into finance_api.transaction_type (name, relevance, active) values ('Venda', 2, 1);
--- insert into finance_api.transaction_type (name, relevance, active) values ('Compra', 0, 1);
-
--- insert into finance_api.transaction (tittle, transaction_date, transaction_type, gross_value, discount_value, relevance, description) values 
--- ('Compra', '2022-05-01', 2, 12.50, 0.00, 2, 'Teste de compra');
-
--- insert into  finance_api.installment (transaction, installment_number, due_date, gross_value, discount_value, interest_value, rounding_value, destination_wallet, source_wallet, payment_method, payment_date) values 
--- (1, 1, '2022-06-01', 12.50, 0.00, 0.00, 0.00, 1,  5, 1, '2022-06-01');
-
--- insert into finance_api.transaction (tittle, transaction_date, transaction_type, gross_value, discount_value, relevance, description) values 
--- ('Venda', '2022-05-01', 1, 12.50, 0.00, 0, 'Teste de venda');
-
--- insert into  finance_api.installment (transaction, installment_number, due_date, gross_value, discount_value, interest_value, rounding_value, destination_wallet, source_wallet, payment_method, payment_date) values 
--- (2, 1, '2022-06-01', 12.50, 0.00, 0.00, 0.00, 5,  1, 1, '2022-06-01');
-
--- insert into finance_api.transaction (tittle, transaction_date, transaction_type, gross_value, discount_value, relevance, description) values 
--- ('Compra', '2022-07-01', 1, 20.00, 0.00, 0, 'Teste de compra');
-
--- insert into  finance_api.installment (transaction, installment_number, due_date, gross_value, discount_value, interest_value, rounding_value, destination_wallet, source_wallet, payment_method, payment_date) values 
--- (3, 1, '2022-08-01', 10.00, 0.00, 0.00, 0.00, 1,  5, 1, '2022-08-01');
--- insert into  finance_api.installment (transaction, installment_number, due_date, gross_value, discount_value, interest_value, rounding_value, destination_wallet) values 
--- (3, 2, '2022-09-01', 10.00, 0.00, 0.00, 0.00, 1);
