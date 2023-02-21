@@ -47,6 +47,7 @@ create table finance_api.card_date (
 	card_id int(3) not null, 
 	start_date date not null, 
 	end_date date not null, 
+	value double(7,2) default null, 
 	primary key (card_id, start_date, end_date), 
 	constraint fk_card_date_card foreign key (card_id) references card (id) 
 );

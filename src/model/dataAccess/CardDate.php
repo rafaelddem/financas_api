@@ -21,13 +21,15 @@ class CardDate extends DataAccessObject
             self::getPDO()->beginTransaction();
 
         try {
-            $stmt = self::getPDO()->prepare("insert into card_date (card_id, start_date, end_date) values (:card_id, :start_date, :end_date);");
+            $stmt = self::getPDO()->prepare("insert into card_date (card_id, start_date, end_date, value) values (:card_id, :start_date, :end_date, :value);");
             $card_id = $cardDate->getCardId();
             $start_date = $cardDate->getStartDate();
             $end_date = $cardDate->getEndDate();
+            $value = empty($cardDate->getValue()) ? null : $cardDate->getValue();
             $stmt->bindParam(':card_id', $card_id, PDO::PARAM_INT);
             $stmt->bindParam(':start_date', $start_date, PDO::PARAM_STR);
             $stmt->bindParam(':end_date', $end_date, PDO::PARAM_STR);
+            $stmt->bindParam(':value', $value, PDO::PARAM_STR);
 
             if (!$stmt->execute()) 
                 throw new UncatalogedException('Could not execute request. Please inform support', 1202008001);

@@ -23,6 +23,7 @@ class CardDate
         $this->end_date = isset($parameters['end_date']) ? $parameters['end_date'] : null;
         $this->limit_start_date = isset($parameters['limit_start_date']) ? $parameters['limit_start_date'] : null;
         $this->limit_end_date = isset($parameters['limit_end_date']) ? $parameters['limit_end_date'] : null;
+        $this->value = isset($parameters['value']) ? $parameters['value'] : null;
     }
 
     public function find()
@@ -45,7 +46,11 @@ class CardDate
     public function create()
     {
         try {
-            $cardDate = new CardDate_entity($this->card_id, $this->start_date, $this->end_date);
+            if (isset($this->value)) {
+                $cardDate = new CardDate_entity($this->card_id, $this->start_date, $this->end_date, $this->value);
+            } else {
+                $cardDate = new CardDate_entity($this->card_id, $this->start_date, $this->end_date);
+            }
             $dao = new CardDate_dataAccess();
 
             Response::send(['response' => $dao->insert($cardDate)], true, 200);
