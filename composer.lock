@@ -959,16 +959,16 @@
         },
         {
             "name": "rafaelddem/api_base",
-            "version": "v1.0.1",
+            "version": "v1.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/rafaelddem/api_base.git",
-                "reference": "1ecb97b3804f32576d12691ee5ee6aeb05aaf826"
+                "reference": "520745a809686e8ba9cec5526f5825220fc7e809"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rafaelddem/api_base/zipball/1ecb97b3804f32576d12691ee5ee6aeb05aaf826",
-                "reference": "1ecb97b3804f32576d12691ee5ee6aeb05aaf826",
+                "url": "https://api.github.com/repos/rafaelddem/api_base/zipball/520745a809686e8ba9cec5526f5825220fc7e809",
+                "reference": "520745a809686e8ba9cec5526f5825220fc7e809",
                 "shasum": ""
             },
             "type": "library",
@@ -986,9 +986,9 @@
             ],
             "support": {
                 "issues": "https://github.com/rafaelddem/api_base/issues",
-                "source": "https://github.com/rafaelddem/api_base/tree/v1.0.1"
+                "source": "https://github.com/rafaelddem/api_base/tree/v1.0.2"
             },
-            "time": "2023-01-31T08:09:50+00:00"
+            "time": "2023-02-06T04:06:40+00:00"
         },
         {
             "name": "sebastian/cli-parser",
@@ -2070,5 +2070,5 @@
     "prefer-lowest": false,
     "platform": [],
     "platform-dev": [],
-    "plugin-api-version": "2.3.0"
+    "plugin-api-version": "2.2.0"
 }

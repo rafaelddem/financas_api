@@ -21,10 +21,12 @@ class PaymentMethod extends DataAccessObject
             self::getPDO()->beginTransaction();
 
         try {
-            $stmt = self::getPDO()->prepare("insert into payment_method (name, active) values (:name, :active);");
+            $stmt = self::getPDO()->prepare("insert into payment_method (name, type, active) values (:name, :type, :active);");
             $name = $paymentMethod->getName();
+            $type = $paymentMethod->getType();
             $active = $paymentMethod->getActive();
             $stmt->bindParam(':name', $name, PDO::PARAM_STR);
+            $stmt->bindParam(':type', $type, PDO::PARAM_INT);
             $stmt->bindParam(':active', $active, PDO::PARAM_BOOL);
 
             if (!$stmt->execute()) 
@@ -108,6 +110,10 @@ class PaymentMethod extends DataAccessObject
                 $where .= $where == "" ? " where" : " and";
                 $where .= " name like :name";
             }
+            if (isset($filters['type'])) {
+                $where .= $where == "" ? " where" : " and";
+                $where .= " type like :type";
+            }
             if (isset($filters['active'])) {
                 $where .= $where == "" ? " where" : " and";
                 $where .= " active = :active";
@@ -124,6 +130,10 @@ class PaymentMethod extends DataAccessObject
                 $name = '%' . $filters['name'] . '%';
                 $stmt->bindParam(':name', $name, PDO::PARAM_STR);
             }
+            if (isset($filters['type'])) {
+                $type = $filters['type'];
+                $stmt->bindParam(':type', $type, PDO::PARAM_INT);
+            }
             if (isset($filters['active'])) {
                 $active = $filters['active'];
                 $stmt->bindParam(':active', $active, PDO::PARAM_BOOL);
@@ -132,7 +142,7 @@ class PaymentMethod extends DataAccessObject
             $paymentMethods = array();
             if ($stmt->execute()) {
                 while($row = $stmt->fetch(PDO::FETCH_OBJ)) {
-                    $paymentMethod = new PaymentMethod_entity($row->id, $row->name, boolval($row->active));
+                    $paymentMethod = new PaymentMethod_entity($row->id, $row->name, $row->type, boolval($row->active));
                     $paymentMethods[] = $convertJson ? $paymentMethod->entityToArray() : $paymentMethod;
                 }
             }

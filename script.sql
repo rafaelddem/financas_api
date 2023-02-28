@@ -31,6 +31,7 @@ create table finance_api.wallet (
 create table finance_api.payment_method (
 	id int(3) not null auto_increment, 
 	name varchar(30) not null, 
+	type char(1) not null, 
 	active char(1) not null, 
 	primary key (id), 
 	unique(name) 
