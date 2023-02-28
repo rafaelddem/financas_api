@@ -38,7 +38,7 @@ class Installment extends DataAccessObject
             $stmt->bindParam(':discount_value', $discount_value, PDO::PARAM_STR);
             $stmt->bindParam(':interest_value', $interest_value, PDO::PARAM_STR);
             $stmt->bindParam(':rounding_value', $rounding_value, PDO::PARAM_STR);
-            $stmt->bindParam(':source_wallet', $source_wallet, PDO::PARAM_STR);
+            $stmt->bindParam(':source_wallet', $source_wallet, PDO::PARAM_INT);
             $stmt->bindParam(':payment_method', $payment_method, PDO::PARAM_INT);
             $stmt->bindParam(':payment_date', $payment_date, PDO::PARAM_STR);
             $stmt->bindParam(':transaction', $transaction, PDO::PARAM_INT);

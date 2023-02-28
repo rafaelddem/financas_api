@@ -2,18 +2,21 @@
 
 namespace financas_api\model\entity;
 
+use financas_api\conf\Parameters;
 use financas_api\exceptions\ValueNotAcceptException;
 
 class PaymentMethod
 {
     private int $id;
     private string $name;
+    private int $type;
     private bool $active;
 
-    public function __construct(int $id, string $name, bool $active)
+    public function __construct(int $id, string $name, int $type, bool $active)
     {
         self::setId($id);
         self::setName($name);
+        self::setType($type);
         self::setActive($active);
     }
 
@@ -42,6 +45,24 @@ class PaymentMethod
         return $this->name;
     }
 
+    public function setType(int $type)
+    {
+        if (!in_array($type, array(Parameters::PAYMENT_METHOD_TYPE_NOTE, Parameters::PAYMENT_METHOD_TYPE_TRANSFER, Parameters::PAYMENT_METHOD_TYPE_CARD))) {
+            $error_message = "The 'type' attribute was not accepted. You need to use one of the accepted values: '" 
+                . Parameters::PAYMENT_METHOD_TYPE_NOTE . "', '" 
+                . Parameters::PAYMENT_METHOD_TYPE_TRANSFER . "' or '" 
+                . Parameters::PAYMENT_METHOD_TYPE_CARD . "'";
+            throw new ValueNotAcceptException($error_message, 1201003003);
+        }
+
+        $this->type = $type;
+    }
+
+    public function getType() : int
+    {
+        return $this->type;
+    }
+
     public function setActive(bool $active)
     {
         $this->active = $active;
@@ -57,6 +78,7 @@ class PaymentMethod
         return [
             'id' => $this->getId(), 
             'name' => $this->getName(), 
+            'type' => $this->getType(), 
             'active' => $this->getActive(), 
         ];
     }

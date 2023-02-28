@@ -13,19 +13,21 @@ class PaymentMethod
 {
     private $id;
     private $name;
+    private $type;
     private $active;
 
     public function __construct(array $parameters = null)
     {
         $this->id = isset($parameters['id']) ? $parameters['id'] : null;
         $this->name = isset($parameters['name']) ? $parameters['name'] : null;
+        $this->type = isset($parameters['type']) ? $parameters['type'] : null;
         $this->active = isset($parameters['active']) ? ($parameters['active'] == 'true' OR $parameters['active'] == 1) : null;
     }
 
     public function create()
     {
         try {
-            $paymentMethod = new PaymentMethod_entity(0, $this->name, $this->active);
+            $paymentMethod = new PaymentMethod_entity(0, $this->name, $this->type, $this->active);
             $dao = new PaymentMethod_dataAccess();
 
             Response::send(['response' => $dao->insert($paymentMethod)], true, 200);
@@ -100,6 +102,7 @@ class PaymentMethod
             $paymentMethods = $dao->findByFilter([
                 'id' => $this->id, 
                 'name' => $this->name, 
+                'type' => $this->type, 
                 'active' => $this->active, 
             ]);
 
