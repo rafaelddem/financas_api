@@ -21,15 +21,14 @@ A entidade "owner" é a entidade que representa cada pessoa (fisica ou jurídica
 
 1.1.1.2 Propriedades
 
- - name: Este será o nome de identificação da entidade.
-        Particularidades:
+ - name: Este será o nome de identificação da entidade. Particularidades:
             - Deverá ser informado no momento do cadastro da entidade;
             - Não será possível efetuar a alteração desta propriedade;
             - O valor informado deverá ser único, não sendo possível que duas entidades "owner" possuam o mesmo "name".
  - active: Define se a entidade "owner" em questão está ativa ou não.
         Particularidades:
-            - Na criação da entidade, deverá vir pré marcada como "true", porém, será permitida a alteração antes de finalizar o cadastro;
-            - Também será permitida a alteração do valor depois do cadastro efetuado.
+        - Na criação da entidade, deverá vir pré marcada como "true", porém, será permitida a alteração antes de finalizar o cadastro;
+        - Também será permitida a alteração do valor depois do cadastro efetuado.
 
 
 1.1.1.3 Banco de dados
