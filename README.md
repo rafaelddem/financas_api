@@ -8,18 +8,18 @@ Comecei esse projeto já a tanto tempo que nem lembro mais, e nesse meio tempo m
 
 A ideia principal do sistema é criar uma API que seja capaz de gerenciar as finanças pessoais de uma determinada pessoa. Cadastro de compras, salário, empréstimos, geração de relatório de dívidas, previsão de gastos e entradas de valores, etc... A seguir, detalharei melhor cada função.
 
-1.1 Entidades
+1.1. Entidades
 
 
-1.1.1 Owner
+1.1.1. Owner
 
 
-1.1.1.1 Descrição
+1.1.1.1. Descrição
 
 A entidade "owner" é a entidade que representa cada pessoa (fisica ou jurídica) a qual será atribuída a propriedade de determinadas transações, assim como dos valores dessas transaçãoes. Por exemplo, caso o usuário de nome "Rafael" opte por cadastrar uma transação de depósito referente a um pagamento dele para outra pessoa de nome "Marcos", este usuário deverá possuir dois cadastros de "owner", um para ele próprio (o qual será criado junto a conta no sistema) e outro para o destinatário do valor. Dessa forma, o sistema saberá que o valor foi transferido de uma pessoa para outra, e poderá calcular os novos valores pós transação.
 
 
-1.1.1.2 Propriedades
+1.1.1.2. Propriedades
 
 - name: Este será o nome de identificação da entidade. Particularidades:
     - Deverá ser informado no momento do cadastro da entidade;
@@ -30,7 +30,7 @@ A entidade "owner" é a entidade que representa cada pessoa (fisica ou jurídica
     - Também será permitida a alteração do valor depois do cadastro efetuado.
 
 
-1.1.1.3 Banco de dados
+1.1.1.3. Banco de dados
 
 - id: Identificador da entidade. Terá as seguintes características:
     - tipo: int;
@@ -53,21 +53,21 @@ A entidade "owner" é a entidade que representa cada pessoa (fisica ou jurídica
     - id
 
 
-1.1.1.4 Funções
+1.1.1.4. Funções
 
 Função #1: Quando uma entidade "owner" é criada, uma entidade "wallet" (ver o item 1.1.2 para mais detalhes) deve ser criada automaticamente, e seu atributo "main_wallet" marcado como "true".
 Função #2: Não será permitido a excusão de um registro. Caso seja solicitado a exclusão, o atributo "active" é marcado como "false".
 
 
-1.1.2 Wallet
+1.1.2. Wallet
 
 
-1.1.2.1 Descrição
+1.1.2.1. Descrição
 
 A entidade "wallet" (chamaremos de Carteira) é a entidade que representa os locais onde os valores estão armazenados, como contas em bancos ou mesmo a carteira pessoal do usuário. Será possível que um usuário (owner) tenha mais uma Carteira. Por exemplo, o usuário "Rafael" poderá cadastrar três Carteiras, de nomes "Conta Corrente", "Carteira" e "Poupança", e dessa forma ele poderá separar os valores que estão em sua conta corrente dos valores que estão em sua poupança e do dinheiro que ele possui em sua carteira pessoal.
 
 
-1.1.2.2 Propriedades
+1.1.2.2. Propriedades
 
 - name: Este será o nome de identificação da entidade. Particularidades:
     - Preenchimento obrigatório;
@@ -90,7 +90,7 @@ A entidade "wallet" (chamaremos de Carteira) é a entidade que representa os loc
     - Não será permitido caracteres especiais (exceto: ).
 
 
-1.1.2.3 Banco de dados
+1.1.2.3. Banco de dados
 
 - id: Identificador da entidade. Terá as seguintes características:
     - tipo: int;
@@ -126,7 +126,7 @@ A entidade "wallet" (chamaremos de Carteira) é a entidade que representa os loc
     - owner_id faz referência ao atributo "id" da entidade "owner"
 
 
-1.1.2.4 Funções
+1.1.2.4. Funções
 
 Função #1: Quando uma entidade "owner" é criada, uma entidade "wallet" deve ser criada junto. Nesse caso, o atributo "owner_id" deve ser preenchido como o valor do atributo "id" da entidade "owner" recém criada, e o atributo "main_wallet" deve ser preenchido como "true".
 Função #2: Quando uma nova entidade "wallet" é criada, e o valor do atributo "main_wallet" vier marcado como "true", deverá ser confirmado com o usuário se ele deseja realmente marcar a entidade desta forma. Caso seja confirmado, uma rotina deverá marcar o atributo "main_wallet" de todas as outras entidades "wallet" neste usuário (owner) como "false", e então efetuar o cadastro.
@@ -134,15 +134,15 @@ Função #3: Somente será possível a alteração do valor do atributo "main_wa
 Função #4: Não será permitido a excusão de um registro. Caso seja solicitado a exclusão, o atributo "active" é marcado como "false".
 
 
-1.1.3 Payment Method
+1.1.3. Payment Method
 
 
-1.1.3.1 Descrição
+1.1.3.1. Descrição
 
 A entidade "payment method" é a entidade que representa os métodos de pagamento utilizados em cada transação, como por exemplo "Crédito", "Débito" e "Transferência".
 
 
-1.1.3.2 Propriedades
+1.1.3.2. Propriedades
 
 - name: Este será o nome de identificação da entidade. Particularidades:
     - Preenchimento obrigatório;
@@ -160,7 +160,7 @@ A entidade "payment method" é a entidade que representa os métodos de pagament
     - Na criação da entidade, deverá vir pré marcada como "true", porém, será permitida a alteração antes de finalizar o cadastro;
     - Também será permitida a alteração do valor depois do cadastro efetuado.
 
-1.1.3.3 Banco de dados
+1.1.3.3. Banco de dados
 
 - id: Identificador da entidade. Terá as seguintes características:
     - tipo: int;
@@ -187,20 +187,20 @@ A entidade "payment method" é a entidade que representa os métodos de pagament
     - id
 
 
-1.1.3.4 Funções
+1.1.3.4. Funções
 
 Função #1: Não será permitido a excusão de um registro. Caso seja solicitado a exclusão, o atributo "active" é marcado como "false".
 
 
-1.1.4 Transaction Type
+1.1.4. Transaction Type
 
 
-1.1.4.1 Descrição
+1.1.4.1. Descrição
 
 A entidade "transaction type" é a entidade que representa os tipos de transação. Será utilizado como forma de organizar as transações em grupos a critérios do usuário. Possíveis registros seriam "vendas", "compras", "empréstimos", "mensalidade", etc...
 
 
-1.1.4.2 Propriedades
+1.1.4.2. Propriedades
 
 - name: Este será o nome de identificação da entidade. Particularidades:
     - Preenchimento obrigatório;
@@ -217,7 +217,7 @@ A entidade "transaction type" é a entidade que representa os tipos de transaç�
     - Na criação da entidade, deverá vir pré marcada como "true", porém, será permitida a alteração antes de finalizar o cadastro;
     - Também será permitida a alteração do valor depois do cadastro efetuado.
 
-1.1.4.3 Banco de dados
+1.1.4.3. Banco de dados
 
 - id: Identificador da entidade. Terá as seguintes características:
     - tipo: int;
@@ -244,7 +244,7 @@ A entidade "transaction type" é a entidade que representa os tipos de transaç�
     - id
 
 
-1.1.4.4 Funções
+1.1.4.4. Funções
 
 Função #1: Não será permitido a excusão de um registro. Caso seja solicitado a exclusão, o atributo "active" é marcado como "false".
 
