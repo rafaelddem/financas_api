@@ -21,14 +21,13 @@ A entidade "owner" é a entidade que representa cada pessoa (fisica ou jurídica
 
 1.1.1.2 Propriedades
 
- - name: Este será o nome de identificação da entidade. Particularidades:
-            - Deverá ser informado no momento do cadastro da entidade;
-            - Não será possível efetuar a alteração desta propriedade;
-            - O valor informado deverá ser único, não sendo possível que duas entidades "owner" possuam o mesmo "name".
- - active: Define se a entidade "owner" em questão está ativa ou não.
-        Particularidades:
-        - Na criação da entidade, deverá vir pré marcada como "true", porém, será permitida a alteração antes de finalizar o cadastro;
-        - Também será permitida a alteração do valor depois do cadastro efetuado.
+- name: Este será o nome de identificação da entidade. Particularidades:
+    - Deverá ser informado no momento do cadastro da entidade;
+    - Não será possível efetuar a alteração desta propriedade;
+    - O valor informado deverá ser único, não sendo possível que duas entidades "owner" possuam o mesmo "name".
+- active: Define se a entidade "owner" em questão está ativa ou não. Particularidades:
+    - Na criação da entidade, deverá vir pré marcada como "true", porém, será permitida a alteração antes de finalizar o cadastro;
+    - Também será permitida a alteração do valor depois do cadastro efetuado.
 
 
 1.1.1.3 Banco de dados
@@ -70,30 +69,25 @@ A entidade "wallet" (chamaremos de Carteira) é a entidade que representa os loc
 
 1.1.2.2 Propriedades
 
-- name: Este será o nome de identificação da entidade.
-        Particularidades:
-            - Preenchimento obrigatório;
-            - Deverá ser informado no momento do cadastro da entidade;
-            - Deverá possuir entre 3 e 30 caracteres;
-            - Não será permitido caracteres especiais (exceto: );
-            - Não será possível efetuar a alteração desta propriedade.
-- owner_id: Este atributo manterá a identificação do dono (owner) desta entidade
-        Particularidades:
-            - Preenchimento obrigatório;
-            - Não será possível efetuar a alteração desta propriedade.
-- main_wallet: Este atributo definirá se a entidade "wallet" é a principal para aquele "owner".
-        Particularidades:
-            - Caso não seja informado no momento do cadastro da entidade, o valor padrão deverá ser "false";
-            - Caso seja informado o valor "true" no momento do cadastro, deverá ser chamada a função #2 (item 1.1.2.4);
-            - A alteração do valor desse atributo é permitida respeitando as regras da função #3 (item 1.1.2.4).
-- active: Define se a entidade "owner" em questão está ativa ou não.
-        Particularidades:
-            - Na criação da entidade, deverá vir pré marcada como "true", porém, será permitida a alteração antes de finalizar o cadastro;
-            - Também será permitida a alteração do valor depois do cadastro efetuado.
-- description: Atributo utilizado para que seja possível salvar uma pequena descrição sobre o registro.
-        Particularidades:
-            - Deverá possuir no máximo 255 caracteres;
-            - Não será permitido caracteres especiais (exceto: ).
+- name: Este será o nome de identificação da entidade. Particularidades:
+    - Preenchimento obrigatório;
+    - Deverá ser informado no momento do cadastro da entidade;
+    - Deverá possuir entre 3 e 30 caracteres;
+    - Não será permitido caracteres especiais (exceto: );
+    - Não será possível efetuar a alteração desta propriedade.
+- owner_id: Este atributo manterá a identificação do dono (owner) desta entidade Particularidades:
+    - Preenchimento obrigatório;
+    - Não será possível efetuar a alteração desta propriedade.
+- main_wallet: Este atributo definirá se a entidade "wallet" é a principal para aquele "owner". Particularidades:
+    - Caso não seja informado no momento do cadastro da entidade, o valor padrão deverá ser "false";
+    - Caso seja informado o valor "true" no momento do cadastro, deverá ser chamada a função #2 (item 1.1.2.4);
+    - A alteração do valor desse atributo é permitida respeitando as regras da função #3 (item 1.1.2.4).
+- active: Define se a entidade "owner" em questão está ativa ou não. Particularidades:
+    - Na criação da entidade, deverá vir pré marcada como "true", porém, será permitida a alteração antes de finalizar o cadastro;
+    - Também será permitida a alteração do valor depois do cadastro efetuado.
+- description: Atributo utilizado para que seja possível salvar uma pequena descrição sobre o registro. Particularidades:
+    - Deverá possuir no máximo 255 caracteres;
+    - Não será permitido caracteres especiais (exceto: ).
 
 
 1.1.2.3 Banco de dados
@@ -122,10 +116,9 @@ A entidade "wallet" (chamaremos de Carteira) é a entidade que representa os loc
     - tamanho: 1;
     - não permite valor nulo;
     - valor padrão: 1.
-- description: Atributo utilizado para que seja possível salvar uma pequena descrição sobre o registro.
-        Particularidades:
-            - Deverá possuir no máximo 255 caracteres;
-            - Não será permitido caracteres especiais (exceto: ).
+- description: Referente ao atributo "description". Terá as seguintes características:
+    - tipo: varchar;
+    - tamanho: 255.
 
 - chave primária: 
     - id
@@ -151,24 +144,21 @@ A entidade "payment method" é a entidade que representa os métodos de pagament
 
 1.1.3.2 Propriedades
 
-- name: Este será o nome de identificação da entidade.
-        Particularidades:
-            - Preenchimento obrigatório;
-            - Deverá ser informado no momento do cadastro da entidade;
-            - Deverá possuir entre 3 e 30 caracteres;
-            - Não será permitido caracteres especiais (exceto: );
-            - Não será possível efetuar a alteração desta propriedade;
-            - O valor informado deverá ser único, não sendo possível que duas entidades "payment_method" possuam o mesmo "name".
-- type: Define se a entidade se refe a transações feitas por cédulas, transações bancárias ou cartão (débito ou crétido).
-        Particularidades:
-            - Preenchimento obrigatório;
-            - Deverá ser informado no momento do cadastro da entidade;
-            - Deverá aceitar somente os valores "0", "1" ou "2";
-            - Não será possível efetuar a alteração desta propriedade.
-- active: Define se a entidade "owner" em questão está ativa ou não.
-        Particularidades:
-            - Na criação da entidade, deverá vir pré marcada como "true", porém, será permitida a alteração antes de finalizar o cadastro;
-            - Também será permitida a alteração do valor depois do cadastro efetuado.
+- name: Este será o nome de identificação da entidade. Particularidades:
+    - Preenchimento obrigatório;
+    - Deverá ser informado no momento do cadastro da entidade;
+    - Deverá possuir entre 3 e 30 caracteres;
+    - Não será permitido caracteres especiais (exceto: );
+    - Não será possível efetuar a alteração desta propriedade;
+    - O valor informado deverá ser único, não sendo possível que duas entidades "payment_method" possuam o mesmo "name".
+- type: Define se a entidade se refe a transações feitas por cédulas, transações bancárias ou cartão (débito ou crétido). Particularidades:
+    - Preenchimento obrigatório;
+    - Deverá ser informado no momento do cadastro da entidade;
+    - Deverá aceitar somente os valores "0", "1" ou "2";
+    - Não será possível efetuar a alteração desta propriedade.
+- active: Define se a entidade "owner" em questão está ativa ou não. Particularidades:
+    - Na criação da entidade, deverá vir pré marcada como "true", porém, será permitida a alteração antes de finalizar o cadastro;
+    - Também será permitida a alteração do valor depois do cadastro efetuado.
 
 1.1.3.3 Banco de dados
 
@@ -212,23 +202,20 @@ A entidade "transaction type" é a entidade que representa os tipos de transaç�
 
 1.1.4.2 Propriedades
 
-- name: Este será o nome de identificação da entidade.
-        Particularidades:
-            - Preenchimento obrigatório;
-            - Deverá ser informado no momento do cadastro da entidade;
-            - Deverá possuir entre 3 e 45 caracteres;
-            - Não será permitido caracteres especiais (exceto: );
-            - Não será possível efetuar a alteração desta propriedade;
-            - O valor informado deverá ser único, não sendo possível que duas entidades "payment_method" possuam o mesmo "name".
-- relevance: Define a relevancia da transação ao qual esse registro é relacionado.
-        Particularidades:
-            - Preenchimento obrigatório;
-            - Deverá ser informado no momento do cadastro da entidade;
-            - Deverá aceitar somente os valores "0", "1" ou "2".
-- active: Define se a entidade "owner" em questão está ativa ou não.
-        Particularidades:
-            - Na criação da entidade, deverá vir pré marcada como "true", porém, será permitida a alteração antes de finalizar o cadastro;
-            - Também será permitida a alteração do valor depois do cadastro efetuado.
+- name: Este será o nome de identificação da entidade. Particularidades:
+    - Preenchimento obrigatório;
+    - Deverá ser informado no momento do cadastro da entidade;
+    - Deverá possuir entre 3 e 45 caracteres;
+    - Não será permitido caracteres especiais (exceto: );
+    - Não será possível efetuar a alteração desta propriedade;
+    - O valor informado deverá ser único, não sendo possível que duas entidades "payment_method" possuam o mesmo "name".
+- relevance: Define a relevancia da transação ao qual esse registro é relacionado. Particularidades:
+    - Preenchimento obrigatório;
+    - Deverá ser informado no momento do cadastro da entidade;
+    - Deverá aceitar somente os valores "0", "1" ou "2".
+- active: Define se a entidade "owner" em questão está ativa ou não. Particularidades:
+    - Na criação da entidade, deverá vir pré marcada como "true", porém, será permitida a alteração antes de finalizar o cadastro;
+    - Também será permitida a alteração do valor depois do cadastro efetuado.
 
 1.1.4.3 Banco de dados
 
