@@ -8,37 +8,38 @@ Comecei esse projeto já a tanto tempo que nem lembro mais, e nesse meio tempo m
 
 A ideia principal do sistema é criar uma API que seja capaz de gerenciar as finanças pessoais de uma determinada pessoa. Cadastro de compras, salário, empréstimos, geração de relatório de dívidas, previsão de gastos e entradas de valores, etc... A seguir, detalharei melhor cada função.
 
+Obs.: Optei por utilizar os nomes de entidades, atributos e funções em inglês, pois notei que esse é o padrão utilizado na maioria dos projetos. Por esse motivo nomeei as entidades como "owner", "wallet" e "transaction" ao invés de "pessoa", "carteira" e "transação". No entanto, para essa documentação, escolhi também manter alguns nomes em português, pois acredito que isso facilitará a compreenção do funcionamento do sistema. Por exemplo, desssa forma posso descrever algo como "O título da transação identificará a mesma" ao invés de "O valor do atributo 'tittle' da entidade 'transaction' identificará a mesma". Outra questão sobre a decisão de manter os nomes em inglês é que pode levar a algumas complicações, como não encontrar uma tradução, ou achar, mas não ser precisa como na versão em português. Como por exemplo "boleto", que não encontrei uma tradução, e "fatura", que devido a dúvidas na precisão da tradução, optei por dar um nome mais genérico baseado em características da entidade (credit_card_dates).
+
 
 ### 1.1. Entidades
 
 
-#### 1.1.1. Owner
+#### 1.1.1. Pessoa \ Pessoa Responsável (Owner)
 
 
 ##### 1.1.1.1. Descrição
 
-A entidade "owner" é a entidade que representa cada pessoa (fisica ou jurídica) a qual será atribuída a propriedade de determinadas transações, assim como dos valores dessas transaçãoes. Por exemplo, caso o usuário de nome "Rafael" opte por cadastrar uma transação de depósito referente a um pagamento dele para outra pessoa de nome "Marcos", este usuário deverá possuir dois cadastros de "owner", um para ele próprio (o qual será criado junto a conta no sistema) e outro para o destinatário do valor. Dessa forma, o sistema saberá que o valor foi transferido de uma pessoa para outra, e poderá calcular os novos valores pós transação.
+A entidade Pessoa (internamente ao sistema, ela é identificada como "owner") é a entidade que representa cada pessoa (fisica ou jurídica) a qual será atribuída a propriedade de determinadas transações, assim como dos valores dessas transações. Por exemplo, caso o usuário de nome "Rafael" opte por cadastrar uma transação de depósito referente a um pagamento dele para outra pessoa, de nome "Marcos", este usuário deverá possuir dois cadastros de Pessoa, um para ele próprio (o qual será criado junto a conta no sistema) e outro para o destinatário do valor. Dessa forma, o sistema saberá que o valor foi transferido de uma pessoa para outra, e poderá calcular os novos valores após a transação.
 
 
-##### 1.1.1.2. Propriedades
+##### 1.1.1.2. Atributos da entidade:
 
-Da entidade:
-
-- Não será permitido a excusão de um registro. Caso seja solicitado a exclusão, o atributo "active" é marcado como "false".
-
-
-Dos seus atributos:
-
-- name: Este será o nome de identificação da entidade. Particularidades:
-    - Deverá ser informado no momento do cadastro da entidade;
-    - Não será possível efetuar a alteração desta propriedade;
-    - O valor informado deverá ser único, não sendo possível que duas entidades "owner" possuam o mesmo "name".
-- active: Define se a entidade "owner" em questão está ativa ou não. Particularidades:
-    - Na criação da entidade, deverá vir pré marcada como "true", porém, será permitida a alteração antes de finalizar o cadastro;
-    - Também será permitida a alteração do valor depois do cadastro efetuado.
+- nome (name):
+    - objetivo:             Manter o nome pelo qual a entidade será identificada;
+    - obrigatório:          Sim;
+    - tipo dado:            Alfanumérico (a-z, A-Z, 0-9 e espaços).
+    - tamanho:              De 3 a 30 caracteres;
+    - alteração:            Não permitida.
+- ativo (active):
+    - objetivo:             Definir se o registro está ativo ou não;
+    - obrigatório:          Sim;
+    - tipo dado:            Booleano;
+    - alteração:            Permitida em algumas circunstâncias (ver caracteristica #3).
 
 
 ##### 1.1.1.3. Banco de dados
+
+Nome da tabela: owner
 
 - id: Identificador da entidade. Terá as seguintes características:
     - tipo: int;
@@ -46,12 +47,12 @@ Dos seus atributos:
     - auto incremento;
     - não permite valor nulo;
     - chave primaria.
-- name: Referente ao atributo "name". Terá as seguintes características:
+- name: Referente ao atributo "nome". Terá as seguintes características:
     - tipo: varchar;
     - tamanho: 30;
     - não permite valor nulo;
     - valor único;
-- active: Referente ao atributo "active". Terá as seguintes características:
+- active: Referente ao atributo "ativo". Terá as seguintes características:
     - tipo: char;
     - tamanho: 1;
     - não permite valor nulo;
@@ -61,50 +62,75 @@ Dos seus atributos:
     - id
 
 
-##### 1.1.1.4. Tarefas
+##### 1.1.1.4. Características da entidade
 
-Tarefa #1: Quando uma entidade "owner" é criada, uma entidade "wallet" (ver o item 1.1.2 para mais detalhes) deve ser criada automaticamente, e seu atributo "main_wallet" marcado como "true".
+- Caracteristica #1: Não é permitido a exclusão de um registro de Pessoa, apenas sua inativação;
+
+- Caracteristica #2: Não é permitido que duas Pessoas possuam o mesmo nome;
+
+- Caracteristica #3: Não é permitido a inativação de uma Pessoa que possua pendências (Tarefa #1);
+
+- Caracteristica #4: É exigido a existência de pelo menos uma Carteira (mais sobre a entidade Carteira no item 1.1.2) para cada Pessoa (Tarefa #2).
 
 
-#### 1.1.2. Wallet
+##### 1.1.1.5. Tarefas
+
+Tarefa #1: 
+- Objetivo: Validar se exitem "pendências" para uma determinada Pessoa.
+- Método: Buscar por todas as transações que estão em aberto para esta Pessoa, como débitos e emprestimos não devolvidos.
+
+Tarefa #2:
+- Objetivo: Garantir que toda Pessoa possuia pelo menos uma Carteira (ver o item 1.1.2 para mais detalhes).
+- Método: Criar uma Carteira automaticamente quando uma Pessoa é criada. A Carteira deve ser marcada como de posse da Pessoa em questão.
+
+Tarefa #3:
+- Objetivo: Identificar a carteira principal de uma Pessoa.
+- Método: Buscar a carteira relacionada a Pessoa em questão, que esteja marcada como a principal.
+
+
+#### 1.1.2. Carteira (wallet)
 
 
 ##### 1.1.2.1. Descrição
 
-A entidade "wallet" (chamaremos de Carteira) é a entidade que representa os locais onde os valores estão armazenados, como contas em bancos ou mesmo a carteira pessoal do usuário. Será possível que um usuário (owner) tenha mais uma Carteira. Por exemplo, o usuário "Rafael" poderá cadastrar três Carteiras, de nomes "Conta Corrente", "Carteira" e "Poupança", e dessa forma ele poderá separar os valores que estão em sua conta corrente dos valores que estão em sua poupança e do dinheiro que ele possui em sua carteira pessoal.
+A entidade Carteira (internamente ao sistema, ela é identificada como "wallet") é a entidade que representa os locais onde os valores estão armazenados, como contas em bancos ou mesmo a carteira pessoal do usuário. Será possível que uma Pessoa tenha mais de uma Carteira. Por exemplo, o usuário "Rafael" poderá cadastrar três Carteiras, de nomes "Conta Corrente", "Carteira" e "Poupança", e dessa forma ele poderá separar os valores que estão em sua conta corrente dos valores que estão em sua poupança e do dinheiro que ele possui em sua carteira pessoal.
 
 
-##### 1.1.2.2. Propriedades
+##### 1.1.2.2. Atributos da entidade:
 
-Da entidade:
+- nome (name):
+    - objetivo:             Manter o nome pelo qual a entidade será identificada;
+    - obrigatório:          Sim;
+    - tipo dado:            Alfanumérico (a-z, A-Z, 0-9 e espaços);
+    - tamanho:              De 3 a 30 caracteres;
+    - alteração:            Não permitida.
+- dono (owner_id):
+    - objetivo:             Manter o código de identificação do dono (Pessoa) desta entidade:
+    - obrigatório:          Sim;
+    - tipo dado:            Numérico.
+    - tamanho:              (condicionado ao tamanho do código);
+    - alteração:            Não permitida.
+- carteira principal (main_wallet):
+    - obejtivo:             Definir se dentre todas as Carteiras de uma Pessoa, esta é a principal delas;
+    - obrigatório:          Sim;
+    - tipo dado:            Booleano.
+    - alteração:            Permitida em algumas circunstâncias (ver caracteristica #3).
+- descrição (description): 
+    - objetivo:             Salvar uma pequena descrição sobre o registro;
+    - obrigatório:          Sim;
+    - tipo dado:            Alfanumérico (a-z, A-Z, 0-9 e espaços).
+    - tamanho:              Entre 0 e 255 caracteres;
+    - alteração:            Permitida.
+- ativo (active):
+    - objetivo:             Definir se o registro está ativo ou não;
+    - obrigatório:          Sim;
+    - tipo dado:            Booleano.
+    - alteração:            Permitida em algumas circunstâncias (ver caracteristicas #4 e #5).
 
-- Não será permitido a excusão de um registro. Caso seja solicitado a exclusão, o atributo "active" é marcado como "false".
 
+##### 1.1.2.4. Banco de dados
 
-Dos seus atributos:
-
-- name: Este será o nome de identificação da entidade. Particularidades:
-    - Preenchimento obrigatório;
-    - Deverá ser informado no momento do cadastro da entidade;
-    - Deverá possuir entre 3 e 30 caracteres;
-    - Não será permitido caracteres especiais (exceto: );
-    - Não será possível efetuar a alteração desta propriedade.
-- owner_id: Este atributo manterá a identificação do dono (owner) desta entidade Particularidades:
-    - Preenchimento obrigatório;
-    - Não será possível efetuar a alteração desta propriedade.
-- main_wallet: Este atributo definirá se a entidade "wallet" é a principal para aquele "owner". Particularidades:
-    - Caso não seja informado no momento do cadastro da entidade, o valor padrão deverá ser "false";
-    - Caso seja informado o valor "true" no momento do cadastro, deverá ser chamada a tarefa #2 (item 1.1.2.4);
-    - A alteração do valor desse atributo é permitida respeitando as regras da tarefa #3 (item 1.1.2.4).
-- description: Atributo utilizado para que seja possível salvar uma pequena descrição sobre o registro. Particularidades:
-    - Deverá possuir no máximo 255 caracteres;
-    - Não será permitido caracteres especiais (exceto: ).
-- active: Define se a entidade "wallet" em questão está ativa ou não. Particularidades:
-    - Na criação da entidade, deverá vir pré marcada como "true", porém, será permitida a alteração antes de finalizar o cadastro;
-    - Também será permitida a alteração do valor depois do cadastro efetuado.
-
-
-##### 1.1.2.3. Banco de dados
+Nome da tabela: wallet
 
 - id: Identificador da entidade. Terá as seguintes características:
     - tipo: int;
@@ -112,23 +138,23 @@ Dos seus atributos:
     - auto incremento;
     - não permite valor nulo;
     - chave primaria.
-- name: Referente ao atributo "name". Terá as seguintes características:
+- name: Referente ao atributo "nome". Terá as seguintes características:
     - tipo: varchar;
     - tamanho: 30;
     - não permite valor nulo;
-- owner_id: Referente ao atributo "owner_id". Terá as seguintes características:
+- owner_id: Referente ao atributo "dono". Terá as seguintes características:
     - tipo: int;
     - tamanho: 3;
     - não permite valor nulo.
-- main_wallet: Referente ao atributo "main_wallet". Terá as seguintes características:
+- main_wallet: Referente ao atributo "carteira principal". Terá as seguintes características:
     - tipo: char;
     - tamanho: 1;
     - não permite valor nulo;
     - valor padrão: 0.
-- description: Referente ao atributo "description". Terá as seguintes características:
+- description: Referente ao atributo "descrição". Terá as seguintes características:
     - tipo: varchar;
     - tamanho: 255.
-- active: Referente ao atributo "active". Terá as seguintes características:
+- active: Referente ao atributo "ativo". Terá as seguintes características:
     - tipo: char;
     - tamanho: 1;
     - não permite valor nulo;
@@ -137,57 +163,94 @@ Dos seus atributos:
 - chave primária: 
     - id
 - chave estrangeira: 
-    - owner_id faz referência ao atributo "id" da entidade "owner"
+    - owner_id faz referência ao atributo "id" da tabela "owner"
 
 
-##### 1.1.2.4. Tarefas
+##### 1.1.2.4. Características da entidade
 
-Tarefa #1: Quando uma entidade "owner" é criada, uma entidade "wallet" deve ser criada junto. Nesse caso, o atributo "owner_id" deve ser preenchido como o valor do atributo "id" da entidade "owner" recém criada, e o atributo "main_wallet" deve ser preenchido como "true".
-Tarefa #2: Quando uma nova entidade "wallet" é criada, e o valor do atributo "main_wallet" vier marcado como "true", deverá ser confirmado com o usuário se ele deseja realmente marcar a entidade desta forma. Caso seja confirmado, uma rotina deverá marcar o atributo "main_wallet" de todas as outras entidades "wallet" neste usuário (owner) como "false", e então efetuar o cadastro.
-Tarefa #3: Somente será possível a alteração do valor do atributo "main_wallet" para "true". Caso seja necessário que alguma entidade tenha esse atributo marcada como "false", outra entidade deverá ter seu atributo "main_wallet" marcado como "true".
+- Caracteristica #1: Não é permitida a exclusão de um registro de Carteira, apenas sua inativação;
+
+- Caracteristica #2: Quando for a única Carteira de uma Pessoa, será obrigatóriamente marcada como a carteira principal (Tarefa #1);
+
+- Caracteristica #3: Quando uma carteira é marcada como principal, as demais Carteiras (da mesma Pessoa) são automaticamente desmarcadas (Tarefa #2);
+
+- Caracteristica #4: Não é permitida a inativação de uma Carteira que esteja marcada como principal (como quando for a única), que tenha valores (Tarefa #3) ou que possua pendências (Tarefa #4);
+
+- Caracteristica #5: Não é permitida a reativação de uma Carteira cujo dono (Pessoa) estiver inativo (Tarefa #5).
 
 
-#### 1.1.3. Card
+##### 1.1.2.5. Tarefas
+
+Tarefa #1: 
+- Objetivo: Garantir a existência de pelo menos uma carteira principal para cada Pessoa.
+- Método: Buscar todas as Carteiras relacionadas a Pessoa em questão, caso não existe nenhuma, a Carteira que estiver sendo salva será marcada como sendo a principal.
+
+Tarefa #2: 
+- Objetivo: Garantir a existência de uma única carteira principal para cada Pessoa.
+- Método: Buscar todas as Carteiras relacionadas a Pessoa em questão, que estejam marcadas como principal. Caso seja encontrado alguma Carteira, a mesma será desmarcada como principal.
+
+Tarefa #3: 
+- Objetivo: Buscar o valor total presente em uma determinada Carteira.
+- Método: Buscar por todas as transações (já quitadas) relacionadas a uma Carteira, e efetuar o somatório destes valores (valores de entradas menos valores de saída).
+
+Tarefa #4: 
+- Objetivo: Verificar a existencia de valores pendentes (crédito, emprestimos e transações agendadas) para uma determinada Carteira.
+- Método: Buscar por todas as transações pendentes (crédito, emprestimos e transações agendadas...) relacionadas a uma Carteira.
+
+Tarefa #5: 
+- Objetivo: Garantir que uma Carteira não seja ativada quando seu usuário estiver desativado.
+- Método: Confirmar se o dono (Pessoa) da carteira em questão está ativo.
+
+
+#### 1.1.3. Cartão (Card)
 
 
 ##### 1.1.3.1. Descrição
 
-A entidade "card" (chamaremos de Cartão) é a entidade que representa os cartões de pagamento. Será possível criar cartões do tipo crétido OU débito, não sendo permitido cartão do tipo débito E crédito. O Cartão sempre será relacionada a uma entidade "wallet" (chamaremos de Carteira), de onde os valores movimentados pelo Cartão serão subtraídos. Ex.: Considere um Cartão de nome "NuBank débito", e que está relacionado a Carteira "NuBank". Considere também uma compra feita de R$ 10,00, e que foi paga com esse cartão. Nesse caso, a Carteira que será relacionada a venda, e portanto, de onde será subtraído o valor da transação, será a de nome "NuBank".
+A entidade Cartão (internamente ao sistema, ela é identificada como "card") é a entidade que representa os cartões de pagamento. Será possível criar cartões do tipo crétido ou débito, não sendo permitido cartão do tipo débito e crédito. O Cartão sempre será relacionada a uma entidade Carteira, de onde os valores movimentados pelo Cartão serão subtraídos. Ex.: Considere um Cartão de nome "NuBank débito", e que está relacionado a Carteira "NuBank". Considere também uma compra feita de R$ 10,00, e que foi paga com esse cartão. Nesse caso, a Carteira que será relacionada a venda, e portanto, de onde será subtraído o valor da transação, será a de nome "NuBank".
 
 
-##### 1.1.3.2. Propriedades
+##### 1.1.3.2. Atributos da entidade:
 
-Da entidade:
+- carteira (wallet_id):
+    - objetivo:             Manter o código de identificação da Carteira a qual o cartão pertence:
+    - obrigatório:          Sim;
+    - tipo dado:            Numérico.
+    - tamanho:              (condicionado ao tamanho do código);
+    - alteração:            Não permitida.
+- nome (name):
+    - objetivo:             Manter o nome pelo qual a entidade será identificada;
+    - obrigatório:          Sim;
+    - tipo dado:            Alfanumérico (a-z, A-Z, 0-9 e espaços);
+    - tamanho:              De 3 a 20 caracteres;
+    - alteração:            Não permitida.
+- crédito (credit):
+    - obejtivo:             Define se o Cartão é do tipo "crédito";
+    - obrigatório:          Sim;
+    - tipo dado:            Booleano.
+    - alteração:            Não permitida.
+- primeiro dia do mês (first_day_month):
+    - objetivo:             Define o primeiro dia da fatura do cartão;
+    - obrigatório:          Sim;
+    - tipo dado:            Numérico;
+    - tamanho:              Valores de 1 até 28;
+    - alteração:            Permitida.
+- dias para o vencimento (days_to_expiration):
+    - objetivo:             Será utilizado para o calculo do vencimento da fatura. O valor informado aqui será acrecido (em dias) a data do fechamento da fatura;
+    - obrigatório:          Sim;
+    - tipo dado:            Numérico;
+    - tamanho:              Valores de 1 até 20;
+    - alteração:            Permitida.
+- ativo (active):
+    - objetivo:             Definir se o registro está ativo ou não;
+    - obrigatório:          Sim;
+    - tipo dado:            Booleano.
+    - alteração:            Permitida em algumas circunstâncias (ver caracteristicas #4 e #5).
 
-- Não será permitido a exclusão de um registro. Caso seja solicitado a exclusão, o atributo "active" é marcado como "false";
-- Uma vez inativado, não será permitido a re-ativação de um registro "card".
-
-
-Dos seus atributos:
-
-- wallet_id: Salva o código da Carteira (wallet) a qual esse Cartão pertence. Se relaciona com a entidade "wallet". Particularidades:
-    - Preenchimento obrigatório;
-    - Deverá ser informado no momento do cadastro da entidade;
-    - Não será possível efetuar a alteração desta propriedade.
-- name: Este será o nome de identificação da entidade. Particularidades:
-    - Preenchimento obrigatório;
-    - Deverá ser informado no momento do cadastro da entidade;
-    - Deverá possuir entre 3 e 20 caracteres;
-    - Não será permitido caracteres especiais (exceto: );
-    - Não será possível efetuar a alteração desta propriedade.
-- credit: Define se o Cartão é do tipo "crédito". Caso não seja, seŕá considerado como "débito". Particularidades:
-    - Não será possível efetuar a alteração desta propriedade.
-- first_day_month: Define o primeiro dia da fatura do cartão. Por exemplo: Caso definido com valor 5, toda fatura se iniciará dia 5 e será fechada dia 4 do mês seguinte. Particularidades:
-    - Preenchimento obrigatório;
-    - O valor informado deverá ser maior ou igual a 1 e menor ou igual a 28. Essa regra visa considerar somente os dias válidos do mês. Não será permitido dias 29, 30 e 31 pois ne todo mês tem essa quantidade de dias.
-- days_to_expiration: Será utilizado para o calculo do vencimento da fatura. O valor informado aqui será acrecido (em dias) a data do fechamento da fatura. Por exemplo: Caso definido com valor 6, uma fatura que fechou dia 4 terá seu vencimento definido para o dia 10 do mesmo mês. Particularidades:
-    - Preenchimento obrigatório;
-    - O valor informado deverá ser maior ou igual a 1 e menor ou igual a 20.
-- active: Define se a entidade "card" em questão está ativa ou não. Particularidades:
-    - Na criação da entidade, deverá vir pré marcada como "true", porém, será permitida a alteração antes de finalizar o cadastro;
-    - Também será permitida a alteração do valor depois do cadastro efetuado (mesmo marcado como "false", a faturas em aberto ainda serão cobradas).
 
 ##### 1.1.3.3. Banco de dados
+
+Nome da tabela: card
 
 - id: Identificador da entidade. Terá as seguintes características:
     - tipo: int;
@@ -195,29 +258,29 @@ Dos seus atributos:
     - auto incremento;
     - não permite valor nulo;
     - chave primaria.
-- wallet_id: Referente ao atributo "wallet_id". Terá as seguintes características:
+- wallet_id: Referente ao atributo "carteira". Terá as seguintes características:
     - tipo: int;
     - tamanho: 4;
     - não permite valor nulo.
-- name: Referente ao atributo "name". Terá as seguintes características:
+- name: Referente ao atributo "nome". Terá as seguintes características:
     - tipo: varchar;
     - tamanho: 20;
     - não permite valor nulo;
     - valor único.
-- credit: Referente ao atributo "credit". Terá as seguintes características:
+- credit: Referente ao atributo "crédito". Terá as seguintes características:
     - tipo: char;
     - tamanho: 1;
     - não permite valor nulo;
     - valor padrão: 0.
-- first_day_month: Referente ao atributo "first_day_month". Terá as seguintes características:
+- first_day_month: Referente ao atributo "primeiro dia do mês". Terá as seguintes características:
     - tipo: int;
     - tamanho: 2;
     - não permite valor nulo;
-- days_to_expiration: Referente ao atributo "days_to_expiration". Terá as seguintes características:
+- days_to_expiration: Referente ao atributo "dias para o vencimento". Terá as seguintes características:
     - tipo: int;
     - tamanho: 2;
-    - não permite valor nulo;
-- active: Referente ao atributo "active". Terá as seguintes características:
+    - não permite valor nulo.
+- active: Referente ao atributo "ativo". Terá as seguintes características:
     - tipo: char;
     - tamanho: 1;
     - não permite valor nulo;
@@ -226,12 +289,37 @@ Dos seus atributos:
 - chave primária: 
     - id
 - chave estrangeira: 
-    - wallet_id faz referência ao atributo "id" da entidade "wallet"
+    - wallet_id faz referência ao atributo "id" da tabela "wallet"
 
 
-##### 1.1.3.4. Tarefas
+##### 1.1.3.4. Características da entidade
 
-Tarefa #1: Quando uma entidade "card" é criada, sua fatura (ver o item 1.1.4 para mais detalhes) deve começar a ser gerada automaticamente.
+- Caracteristica #1: Não é permitida a exclusão de um registro de Carteira, apenas sua inativação;
+
+- Caracteristica #2: É permitida a inativação de um Cartão, porém, isso não afeta suas fatura, que permanecerão em aberto até que sejam quitadas;
+
+- Caracteristica #3: Não é permitida a reativação de um Cartão;
+
+- Caracteristica #4: Quando uma entidade Cartão é criada, sua primeira Fatura (mais sobre a entidade Fatura no item 1.1.4) é criada automaticamente. Além de ser adicionado (o Cartão) a Rotina diária de fechamento/criação de faturas.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 #### 1.1.4. Credit Card Dates
@@ -263,23 +351,26 @@ Dos seus atributos:
     - Seu valor deve ser o dia seguinte ao fechamento da última fatura informada. Ex.: Se a última fatura foi do dia 05/05/2023 até o dia 04/06/2023, então está fatura deve iniciar em 05/06/2023;
     - Caso não haja faturas anteriores, deve-se calcular a data da seguinte forma: Pega-se o valor do atributo "first_day_month" do Cartão relacionado (entidade "card"), e calcula-se a última data para esse dia, que seja anterior a data atual. Ver a tarefa #1 (item 1.1.4.4) para mais detalhes;
     - Não deve ser permitido a alteração deste valor após seu cadastro;
-    - Deverá respeitar o formado yyy-mm-dd. Ex.: 2023-01-15.
+    - Deverá respeitar o formato yyyy-mm-dd. Ex.: 2023-01-15.
 - end_date: Este atributo salvará o primeiro dia da fatura. Particularidades:
     - Preenchimento obrigatório;
     - Deverá ser informado no momento do cadastro da entidade;
     - Seu valor deve ser o dia anterior ao dia de início da próxima fatura. Ver a tarefa #2 (item 1.1.4.4) para mais detalhes;
     - O valor deste atributo deve ser sempre maior que o valor do atributo "start_date";
-    - Deverá respeitar o formado yyy-mm-dd. Ex.: 2023-01-15.
+    - Deverá respeitar o formato yyyy-mm-dd. Ex.: 2023-01-15.
 - due_date: Este atributo salvará a data de vencimento da fatura. Particularidades:
     - Preenchimento obrigatório;
     - Deverá ser informado no momento do cadastro da entidade;
     - O valor deste atributo deve ser sempre maior que o valor do atributo "end_date";
     - O valor do atributo é calculado seguindo as regras apresentadas na tarefa #3 (item 1.1.4.4);
     - O valor pode ser alterado posteriormente, desde que a fatura não esteja quitada.
-    - Deverá respeitar o formado yyy-mm-dd. Ex.: 2023-01-15.
+    - Deverá respeitar o formato yyyy-mm-dd. Ex.: 2023-01-15.
 - value: Registra o valor total da fatura. Particularidades:
-    - O valor deste atributo deve ser preenchido somente quando a fatura em questão estiver quitada. Quando isto ocorrer, não será mais permitido a alteração de nenhum registro relacionado a esta fatura;
-    - Deverá respeitar o formado 000000.00. Ex.: 1225.75.
+    - O valor deste atributo será atualizado sempre que uma nova transação referente a essa fatura for feita;
+    - Deverá respeitar o formato 000000.00. Ex.: 1225.75.
+- paid: Define se a Fatura em questão está quitada ou não. Particularidades:
+    - Na criação da entidade deverá ser marcado como "false";
+    - Uma vez quitada, esse atributo será alterado para "true". Nesse caso, não será mais permitido a exclusão nem do registro da mesma, nem das transações referentes a essa fatura.
 
 
 ##### 1.1.4.3. Banco de dados
@@ -300,6 +391,11 @@ Dos seus atributos:
 - value: Referente ao atributo "value". Terá as seguintes características:
     - tipo: double;
     - tamanho: 8 sendo 2 casas decimais.
+- paid: Referente ao atributo "paid". Terá as seguintes características:
+    - tipo: char;
+    - tamanho: 1;
+    - não permite valor nulo;
+    - valor padrão: 1.
 
 - chave primária: 
     - id
@@ -357,7 +453,7 @@ A entidade "payment method" é a entidade que representa os métodos de pagament
 
 Da entidade:
 
-- Não será permitido a excusão de um registro. Caso seja solicitado a exclusão, o atributo "active" é marcado como "false".
+- Não será permitido a exclusão de um registro. Caso seja solicitado a exclusão, o atributo "active" é marcado como "false".
 
 
 Dos seus atributos:
@@ -417,7 +513,7 @@ A entidade "transaction type" é a entidade que representa os tipos de transaç�
 
 Da entidade:
 
-- Não será permitido a excusão de um registro. Caso seja solicitado a exclusão, o atributo "active" é marcado como "false".
+- Não será permitido a exclusão de um registro. Caso seja solicitado a exclusão, o atributo "active" é marcado como "false".
 
 
 Dos seus atributos:
@@ -490,14 +586,16 @@ Dos seus atributos:
 
 ##### 1.1.7.1. Descrição
 
-A entidade "transaction" é a entidade (junto com a entidade "installment", item 1.1.6) que representa as diversas transações salvas no sistema.
+A entidade "transaction" é utilizada (junto com a entidade "installment", item 1.1.8) para representar as diversas transações salvas no sistema.
 
 
 ##### 1.1.7.2. Propriedades
 
 Da entidade:
 
-- Será permitido a exclusão de um registro, exeto quando se tratar de uma venda no crédito, e a fatura referênte a essa transação já estiver quitada.
+- Será permitido a exclusão de um registro, exceto quando se tratar de uma venda no crédito, e a fatura referente a essa transação já estiver quitada.
+- Quando uma venda no crédito for lançada, será necessário conferir se a data da transação ("transaction_date") é a mesma do dia do lançamento. Caso seja anterior, é necessário confirmar se ela pertence a uma fatura ainda em aberto.
+- Apesar do valor bruto da transação (atributo "gross_value") ser informado na criação da transação, outros valores podem ser calculados a partir de outros atributos. Dois deles, o valor liquido e o valor final, serão calculados no momento que forem solicitados. Ver mais sobre isso nas tarefas #1 e #2 descritas no item 1.1.7.4.
 
 
 Dos seus atributos:
@@ -510,25 +608,30 @@ Dos seus atributos:
 - transaction_date: Este atributo salvará a data em que a transação foi efetuada. Particularidades:
     - Preenchimento obrigatório;
     - Deverá ser informado no momento do cadastro da entidade;
-    - Deverá respeitar o formado yyyy-mm-dd. Ex.: 2023-01-15.
+    - Alteração permitida somente se suas parcelas (entidade "installment") não pertencerem à faturas (entidade "credit_card_dates") já fechadas (atributo "paid" marcado como "true");
+    - Deverá respeitar o formato yyyy-mm-dd. Ex.: 2023-01-15.
 - processing_date: Este atributo salvará a data em que a transação foi processada. Será útil para os casos de compras no cartão, onde nem sempre a transação é processada no mesmo dia da transação. Particularidades:
     - Preenchimento obrigatório;
     - Deverá ser informado no momento do cadastro da entidade;
     - Por padrão, será o mesmo valor do atributo "transaction_date", porém, pode ser informado um valor diferente;
     - O valor deste atributo deve ser sempre igual ou maior que o valor do atributo "transaction_date";
-    - Sua alteração será permitida somente se a fatura correspondente a transação não estiver fechada;
-    - Deverá respeitar o formado yyy-mm-dd. Ex.: 2023-01-15.
+    - Alteração permitida somente se suas parcelas (entidade "installment") não pertencerem à faturas (entidade "credit_card_dates") já fechadas (atributo "paid" marcado como "true");
+    - Deverá respeitar o formato yyyy-mm-dd. Ex.: 2023-01-15.
 - transaction_type: Salva o tipo de transação que o registro representa. Se relaciona com a entidade "transaction_type". Particularidades:
     - Preenchimento obrigatório;
     - Deverá ser informado no momento do cadastro da entidade.
 - gross_value: Registra o valor total da transação, no momento que esta é efetuada (não considera descontos ou arredondamentos). Particularidades:
     - Preenchimento obrigatório;
     - Deverá ser informado no momento do cadastro da entidade;
-    - Deverá respeitar o formado 00000.00. Ex.: 25.75.
+    - Alteração permitida somente se suas parcelas (entidade "installment") não pertencerem à faturas (entidade "credit_card_dates") já fechadas (atributo "paid" marcado como "true");
+    - Em caso de alteração, respeitar a tarefa #4 (item 1.1.7.4);
+    - Deverá respeitar o formato 00000.00. Ex.: 25.75.
 - discount_value: Registra o valor de desconto dado a transação, no momento que esta é efetuada (não considera descontos aplicados posteriormente nas parcelas). Particularidades:
     - Preenchimento obrigatório;
     - Deverá ser informado no momento do cadastro da entidade;
-    - Deverá respeitar o formado 00000.00. Ex.: 25.75.
+    - Alteração permitida somente se suas parcelas (entidade "installment") não pertencerem à faturas (entidade "credit_card_dates") já fechadas (atributo "paid" marcado como "true");
+    - Em caso de alteração, respeitar a tarefa #4 (item 1.1.7.4);
+    - Deverá respeitar o formato 00000.00. Ex.: 25.75.
 - relevance: Define a relevancia da transação ao qual esse registro é relacionado. Particularidades:
     - Preenchimento obrigatório;
     - Deverá ser informado no momento do cadastro da entidade;
@@ -543,7 +646,7 @@ Dos seus atributos:
 
 - id: Identificador da entidade. Terá as seguintes características:
     - tipo: int;
-    - tamanho: 4;
+    - tamanho: 6;
     - auto incremento;
     - não permite valor nulo;
     - chave primaria.
@@ -585,13 +688,125 @@ Dos seus atributos:
 
 ##### 1.1.7.4. Tarefas
 
-Tarefa #1: .
+Tarefa #1: O valor líquido da transação é calculado subtraindo o valor do atributo 'discount_value' do valor do atributo 'gross_value'.
 
--alterar data da transação, quando relativo a vendas no cartão, somente se fatura aberta
--alterar data da processamento, quando relativo a vendas no cartão, somente se fatura aberta
--atributos que são permitidos a alteração
--atributos que são permitidos a alteração somente se a fatura ainda não esiver fechada
--confirmar se o valor da transação confere com o valor das parcelas. O valor da transação deve ser calculada subtraindo o valor do atributo 'discount_value' do valor do atributo 'gross_value'. O valor das parcelas é econtrado osomando os valores de 'gross_value' de todas as parcelas
+Tarefa #2: O valor final da transação é calculado somando os valores finais de todas as suas parcelas (entidades "installment").
+
+Tarefa #3: O valor bruto das parcelas (entidades "installment") é calculado somando o valor bruto (atributo "gross_value") de cada uma das parcelas de uma transação.
+
+Tarefa #4: Deve confirmar se o valor da transação (Tarefa #1) confere com o valor das parcelas (Tarefa #3). Essa verificação deve ser feita sempre que um cadastro novo for inserido, assim como quando houver alterações nos valores das parcelas ou da transação
+
+
+
+
+
+
+
+create table finance_api.installment (
+	transaction int(6) not null, 
+	installment_number int(2) not null, 
+	due_date date not null, 
+
+	gross_value double(7,2) not null, 
+	discount_value double(7,2) not null, 
+	interest_value double(7,2) not null, 
+	rounding_value double(7,2) not null, 
+
+	destination_wallet int(4) not null, 
+	source_wallet int(4) default null, 
+	payment_method int(3) default null, 
+	payment_date date default null, 
+    card
+	primary key (transaction, installment_number), 
+	constraint fk_installment_transaction foreign key (transaction) references transaction (id) on delete cascade, 
+	constraint fk_installment_payment_method foreign key (payment_method) references payment_method (id), 
+	constraint fk_installment_source_wallet foreign key (source_wallet) references wallet (id), 
+	constraint fk_installment_destination_wallet foreign key (destination_wallet) references wallet (id) 
+);
+
+#### 1.1.8. Installment
+
+
+##### 1.1.8.1. Descrição
+
+A entidade "installment" é utilizada para representar as parcelas das diversas transações salvas no sistema.
+
+
+##### 1.1.8.2. Propriedades
+
+Da entidade:
+
+- Apesar de ser tratada como uma "parcela", a entidade "installment" também é utilizada para vendas no débito e a vista. A diferença será a quantidade de registros de "installments" lançados. Para vendas no crédito, será um registro para cada parcela, enquanto nos demais casos será somente um. Em todos os casos somente existirá um registro "transaction" referenciado.
+- Não será permitido a exclusão das parcelas de uma venda. Caso seja necessário alguma alteração, será preciso excluir a venda inteira (transaction e installment) e relança-la. Mesmo nesse caso, será preciso respeitar as regras para exclusão de uma "transaction";
+
+
+Dos seus atributos:
+- transaction: Referencia a transação a qual a parcela pertence. Se relaciona com a entidade "transaction". Particularidades:
+    - Preenchimento obrigatório;
+    - Deverá ser informado no momento do cadastro da entidade.
+- installment_number: Identificação da parcela. Particularidades:
+    - Preenchimento obrigatório;
+    - Deverá ser informado no momento do cadastro da entidade;
+    - Deverá respeitar a ordem do vencimento das parcelas (a primeira parcela deve ter valor 1, a segunda 2, a terceira 3, etc...).
+- due_date: Este atributo salvará a data de vencimento da fatura. Particularidades:
+    - O valor deste atributo deve ser sempre maior que o valor do atributo "transaction_date" da entidade "transaction";
+    - Deverá respeitar o formato yyyy-mm-dd. Ex.: 2023-01-15;
+    - Deverá ser gerado com o mesmo dia da data da venda (atributo "transaction_date" da entidade "transaction"), porém, nos meses sequentes. Ex.: Uma venda no dia 25/05/2023 terá parcelas lancadas nos dias 25/05/2023, 25/06/2023, 25/07/2023... No entanto, quando uma nova fatura for gerada, a data poderá ser alterada seguindo as regras descritas na tarefa #1 no item 1.1.8.4.
+
+
+- gross_value: Registra o valor inicial da parcela (não considera descontos, arredondamentos, juros, etc). Particularidades:
+    - Preenchimento obrigatório;
+    - Deverá ser informado no momento do cadastro da entidade;
+    - Alteração permitida somente se suas parcelas (entidade "installment") não pertencerem à faturas (entidade "credit_card_dates") já fechadas (atributo "paid" marcado como "true");
+    - Em caso de alteração, respeitar a tarefa #1 (item 1.1.7.4);
+    - Deverá respeitar o formato 00000.00. Ex.: 25.75.
+- discount_value: Registra o valor de desconto dado a transação, no momento que esta é efetuada (não considera descontos aplicados posteriormente nas parcelas). Particularidades:
+    - Preenchimento obrigatório;
+    - Deverá ser informado no momento do cadastro da entidade;
+    - Alteração permitida somente se suas parcelas (entidade "installment") não pertencerem à faturas (entidade "credit_card_dates") já fechadas (atributo "paid" marcado como "true");
+    - Em caso de alteração, respeitar a tarefa #1 (item 1.1.7.4);
+    - Deverá respeitar o formato 00000.00. Ex.: 25.75.
+
+
+##### 1.1.8.3. Banco de dados
+- transaction: Referente ao atributo "transaction". Terá as seguintes características:
+    - tipo: int;
+    - tamanho: 3;
+    - não permite valor nulo;
+    - chave primaria.
+- installment_number: Referente ao atributo "transaction". Terá as seguintes características:
+    - tipo: int;
+    - tamanho: 2;
+    - não permite valor nulo;
+    - chave primaria.
+- due_date: Referente ao atributo "due_date". Terá as seguintes características:
+    - tipo: date;
+    - não permite valor nulo.
+
+
+- gross_value: Referente ao atributo "gross_value". Terá as seguintes características:
+    - tipo: double;
+    - tamanho: 7 sendo 2 casas decimais;
+    - não permite valor nulo.
+- discount_value: Referente ao atributo "discount_value". Terá as seguintes características:
+    - tipo: double;
+    - tamanho: 7 sendo 2 casas decimais;
+    - não permite valor nulo.
+
+
+- chave primária: 
+    - id, installment_number
+- chave estrangeira: 
+    - transaction_type faz referência ao atributo "id" da entidade "transaction type"
+
+
+##### 1.1.8.4. Tarefas
+
+Tarefa #1: Quando uma fatura nova é gerada, as parcelas que pertencem a essa fatura terão suas datas de vencimento (due_date) alteradas para o primeiro dia da fatura. Ex.: Considere uma parcela que vence dia 25/06/2023. Considere também a fatura entre os dias 05/06/2023 e 04/07/2023. Nesse caso, quando a fatura for criada, a data de vencimento deve ser alterada de 25/06/2023 para 05/06/2023 (primeiro dia da fatura). Obs.: Essa regra só vale para os casos onde a fatura ainda não foi criada. Quando uma parcela é lançada com uma data de vencimento que percente a uma fatura já criada (caso da primeira parcela de uma venda), a data de vencimento deve ser mantida. Ex.: Consideranto a fatura em aberto ser entre os dias 05/06/2023 e 04/07/2023. Considerando também que o dia em questão é 25/06/2023. Caso uma venda seja lançada, a data de vencimento da primeira parcela será 25/06/2023 (não sofrendo a alteração).
+
+
+
+
 
 
 
@@ -607,25 +822,7 @@ installments
 
 
 
-create table finance_api.installment (
-	transaction int(6) not null, 
-	installment_number int(2) not null, 
-	due_date date not null, 
-	gross_value double(7,2) not null, 
-	discount_value double(7,2) not null, 
-	interest_value double(7,2) not null, 
-	rounding_value double(7,2) not null, 
-	destination_wallet int(4) not null, 
-	source_wallet int(4) default null, 
-	payment_method int(3) default null, 
-	payment_date date default null, 
-    card
-	primary key (transaction, installment_number), 
-	constraint fk_installment_transaction foreign key (transaction) references transaction (id) on delete cascade, 
-	constraint fk_installment_payment_method foreign key (payment_method) references payment_method (id), 
-	constraint fk_installment_source_wallet foreign key (source_wallet) references wallet (id), 
-	constraint fk_installment_destination_wallet foreign key (destination_wallet) references wallet (id) 
-);
+
 
 
 
@@ -646,9 +843,16 @@ create table finance_api.installment (
 
 
 
+Revisar
 
 
-
-
+Alterações de funções
 
 considerar a possibilidade de permitir a alteração do nomes dos registros (como o nome dos cartões), porém manter salvos os nomes antigos. COmo uma forma de garantir que se tenha o registro dos nomes antigos, evitando que alterações no nome causem erros. Por exemplo, trocar o nome de um cartão repetidas vezes, misturando assim os movimentos.
+
+no caso da transaction, uma solução poderia ser um outro campo, para um "segundo titulo". Quando uma transação é criada, os dois campos são preenchidos da mesma forma, mas um deles permite a alteração. Assim, mesmo com um deles alterado, sempre existirá o registro do nome original
+
+
+Alterações no doc
+
+Chamar as entidades pelo onme "traduzido" e não pelo "original". Por exemplo informar "1.1.8. Parcela (Installment)" ao invés de "1.1.8. Installment". Ficando mais simples as descrições pois não precisaria ficar usando o nome em inglês
