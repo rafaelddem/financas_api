@@ -75,17 +75,14 @@ Nome da tabela: owner
 
 ##### 1.1.1.5. Tarefas
 
-Tarefa #1: 
-- Objetivo: Validar se exitem "pendências" para uma determinada Pessoa.
-- Método: Buscar por todas as transações que estão em aberto para esta Pessoa, como débitos e emprestimos não devolvidos.
+Tarefa #1: Validar se exitem "pendências" para uma determinada Pessoa.
+> Buscar por todas as transações que estão em aberto para esta Pessoa, como débitos e emprestimos não devolvidos.
 
-Tarefa #2:
-- Objetivo: Garantir que toda Pessoa possuia pelo menos uma Carteira (ver o item 1.1.2 para mais detalhes).
-- Método: Criar uma Carteira automaticamente quando uma Pessoa é criada. A Carteira deve ser marcada como de posse da Pessoa em questão.
+Tarefa #2: Garantir que toda Pessoa possuia pelo menos uma Carteira (ver o item 1.1.2 para mais detalhes).
+> Criar uma Carteira automaticamente quando uma Pessoa é criada. A Carteira deve ser marcada como de posse da Pessoa em questão.
 
-Tarefa #3:
-- Objetivo: Identificar a carteira principal de uma Pessoa.
-- Método: Buscar a carteira relacionada a Pessoa em questão, que esteja marcada como a principal.
+Tarefa #3: Identificar a carteira principal de uma Pessoa.
+> Buscar a carteira relacionada a Pessoa em questão, que esteja marcada como a principal.
 
 
 #### 1.1.2. Carteira (wallet)
@@ -181,25 +178,20 @@ Nome da tabela: wallet
 
 ##### 1.1.2.5. Tarefas
 
-Tarefa #1: 
-- Objetivo: Garantir a existência de pelo menos uma carteira principal para cada Pessoa.
-- Método: Buscar todas as Carteiras relacionadas a Pessoa em questão, caso não existe nenhuma, a Carteira que estiver sendo salva será marcada como sendo a principal.
+Tarefa #1: Garantir a existência de pelo menos uma carteira principal para cada Pessoa.
+> Buscar todas as Carteiras relacionadas a Pessoa em questão, caso não existe nenhuma, a Carteira que estiver sendo salva será marcada como sendo a principal.
 
-Tarefa #2: 
-- Objetivo: Garantir a existência de uma única carteira principal para cada Pessoa.
-- Método: Buscar todas as Carteiras relacionadas a Pessoa em questão, que estejam marcadas como principal. Caso seja encontrado alguma Carteira, a mesma será desmarcada como principal.
+Tarefa #2: Garantir a existência de uma única carteira principal para cada Pessoa.
+> Buscar todas as Carteiras relacionadas a Pessoa em questão, que estejam marcadas como principal. Caso seja encontrado alguma Carteira, a mesma será desmarcada como principal.
 
-Tarefa #3: 
-- Objetivo: Buscar o valor total presente em uma determinada Carteira.
-- Método: Buscar por todas as transações (já quitadas) relacionadas a uma Carteira, e efetuar o somatório destes valores (valores de entradas menos valores de saída).
+Tarefa #3: Buscar o valor total presente em uma determinada Carteira.
+> Buscar por todas as transações (já quitadas) relacionadas a uma Carteira, e efetuar o somatório destes valores (valores de entradas menos valores de saída).
 
-Tarefa #4: 
-- Objetivo: Verificar a existencia de valores pendentes (crédito, emprestimos e transações agendadas) para uma determinada Carteira.
-- Método: Buscar por todas as transações pendentes (crédito, emprestimos e transações agendadas...) relacionadas a uma Carteira.
+Tarefa #4: Verificar a existencia de valores pendentes (crédito, emprestimos e transações agendadas) para uma determinada Carteira.
+> Buscar por todas as transações pendentes (crédito, emprestimos e transações agendadas...) relacionadas a uma Carteira.
 
-Tarefa #5: 
-- Objetivo: Garantir que uma Carteira não seja ativada quando seu usuário estiver desativado.
-- Método: Confirmar se o dono (Pessoa) da carteira em questão está ativo.
+Tarefa #5: Garantir que uma Carteira não seja ativada quando seu usuário estiver desativado.
+> Confirmar se o dono (Pessoa) da carteira em questão está ativo.
 
 
 #### 1.1.3. Cartão (Card)
@@ -313,67 +305,56 @@ Nome da tabela: card
 
 
 
-
-
-
-
-
-
-
-
-
-#### 1.1.4. Credit Card Dates
+#### 1.1.4. Fatura (Credit Card Dates)
 
 
 ##### 1.1.4.1. Descrição
 
-A entidade "credit_card_dates" (chamaremos de Fatura) é a entidade que representa parte dos dados da fatura dos cartões de crédito.
+A entidade Fatura (internamente ao sistema, ela é identificada como "credit_card_dates") é a entidade que representa a fatura dos cartões de crédito. Ela mantém os períodos de início e fim de cada fatura, assim como a data de vencimento e o seu valor.
 
 
-##### 1.1.4.2. Propriedades
+##### 1.1.4.2. Atributos da entidade:
 
-Da entidade:
-
-- Essa entidade será mantida internamente quase que totalmente pelo sistema, não sendo possível a sua manutenção pelo usuário. A única exceção é a data de vencimento, que poderá ser alterada pelo usuário em alguns casos;
-- O registro referente a fatura deve ser gerado no primeiro dia da mesma, logo no início do dia;
-- Somente registros das faturas antigas e da atual serão mantidos, faturas futuras não devem ser salvas, uma vez que suas datas podem ser alteradas;
-- Os registros das faturas fechadas e quitadas não podem ser excluídos ou alterados.
-
-Dos seus atributos:
-
-- card_id: Salva o código do Cartão (card) a qual essa Fatura se refere. Se relaciona com a entidade "card"
-    - Preenchimento obrigatório;
-    - Deverá ser informado no momento do cadastro da entidade;
-    - Não deve ser permitido a alteração deste valor após seu cadastro;
-- start_date: Este atributo salvará o primeiro dia da fatura. Particularidades:
-    - Preenchimento obrigatório;
-    - Deverá ser informado no momento do cadastro da entidade;
-    - Seu valor deve ser o dia seguinte ao fechamento da última fatura informada. Ex.: Se a última fatura foi do dia 05/05/2023 até o dia 04/06/2023, então está fatura deve iniciar em 05/06/2023;
-    - Caso não haja faturas anteriores, deve-se calcular a data da seguinte forma: Pega-se o valor do atributo "first_day_month" do Cartão relacionado (entidade "card"), e calcula-se a última data para esse dia, que seja anterior a data atual. Ver a tarefa #1 (item 1.1.4.4) para mais detalhes;
-    - Não deve ser permitido a alteração deste valor após seu cadastro;
-    - Deverá respeitar o formato yyyy-mm-dd. Ex.: 2023-01-15.
-- end_date: Este atributo salvará o primeiro dia da fatura. Particularidades:
-    - Preenchimento obrigatório;
-    - Deverá ser informado no momento do cadastro da entidade;
-    - Seu valor deve ser o dia anterior ao dia de início da próxima fatura. Ver a tarefa #2 (item 1.1.4.4) para mais detalhes;
-    - O valor deste atributo deve ser sempre maior que o valor do atributo "start_date";
-    - Deverá respeitar o formato yyyy-mm-dd. Ex.: 2023-01-15.
-- due_date: Este atributo salvará a data de vencimento da fatura. Particularidades:
-    - Preenchimento obrigatório;
-    - Deverá ser informado no momento do cadastro da entidade;
-    - O valor deste atributo deve ser sempre maior que o valor do atributo "end_date";
-    - O valor do atributo é calculado seguindo as regras apresentadas na tarefa #3 (item 1.1.4.4);
-    - O valor pode ser alterado posteriormente, desde que a fatura não esteja quitada.
-    - Deverá respeitar o formato yyyy-mm-dd. Ex.: 2023-01-15.
-- value: Registra o valor total da fatura. Particularidades:
-    - O valor deste atributo será atualizado sempre que uma nova transação referente a essa fatura for feita;
-    - Deverá respeitar o formato 000000.00. Ex.: 1225.75.
-- paid: Define se a Fatura em questão está quitada ou não. Particularidades:
-    - Na criação da entidade deverá ser marcado como "false";
-    - Uma vez quitada, esse atributo será alterado para "true". Nesse caso, não será mais permitido a exclusão nem do registro da mesma, nem das transações referentes a essa fatura.
+- cartão (card_id):
+    - objetivo:             Manter o código de identificação do Cartão a qual a fatura pertence;
+    - obrigatório:          Sim;
+    - tipo dado:            Numérico.
+    - tamanho:              (condicionado ao tamanho do código);
+    - alteração:            Não permitida.
+- data de início (start_date): 
+    - objetivo:             Mantém o primeiro dia da fatura;
+    - obrigatório:          Sim;
+    - tipo de dado:         Data;
+    - formato:              yyyy-mm-dd;
+    - alteração:            Não permitida.
+- data final (end_date): 
+    - objetivo:             Mantém o último dia da fatura;
+    - obrigatório:          Sim;
+    - tipo de dado:         Data;
+    - formato:              yyyy-mm-dd;
+    - alteração:            Não permitida.
+- data vencimento (due_date): 
+    - objetivo:             Mantém a data de vencimento da fatura;
+    - obrigatório:          Sim;
+    - tipo de dado:         Data;
+    - formato:              yyyy-mm-dd;
+    - alteração:            Permitida em algumas circunstâncias (ver caracteristicas # e #).
+- valor (value): 
+    - objetivo:             Registra o valor total da fatura;
+    - obrigatório:          Não;
+    - tipo dado:            Decimal;
+    - formato:              000000.00;
+    - alteração:            Permitida.
+- pago (paid):
+    - objetivo:             Define se a Fatura em questão está quitada ou não;
+    - obrigatório:          Não;
+    - tipo dado:            Booleano.
+    - alteração:            Permitida em algumas circunstâncias (ver caracteristicas #).
 
 
 ##### 1.1.4.3. Banco de dados
+
+Nome da tabela: credit_card_dates
 
 - card_id: Referente ao atributo "card_id". Terá as seguintes características:
     - tipo: int;
@@ -403,42 +384,91 @@ Dos seus atributos:
     - card_id faz referência ao atributo "id" da entidade "card"
 
 
+##### 1.1.4.4. Características da entidade
+
+- Caracteristica #1: É exigido a existência de pelo menos uma Carteira (mais sobre a entidade Carteira no item 1.1.2) para cada Pessoa (Tarefa #2).
+
+- Caracteristica #1: Os registros das faturas serão gerados exclusivamente pelo sistema. Uma rotina diária verificará a necessidade de fechamento e criação de faturas;
+
+- Caracteristica #2: Somente registros das faturas antigas e da atual serão mantidos, faturas futuras não devem ser salvas, uma vez que não a garantia sobre suas datas;
+
+- Caracteristica #3: Não é permitido alterar o Cartão a qual uma fatura pertence, nem suas datas de início e data final;
+
+- Caracteristica #4: O valor da fatura será calculado pelo sistema, sendo vetado sua alteração pelo usuário;
+
+- Caracteristica #5: Não é permitido alterar (mesmo pelo sistema) nenhum dos dados de uma fatura que já etiver quitada;
+
+- Caracteristica #6: A data de vencimento é o único atributo que é permitido a alteração pelo usuário. Entretanto, somente enquanto a fatura não estiver quitada;
+
+
+
+- Caracteristica #2: A data de início da fatura deve ser o dia seguinte ao fechamento da última fatura informada. Ex.: Se a última fatura foi do dia 05/05/2023 até o dia 04/06/2023, então está fatura deve iniciar em 05/06/2023;
+
+- Caracteristica #2: Caso não haja faturas anteriores, deve-se calcular a data de início considerando o atributo "" do Cartão relacionado a fatura. O calculo tetalado é descrito na Tarefa #1 (item 1.1.4.5)
+
+ forma: Pega-se o valor do atributo "first_day_month" do Cartão relacionado (entidade "card"), e calcula-se a última data para esse dia, que seja anterior a data atual. Ver a tarefa #1 (item 1.1.4.4) para mais detalhes;
+
+
+
+- (end_date) Seu valor deve ser o dia anterior ao dia de início da próxima fatura. Ver a tarefa #2 (item 1.1.4.4) para mais detalhes;
+- O valor deste atributo (end_date) deve ser sempre maior que o valor do atributo "start_date";
+- O valor deste atributo (due_date) deve ser sempre maior que o valor do atributo "end_date";
+- O valor do atributo (due_date) é calculado seguindo as regras apresentadas na tarefa #3 (item 1.1.4.4);
+
+
+
+
+
+
+##### 1.1.4.5. Tarefas
+
+Tarefa #1:
+- Objetivo: Garantir que toda Pessoa possuia pelo menos uma Carteira (ver o item 1.1.2 para mais detalhes).
+- Método: Criar uma Carteira automaticamente quando uma Pessoa é criada. A Carteira deve ser marcada como de posse da Pessoa em questão.
+
+
+
+
 ##### 1.1.4.4. Tarefas
 
-Tarefa #1: Calculo do atributo "start_date" da entidade "credit_card_dates". Para um melhor entendimento, chamaremos os valores a serem considerados da seguinte forma:
-- O valor do atributo "first_day_month" do cartão relacionado a fatura, será chamado de "primeiro dia do mês";
-- O valor do atributo "start_date", será chamado de "data inicial da fatura";
-- Onde ler "data atual", considerar o dia em que o cadastro do registro estiver sendo feito.
-
-Caso o dia de hoje seja maior que o primeiro dia do mês, deve-se calcular a data inicial da fatura pegando a data atual e trocando o dia pelo primeiro dia do mês. Ex.: Caso hoje seja dia 15/05/2023, e o primeiro dia do mês seja dia 5, a data inicial da fatura já passou, pois ela foi dia 5 e já estamos no dia 15. Neste caso, troca-se apenas o dia, ficando a data inicial da fatura como 05/05/2023.
-
-Caso o dia de hoje seja igual ao primeiro dia do mês, deve-se conciderar a data inicial da fatura como sendo o dia de hoje. Ex.: Caso hoje seja dia 10/05/2023, e o primeiro dia do mês seja dia 10, a data inicial da fatura será a data de hoje. Ou seja, deve ser cadastrada como 10/05/2023.
-
-Caso o dia de hoje seja menor que o primeiro dia do mês, deve-se calcular a data inicial da fatura pegando a data atual, subtraindo um mês, e trocando o dia da data encontrada pelo primeiro dia do mês. Ex.: Caso hoje seja dia 05/05/2023, e o primeiro dia do mês seja dia 10, a data inicial da fatura ainda não chegou, pois ela será dia 10 e ainda estamos no dia 5. Neste caso, pega-se o dia atual (05/05/2023), subtrai-se um mês (do mês 05/2023 voltamos para o mês 04/2023) e troca-se o dia pelo primeiro dia do mês (do dia 05 vamos para o dia 10), ficando a data inicial da fatura como 10/04/2023.
-
-
-Tarefa #2: Calculo do atributo "end_date" da entidade "credit_card_dates". Para um melhor entendimento, chamaremos os valores a serem considerados da seguinte forma:
-- O valor do atributo "first_day_month" do cartão relacionado a fatura, será chamado de "primeiro dia do mês";
-- O valor do atributo "start_date", será chamado de "data inicial da fatura";
-- O valor do atributo "end_date", será chamado de "data final da fatura";
-- Onde ler "data atual", considerar o dia em que o cadastro do registro estiver sendo feito.
-
-Devemos começar calculando a data inicial da próxima fatura. Para isso, pega-se o primeiro dia do mês, e considera-se a proxima data em que ele será atingido. Por exemplo: 
-Caso hoje seja dia 15/05/2023, e o primeiro dia do mês seja dia 05, então a data inicial da próxima fatura será dia 05/06/2023. 
-Caso hoje seja dia 10/05/2023, e o primeiro dia do mês seja dia 10, então a data inicial da próxima fatura será dia 10/06/2023. 
-Caso hoje seja dia 05/05/2023, e o primeiro dia do mês seja dia 10, então a data inicial da próxima fatura será dia 10/05/2023.
-
-Uma vez definida a data inicial da próxima fatura, basta subtrair um dia para encontrar a data final da fatura atual. Exemplo: Se a data inicial da próxima fatura for 05/06/2023, então a data final da fatura atual será 04/06/2023.
-
-Obs.: Apesar de calcular a data inicial da próxima fatura, ela não deve ser salva no banco. Somente a fatura inicial deve ser salva.
+Tarefa #1: Encontrar a data de início da fatura quando não há faturas anteriores.
+> Para um melhor entendimento, chamaremos os valores a serem considerados da seguinte forma:
+> 
+> - O valor do atributo "first_day_month" do cartão relacionado a fatura, será chamado de "primeiro dia do mês";
+> - O valor do atributo "start_date", será chamado de "data inicial da fatura";
+> - Onde ler "data atual", considerar o dia em que o cadastro do registro estiver sendo feito.
+> 
+> Caso o dia de hoje seja maior que o primeiro dia do mês, deve-se calcular a data inicial da fatura pegando a data atual e trocando o dia pelo primeiro dia do mês. Ex.: Caso hoje seja dia 15/05/2023, e o primeiro dia do mês seja dia 5, a data inicial da fatura já passou, pois ela foi dia 5 e já estamos no dia 15. Neste caso, troca-se apenas o dia, ficando a data inicial da fatura como 05/05/2023.
+> 
+> Caso o dia de hoje seja igual ao primeiro dia do mês, deve-se conciderar a data inicial da fatura como sendo o dia de hoje. Ex.: Caso hoje seja dia 10/05/2023, e o primeiro dia do mês seja dia 10, a data inicial da fatura será a data de hoje. Ou seja, deve ser cadastrada como 10/05/2023.
+> 
+> Caso o dia de hoje seja menor que o primeiro dia do mês, deve-se calcular a data inicial da fatura pegando a data atual, subtraindo um mês, e trocando o dia da data encontrada pelo primeiro dia do mês. Ex.: Caso hoje seja dia 05/05/2023, e o primeiro dia do mês seja dia 10, a data inicial da fatura ainda não chegou, pois ela será dia 10 e ainda estamos no dia 5. Neste caso, pega-se o dia atual (05/05/2023), subtrai-se um mês (do mês 05/2023 voltamos para o mês 04/2023) e troca-se o dia pelo primeiro dia do mês (do dia 05 vamos para o dia 10), ficando a data inicial da fatura como 10/04/2023.
 
 
-Tarefa #3: Calculo do atributo "due_date" da entidade "credit_card_dates". Para um melhor entendimento, chamaremos os valores a serem considerados da seguinte forma:
-- O valor do atributo "duo_date", será chamado de "data de vencimento da fatura";
-- O valor do atributo "days_to_expiration" do cartão relacionado a fatura, será chamado de "dias até o vencimento";
-- O valor do atributo "end_date", será chamado de "data final da fatura";
+Tarefa #2: Calculo do atributo "end_date" da entidade "credit_card_dates".
+> Para um melhor entendimento, chamaremos os valores a serem considerados da seguinte forma:
+> - O valor do atributo "first_day_month" do cartão relacionado a fatura, será chamado de "primeiro dia do mês";
+> - O valor do atributo "start_date", será chamado de "data inicial da fatura";
+> - O valor do atributo "end_date", será chamado de "data final da fatura";
+> - Onde ler "data atual", considerar o dia em que o cadastro do registro estiver sendo feito.
+> 
+> Devemos começar calculando a data inicial da próxima fatura. Para isso, pega-se o primeiro dia do mês, e considera-se a proxima data em que ele será atingido. Por exemplo: 
+> Caso hoje seja dia 15/05/2023, e o primeiro dia do mês seja dia 05, então a data inicial da próxima fatura será dia 05/06/2023. 
+> Caso hoje seja dia 10/05/2023, e o primeiro dia do mês seja dia 10, então a data inicial da próxima fatura será dia 10/06/2023. 
+> Caso hoje seja dia 05/05/2023, e o primeiro dia do mês seja dia 10, então a data inicial da próxima fatura será dia 10/05/2023.
+> 
+> Uma vez definida a data inicial da próxima fatura, basta subtrair um dia para encontrar a data final da fatura atual. Exemplo: Se a data inicial da próxima fatura for 05/06/2023, então a data final da fatura atual será 04/06/2023.
+> 
+> Obs.: Apesar de calcular a data inicial da próxima fatura, ela não deve ser salva no banco. Somente a fatura inicial deve ser salva.
 
-O cálculo da data de vencimento da fatura deve ser feito pegando a data final da fatura, e somando os dias até o vencimento. Ex.: Caso a quantidade de dias até o vencimento seja 10, e a data final da fatura seja dia 15/05/2023, então a data de vencimento da mesma será dia 25/05/2023
+
+Tarefa #3: Calculo do atributo "due_date" da entidade "credit_card_dates".
+> Para um melhor entendimento, chamaremos os valores a serem considerados da seguinte forma:
+> - O valor do atributo "duo_date", será chamado de "data de vencimento da fatura";
+> - O valor do atributo "days_to_expiration" do cartão relacionado a fatura, será chamado de "dias até o vencimento";
+> - O valor do atributo "end_date", será chamado de "data final da fatura";
+> 
+> O cálculo da data de vencimento da fatura deve ser feito pegando a data final da fatura, e somando os dias até o vencimento. Ex.: Caso a quantidade de dias até o vencimento seja 10, e a data final da fatura seja dia 15/05/2023, então a data de vencimento da mesma será dia 25/05/2023
 
 
 #### 1.1.5. Payment Method
