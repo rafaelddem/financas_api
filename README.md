@@ -416,27 +416,27 @@ Tarefa #1: Definir o status da fatura
 > - Data de vencimento da fatura: 12/06/2023
 > 
 > Caso a data atual for superior a data final da fatura, porém, inferior a data de vencimento da fatura, ela será definida como "Fechada".
-> Exemplo de fatura aberta: 
+> Exemplo de fatura fechada: 
 > - Data no momento da verificação: 07/06/2023
 > - Data de início da fatura: 05/05/2023 
 > - Data final da fatura: 04/06/2023
 > - Data de vencimento da fatura: 12/06/2023
 > 
 > Caso a data atual for superior a data de vencimento da fatura, e a mesma não estiver sido pagar, ela será definida como "Vencida".
-> Exemplo de fatura aberta: 
+> Exemplo de fatura vencida: 
 > - Data no momento da verificação: 17/06/2023
 > - Data de início da fatura: 05/05/2023 
 > - Data final da fatura: 04/06/2023
 > - Data de vencimento da fatura: 12/06/2023
 > - Fatura não paga
 > 
-> Caso a data atual for superior a data final da fatura, a mesma pode ser paga, e então será definida como "Vencida".
-> Exemplo de fatura aberta: 
-> - Data no momento da verificação: 17/06/2023
+> Caso a data atual for superior a data final da fatura, a mesma poderá ser paga, e então, será definida como "Quitada".
+> Exemplo de fatura quitada: 
+> - Data no momento da verificação: 10/06/2023
 > - Data de início da fatura: 05/05/2023 
 > - Data final da fatura: 04/06/2023
 > - Data de vencimento da fatura: 12/06/2023
-> - Fatura não paga
+> - Fatura paga
 > 
 
 Tarefa #2: Cálculo da data de início de uma fatura, quando não há faturas anteriores.
@@ -456,7 +456,7 @@ Tarefa #2: Cálculo da data de início de uma fatura, quando não há faturas an
 > Para o terceiro exemplo, considere os seguintes dados:
 > - Valor do atributo "primeiro dia do mês" do cartão relacionado: 15;
 > - Data atual: 10/05/2023.
-> Nesse caso, como o "primeiro dia do mês" (15) é maior que o dia da data atual (10), pega-se o mês anterior ao atual (04/2023) e altera-se o dia para o mesmo valor de "primeiro dia do mês" (05), logo, a data de início da nova fatura será 05/04/2023.
+> Nesse caso, como o "primeiro dia do mês" (15) é maior que o dia da data atual (10), pega-se o mês anterior ao atual (04/2023) e altera-se o dia para o mesmo valor de "primeiro dia do mês" (05), logo, a data de início da nova fatura será 15/04/2023.
 > 
 
 Tarefa #3: Cálculo da data final de uma fatura.
