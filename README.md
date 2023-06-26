@@ -119,7 +119,7 @@ A entidade Carteira (internamente ao sistema, identificada como "wallet") é a e
     - objetivo:             Manter o código de identificação do dono (Pessoa) desta entidade;
     - obrigatório:          Sim;
     - tipo dado:            Numérico;
-    - tamanho:              (condicionado ao tamanho do código);
+    - tamanho:              (condicionado ao tamanho do identificador da entidade referenciada);
     - alteração:            Não permitida.
 - carteira principal (main_wallet):
     - obejtivo:             Definir se dentre todas as Carteiras de uma Pessoa, esta é a principal delas;
@@ -155,7 +155,7 @@ Nome da tabela: wallet
     - não permite valor nulo.
 - owner_id: Referente ao atributo "dono". Terá as seguintes características:
     - tipo: int;
-    - tamanho: 3;
+    - tamanho: (condicionado ao tamanho do identificador da entidade referenciada);
     - não permite valor nulo.
 - main_wallet: Referente ao atributo "carteira principal". Terá as seguintes características:
     - tipo: char;
@@ -181,7 +181,7 @@ Nome da tabela: wallet
 
 - Caracteristica #1: Não é permitida a exclusão de um registro de Carteira, apenas sua inativação;
 
-- Caracteristica #2: Quando for a única Carteira de uma Pessoa, será obrigatóriamente marcada como a carteira principal (Tarefa #1, item 1.1.2.5);
+- Caracteristica #2: Quando for a única Carteira de uma Pessoa, será obrigatoriamente marcada como a carteira principal (Tarefa #1, item 1.1.2.5);
 
 - Caracteristica #3: Quando uma carteira é marcada como principal, as demais Carteiras (da mesma Pessoa) são automaticamente desmarcadas (Tarefa #2, item 1.1.2.5);
 
@@ -215,7 +215,7 @@ Na implantação do sistema, os seguintes registros devem ser cadastrados nesta 
 | Registro | id  | name                      | owner_id | main_wallet | description                                                                                                                                  | active | Objetivo                                                                                                                                     |
 | :------: | :-: | :------------------------ | :------: | :---------: | :------------------------------------------------------------------------------------------------------------------------------------------- | :----: | :------------------------------------------------------------------------------------------------------------------------------------------- |
 | #1       | 1   | Origem/Destino Indefinido | 1        | 1           | Carteira utilizada para movimentações de origem indefinida (como recebimento de salário) ou destino indefinido (como pagamento de uma venda) | 1      | Carteira utilizada para movimentações de origem indefinida (como recebimento de salário) ou destino indefinido (como pagamento de uma venda) |
-| #2       | 2   | Casa                      | 2        | 1           | Carteira padrão do usuário                                                                                                                   | 1      | Carteira padrão do usuário. Poder´a ser inativada posteriormente se novas carteiras forem criadas                                            |
+| #2       | 2   | Casa                      | 2        | 1           | Carteira padrão do usuário                                                                                                                   | 1      | Carteira padrão do usuário. Poderá ser inativada posteriormente se novas carteiras forem criadas                                            |
 
 > Obs. 1: Como o atributo "id" é auto incrementado, cuidar para que na inserção dos valores, o valor aqui definido seja respeitado;
 
@@ -231,7 +231,7 @@ Na implantação do sistema, os seguintes registros devem ser cadastrados nesta 
 
 #### 1.1.3.1. Descrição
 
-A entidade Cartão (internamente ao sistema, identificada como "card") é a entidade que representa os cartões de pagamento. Será possível criar cartões do tipo crétido ou débito, não sendo permitido cartão do tipo débito e crédito. O Cartão sempre será relacionada a uma entidade Carteira, de onde os valores movimentados pelo Cartão serão subtraídos. Ex.: Considere um Cartão de nome "NuBank débito", e que está relacionado a Carteira "NuBank". Considere também uma compra feita de R$ 10,00, e que foi paga com esse cartão. Nesse caso, a Carteira que será relacionada a venda, e portanto, de onde será subtraído o valor da transação, será a de nome "NuBank".
+A entidade Cartão (internamente ao sistema, identificada como "card") é a entidade que representa os cartões de pagamento. Será possível criar cartões do tipo crédito ou débito, não sendo permitido cartão do tipo débito e crédito. O Cartão sempre será relacionada a uma entidade Carteira, de onde os valores movimentados pelo Cartão serão subtraídos. Ex.: Considere um Cartão de nome "NuBank débito", e que está relacionado a Carteira "NuBank". Considere também uma compra feita de R$ 10,00, e que foi paga com esse cartão. Nesse caso, a Carteira que será relacionada a venda, e portanto, de onde será subtraído o valor da transação, será a de nome "NuBank".
 
 
 #### 1.1.3.2. Atributos da entidade
@@ -240,7 +240,7 @@ A entidade Cartão (internamente ao sistema, identificada como "card") é a enti
     - objetivo:             Manter o código de identificação da Carteira a qual o cartão pertence;
     - obrigatório:          Sim;
     - tipo dado:            Numérico;
-    - tamanho:              (condicionado ao tamanho do código);
+    - tamanho:              (condicionado ao tamanho do identificador da entidade referenciada);
     - alteração:            Não permitida.
 - nome (name):
     - objetivo:             Manter o nome pelo qual a entidade será identificada;
@@ -284,7 +284,7 @@ Nome da tabela: card
     - chave primaria.
 - wallet_id: Referente ao atributo "carteira". Terá as seguintes características:
     - tipo: int;
-    - tamanho: 4;
+    - tamanho: (condicionado ao tamanho do identificador da entidade referenciada);
     - não permite valor nulo.
 - name: Referente ao atributo "nome". Terá as seguintes características:
     - tipo: varchar;
@@ -343,7 +343,7 @@ A entidade Fatura (internamente ao sistema, identificada como "credit_card_dates
     - objetivo:             Manter o código de identificação do Cartão a qual a fatura pertence;
     - obrigatório:          Sim;
     - tipo dado:            Numérico;
-    - tamanho:              (condicionado ao tamanho do código);
+    - tamanho:              (condicionado ao tamanho do identificador da entidade referenciada);
     - alteração:            Não permitida.
 - data de início (start_date): 
     - objetivo:             Mantém o primeiro dia da fatura;
@@ -369,11 +369,6 @@ A entidade Fatura (internamente ao sistema, identificada como "credit_card_dates
     - tipo dado:            Decimal;
     - formato:              000000.00;
     - alteração:            Permitida.
-- pago (paid):
-    - objetivo:             Define se a Fatura em questão está quitada ou não;
-    - obrigatório:          Não;
-    - tipo dado:            Booleano;
-    - alteração:            Permitida em algumas circunstâncias (ver caracteristica #5).
 - estado (status):
     - objetivo:             Definir o estado de uma fatura (Aberta, Fechada, Quitada ou Vencida);
     - obrigatório:          Sim;
@@ -388,7 +383,7 @@ Nome da tabela: credit_card_dates
 
 - card_id: Referente ao atributo "cartão". Terá as seguintes características:
     - tipo: int;
-    - tamanho: 3;
+    - tamanho: (condicionado ao tamanho do identificador da entidade referenciada);
     - não permite valor nulo.
 - start_date: Referente ao atributo "data de início". Terá as seguintes características:
     - tipo: date;
@@ -402,7 +397,7 @@ Nome da tabela: credit_card_dates
 - value: Referente ao atributo "valor". Terá as seguintes características:
     - tipo: double;
     - tamanho: 8 sendo 2 casas decimais.
-- paid: Referente ao atributo "pago". Terá as seguintes características:
+- status: Referente ao atributo "estado". Terá as seguintes características:
     - tipo: char;
     - tamanho: 1;
     - não permite valor nulo;
@@ -422,7 +417,7 @@ Nome da tabela: credit_card_dates
 
 - Caracteristica #3: As faturas terão quatro "estados": Aberta, Fechada, Quitada e Vencida. Mais detalhes sobre estes estados na Tarefa #1 (item 1.1.4.5);
 
-- Caracteristica #4: Não é permitido a exclusão de uma fatura, ou a alteração de seus dados (exceções: características #5, #10 e #11);
+- Caracteristica #4: Não é permitido a exclusão de uma fatura. Sua alteração pode ocorrer somente nos casos descritos nas Características #10 e #11);
 
 - Caracteristica #5: Somente faturas marcadas como "Fechada" serão liberadas para pagamento;
 
@@ -437,6 +432,8 @@ Nome da tabela: credit_card_dates
 - Caracteristica #10: É permitido a alteração da data de vencimento pelo usuário, mas somente se a fatura estiver marcada como "Aberta" ou "Fechada";
 
 - Caracteristica #11: O valor da fatura será calculado pelo sistema, e será recalculado a cada inserção de uma transação relacionada a esta fatura. É vetado a alteração a valor da fatura pelo usuário;
+
+- Caracteristica #12: Quando uma Fatura é criada, ela deve recalcular as Data da Parcela (ver mais sobre Parcela no item 1.1.8) das Parcelas que passarem a percenter a essa Fatura recém criada (ver Tarefa #5, item 1.1.4.5);
 
 
 #### 1.1.4.5. Tarefas
@@ -513,6 +510,12 @@ Tarefa #4: Cálculo da data de vencimento de uma fatura.
 > O cálculo da data de vencimento da fatura deve ser feito pegando a data final da fatura, e somando o valor do atributo "dias para o vencimento" do cartão relacionado. 
 > Ex.: Caso a quantidade de dias até o vencimento seja 10, e a data final da fatura seja dia 15/05/2023, então a data de vencimento da mesma será dia 25/05/2023.
 > 
+
+Tarefa #5: Redefinir o valor do atributo Data da Parcela (ver mais sobre Parcela no item 1.1.8).
+> Quando uma nova fatura for criada, as Parcelas que passarem a pertencer a essa Fatura terão os valores de seus atributos "Data da Parcela" alterados para o primeiro dia da Fatura recém criada.
+> Ex.: Considere uma venda efetuada no dia 25/04/2023, e que 4 Parcelas foram geradas para essa venda, com os valores do atributo "Data da Parcela" salvos como "25/04/2023", "25/05/2023", "25/06/2023" e "25/07/2023". Considere também que estamos no dia 05/05/2023, e que uma nova Fatura foi criada, indo do dia 05/05/2023 até 04/06/2023.
+Nesse caso, a primeira Parcela será mantida com o mesmo valor, pois se trata de uma Fatura antiga. O mesmo ocorrerá com as Parcelas 3 e 4, pois se trata de Faturas ainda não lançadas. A segunda parcela, no entanto, terá o valor de seu atributo "Data da Parcela" alterado para "05/05/2023", a mesma data de início da Fatura a qual ela agora pertence
+>
 
 
 #### 1.1.5. Método de Pagamento (Payment Method)
@@ -716,7 +719,7 @@ A entidade Transação (internamente ao sistema, identificada como "transaction"
     - objetivo:             Manter o código de identificação do Tipo da Transação;
     - obrigatório:          Sim;
     - tipo dado:            Numérico;
-    - tamanho:              (condicionado ao tamanho do código);
+    - tamanho:              (condicionado ao tamanho do identificador da entidade referenciada);
     - alteração:            Permitida.
 - valor bruto (gross_value): 
     - objetivo:             Registrar o valor total da transação, no momento que esta é efetuada (não considera descontos ou arredondamentos);
@@ -726,13 +729,13 @@ A entidade Transação (internamente ao sistema, identificada como "transaction"
     - alteração:            Permitida em algumas circunstâncias (ver caracteristicas #1 e #5).
 - valor de desconto (discount_value): 
     - objetivo:             Registrar o valor do desconto dado a transação, no momento que ela é efetuada (não considera descontos aplicados posteriormente nas parcelas);
-    - obrigatório:          Sim;
+    - obrigatório:          Não;
     - tipo dado:            Decimal;
     - formato:              00000.00;
     - alteração:            Permitida em algumas circunstâncias (ver caracteristicas #1 e #5).
 - valor líquido (net_value): 
-    - objetivo:             Manter o valor líquido da transação. Irá considerar todos os valores da transação das suas parcelas (ver caracteristicas #6);
-    - obrigatório:          Sim;
+    - objetivo:             Manter o valor líquido da Parcela. Não será informado pelo usuário, ao invés disso, será calculado como descrito em Caracteristica #6;
+    - obrigatório:          Não;
     - tipo dado:            Decimal;
     - formato:              00000.00;
     - alteração:            Não Permitida.
@@ -756,7 +759,7 @@ Nome da tabela: transaction.
 
 - id: Identificador da entidade. Terá as seguintes características:
     - tipo: int;
-    - tamanho: 3;
+    - tamanho: 6;
     - auto incremento;
     - não permite valor nulo;
     - chave primaria.
@@ -772,14 +775,15 @@ Nome da tabela: transaction.
     - não permite valor nulo.
 - transaction_type_id: Referente ao atributo "tipo da transação". Terá as seguintes características:
     - tipo: int;
-    - tamanho: 4;
+    - tamanho: (condicionado ao tamanho do identificador da entidade referenciada);
     - não permite valor nulo.
 - gross_value: Referente ao atributo "valor bruto". Terá as seguintes características:
     - tipo: double;
     - tamanho: 5 sendo 2 casas decimais.
 - discount_value: Referente ao atributo "valor de desconto". Terá as seguintes características:
     - tipo: double;
-    - tamanho: 5 sendo 2 casas decimais.
+    - tamanho: 5 sendo 2 casas decimais;
+    - não permite valor nulo (quando a entidade não possuir este valor, utilizar o valor padrão 0).
 - relevance: Referente ao atributo "relevancia". Terá as seguintes características:
     - tipo: char;
     - tamanho: 1;
@@ -806,7 +810,7 @@ Nome da tabela: transaction.
 
 - Caracteristica #5: Alterações nos valores de uma Transação, além de estarem condicionadas a Característica #1, sempre implicarão no recalculo dos valores de suas Parcelas, e portanto, os novos valores devem ser validados (Tarefa #4, item 1.1.7.5).
 
-- Característica #6: O Valor Líquido da transação não será mantido no sistema, ao invés disso, será calculado no momento que for solicitado. Seu calculo será feito somando o Valor Final de cada uma das Parcelas da Transação em questão.
+- Característica #6: O Valor Líquido da transação não será mantido no sistema, ao invés disso, será calculado no momento que for solicitado. Seu calculo será feito somando o Valor Líquido de cada uma das Parcelas da Transação em questão.
 
 - Caracteristica #7: Por padrão, o valor do atributo Relevância será igual ao valor do mesmo atributo da entidade Tipo de Transação selecionado, porém, esse valor pode ser alterado a qualquer momento.
 
@@ -845,151 +849,194 @@ Tarefa #3: Definir se o valor das Parcelas confere com o valor da Transação.
 
 #### 1.1.8.1. Descrição
 
-A entidade Parcela (internamente ao sistema, identificada como "installment") é utilizada (junto com a entidade Transação, item 1.1.7) para representar as diversas transações salvas no sistema. Mas especificamente seus valores, origem e destino dos valores, data de vencimento (quando necessário) e pagamento e o método de pagamento. Quando a transação original for do tipo "Crédito", será possível que ela possua mais de uma Parcela, e portanto, mas de um registro relacionado a esta Transação. Nas demais situações (vendas no débitos, transaferências, movimentações...) existirá somente um registro por transação.
+A entidade Parcela (internamente ao sistema, identificada como "installment") é utilizada (junto com a entidade Transação, item 1.1.7) para representar as diversas transações salvas no sistema. Mas especificamente seus valores, origem e destino dos valores, data de vencimento (quando necessário) e pagamento e o método de pagamento. Quando a transação original for do tipo "Crédito", será possível que ela possua mais de uma Parcela, e portanto, mas de um registro relacionado a esta Transação. Nas demais situações (vendas no débitos, transaferências, movimentações...) existirá somente um registro por transação. Por uma questão de organização, sempre que se falar da entidade que mantém os valores, será utilizado o nome Parcela, independente se o pagamento for a vista, ou se existir somente uma parcela.
 
 
 #### 1.1.8.2. Atributos da entidade
 
-- titulo (tittle):
-    - objetivo:             Manter o nome pelo qual a Transação será identificada;
+- transação (transaction_id):
+    - objetivo:             Manter o código de identificação da Transação a qual esta Parcela pertence;
     - obrigatório:          Sim;
-    - tipo dado:            Alfanumérico (a-z, A-Z, 0-9 e espaços);
-    - tamanho:              De 3 a 50 caracteres;
+    - tipo dado:            Numérico;
+    - tamanho:              (condicionado ao tamanho do identificador da entidade referenciada);
     - alteração:            Não permitida.
-
-
-
-
-
-
-
-
-create table finance_api.installment (
-	transaction int(6) not null, 
-	installment_number int(2) not null, 
-	due_date date not null, 
-
-	gross_value double(7,2) not null, 
-	discount_value double(7,2) not null, 
-	interest_value double(7,2) not null, 
-	rounding_value double(7,2) not null, 
-
-	destination_wallet int(4) not null, 
-	source_wallet int(4) default null, 
-	payment_method int(3) default null, 
-	payment_date date default null, 
-    card
-	primary key (transaction, installment_number), 
-	constraint fk_installment_transaction foreign key (transaction) references transaction (id) on delete cascade, 
-	constraint fk_installment_payment_method foreign key (payment_method) references payment_method (id), 
-	constraint fk_installment_source_wallet foreign key (source_wallet) references wallet (id), 
-	constraint fk_installment_destination_wallet foreign key (destination_wallet) references wallet (id) 
-);
-
-
-
-#### 1.1.8.2. Propriedades
-
-Da entidade:
-
-- Não será permitido a exclusão das parcelas de uma venda. Caso seja necessário alguma alteração, será preciso excluir a venda inteira (transaction e installment) e relança-la. Mesmo nesse caso, será preciso respeitar as regras para exclusão de uma "transaction";
-
-
-Dos seus atributos:
-- transaction: Referencia a transação a qual a parcela pertence. Se relaciona com a entidade "transaction". Particularidades:
-    - Preenchimento obrigatório;
-    - Deverá ser informado no momento do cadastro da entidade.
-- installment_number: Identificação da parcela. Particularidades:
-    - Preenchimento obrigatório;
-    - Deverá ser informado no momento do cadastro da entidade;
-    - Deverá respeitar a ordem do vencimento das parcelas (a primeira parcela deve ter valor 1, a segunda 2, a terceira 3, etc...).
-- due_date: Este atributo salvará a data de vencimento da fatura. Particularidades:
-    - O valor deste atributo deve ser sempre maior que o valor do atributo "transaction_date" da entidade "transaction";
-    - Deverá respeitar o formato yyyy-mm-dd. Ex.: 2023-01-15;
-    - Deverá ser gerado com o mesmo dia da data da venda (atributo "transaction_date" da entidade "transaction"), porém, nos meses sequentes. Ex.: Uma venda no dia 25/05/2023 terá parcelas lancadas nos dias 25/05/2023, 25/06/2023, 25/07/2023... No entanto, quando uma nova fatura for gerada, a data poderá ser alterada seguindo as regras descritas na tarefa #1 no item 1.1.8.4.
-
-
-- gross_value: Registra o valor inicial da parcela (não considera descontos, arredondamentos, juros, etc). Particularidades:
-    - Preenchimento obrigatório;
-    - Deverá ser informado no momento do cadastro da entidade;
-    - Alteração permitida somente se suas parcelas (entidade "installment") não pertencerem à faturas (entidade "credit_card_dates") já fechadas (atributo "paid" marcado como "true");
-    - Em caso de alteração, respeitar a tarefa #1 (item 1.1.7.4);
-    - Deverá respeitar o formato 00000.00. Ex.: 25.75.
-- discount_value: Registra o valor de desconto dado a transação, no momento que esta é efetuada (não considera descontos aplicados posteriormente nas parcelas). Particularidades:
-    - Preenchimento obrigatório;
-    - Deverá ser informado no momento do cadastro da entidade;
-    - Alteração permitida somente se suas parcelas (entidade "installment") não pertencerem à faturas (entidade "credit_card_dates") já fechadas (atributo "paid" marcado como "true");
-    - Em caso de alteração, respeitar a tarefa #1 (item 1.1.7.4);
-    - Deverá respeitar o formato 00000.00. Ex.: 25.75.
+- número da parcela (installment_number):
+    - objetivo:             Manter o código de identificação da Parcela (necessário quando existe mais de uma Parcela por Transação);
+    - obrigatório:          Sim;
+    - tipo dado:            Numérico;
+    - tamanho:              2;
+    - alteração:            Não permitida.
+- data da parcela (installment_date):
+    - objetivo:             Manter a data em que a Parcela foi (ou será, nos casos de vendas no crédito) registrada;
+    - obrigatório:          Sim;
+    - tipo de dado:         Data;
+    - formato:              yyyy-mm-dd;
+    - alteração:            Permitida em algumas circunstâncias (ver caracteristicas #2 e #3).
+- valor bruto (gross_value): 
+    - objetivo:             Registrar o valor da Parcela, no momento que ela é gerada (não considera descontos ou arredondamentos aplicados na Parcela);
+    - obrigatório:          Sim;
+    - tipo dado:            Decimal;
+    - formato:              00000.00;
+    - alteração:            Não permitida.
+- valor de desconto (discount_value): 
+    - objetivo:             Registrar o valor do desconto aplicado ao pagamento da Parcela;
+    - obrigatório:          Não;
+    - tipo dado:            Decimal;
+    - formato:              00000.00;
+    - alteração:            Permitida em algumas circunstâncias (ver caracteristicas #2).
+- juros (interest_value): 
+    - objetivo:             Registrar o valor do juro aplicado ao pagamento da Parcela;
+    - obrigatório:          Não;
+    - tipo dado:            Decimal;
+    - formato:              00000.00;
+    - alteração:            Permitida em algumas circunstâncias (ver caracteristicas #2).
+- arredondamento (rounding_value): 
+    - objetivo:             Registrar o valor do arredondamento aplicado ao pagamento da Parcela;
+    - obrigatório:          Não;
+    - tipo dado:            Decimal;
+    - formato:              00000.00;
+    - alteração:            Permitida em algumas circunstâncias (ver caracteristica #2).
+- valor líquido (net_value): 
+    - objetivo:             Manter o valor líquido da Parcela. Não será informado pelo usuário, ao invés disso, será calculado como descrito em Caracteristica #6;
+    - obrigatório:          Não;
+    - tipo dado:            Decimal;
+    - formato:              00000.00;
+    - alteração:            Não Permitida.
+- método de pagamento (payment_method):
+    - objetivo:             Manter o código de identificação do Método de Pagamento utilizado no pagamento da Parcela;
+    - obrigatório:          Sim;
+    - tipo dado:            Numérico;
+    - tamanho:              (condicionado ao tamanho do identificador da entidade referenciada);
+    - alteração:            Permitida em algumas circunstâncias (ver caracteristica #2).
+- cartão (card):
+    - objetivo:             Manter o código de identificação do Cartão utilizado no pagamento da Parcela;
+    - obrigatório:          Não (ver exceção em Carcateristica #7);
+    - tipo dado:            Numérico;
+    - tamanho:              (condicionado ao tamanho do identificador da entidade referenciada);
+    - alteração:            Permitida em algumas circunstâncias (ver caracteristicas #2, #7).
+- carteira origem (source_wallet):
+    - objetivo:             Manter o código de identificação da Carteira de origem dos valores transacionados por essa Parcela;
+    - obrigatório:          Não (ver exceção em Carcateristica #8);
+    - tipo dado:            Numérico;
+    - tamanho:              (condicionado ao tamanho do identificador da entidade referenciada);
+    - alteração:            Permitida em algumas circunstâncias (ver caracteristicas #2, #7 e #8).
+- carteira destino (destination_wallet):
+    - objetivo:             Manter o código de identificação da Carteira de destino dos valores transacionados por essa Parcela;
+    - obrigatório:          Sim;
+    - tipo dado:            Numérico;
+    - tamanho:              (condicionado ao tamanho do identificador da entidade referenciada);
+    - alteração:            Permitida em algumas circunstâncias (ver caracteristica #2).
+- data de pagamento (payment_date):
+    - objetivo:             Manter a data de pagamento da Parcela;
+    - obrigatório:          Não;
+    - tipo de dado:         Data;
+    - formato:              yyyy-mm-dd;
+    - alteração:            Permitida em algumas circunstâncias (ver caracteristicas #9).
 
 
 #### 1.1.8.3. Banco de dados
-- transaction: Referente ao atributo "transaction". Terá as seguintes características:
+
+Nome da tabela: installment.
+
+- transaction_id: Referente ao atributo "transação". Terá as seguintes características:
     - tipo: int;
-    - tamanho: 3;
-    - não permite valor nulo;
-    - chave primaria.
-- installment_number: Referente ao atributo "transaction". Terá as seguintes características:
+    - tamanho: (condicionado ao tamanho do identificador da entidade referenciada);
+    - não permite valor nulo.
+- installment_number: Referente ao atributo "número da parcela". Terá as seguintes características:
     - tipo: int;
     - tamanho: 2;
-    - não permite valor nulo;
-    - chave primaria.
-- due_date: Referente ao atributo "due_date". Terá as seguintes características:
+    - não permite valor nulo.
+- installment_date: Referente ao atributo "data da parcela". Terá as seguintes características:
+    - tipo: date;
+    - não permite valor nulo.
+- gross_value: Referente ao atributo "valor bruto". Terá as seguintes características:
+    - tipo: double;
+    - tamanho: 5 sendo 2 casas decimais.
+- discount_value: Referente ao atributo "valor de desconto". Terá as seguintes características:
+    - tipo: double;
+    - tamanho: 5 sendo 2 casas decimais.
+    - não permite valor nulo (quando a entidade não possuir este valor, utilizar o valor padrão 0).
+- interest_value: Referente ao atributo "juros". Terá as seguintes características:
+    - tipo: double;
+    - tamanho: 5 sendo 2 casas decimais.
+    - não permite valor nulo (quando a entidade não possuir este valor, utilizar o valor padrão 0).
+- rounding_value: Referente ao atributo "arredondamento". Terá as seguintes características:
+    - tipo: double;
+    - tamanho: 5 sendo 2 casas decimais.
+    - não permite valor nulo (quando a entidade não possuir este valor, utilizar o valor padrão 0).
+- payment_method_id: Referente ao atributo "método de pagamento". Terá as seguintes características:
+    - tipo: int;
+    - tamanho: (condicionado ao tamanho do identificador da entidade referenciada);
+    - não permite valor nulo.
+- card_id: Referente ao atributo "cartão". Terá as seguintes características:
+    - tipo: int;
+    - tamanho: (condicionado ao tamanho do identificador da entidade referenciada);
+    - não permite valor nulo.
+- source_wallet_id: Referente ao atributo "carteira origem". Terá as seguintes características:
+    - tipo: int;
+    - tamanho: (condicionado ao tamanho do identificador da entidade referenciada);
+    - não permite valor nulo.
+- destination_wallet_id: Referente ao atributo "carteira destino". Terá as seguintes características:
+    - tipo: int;
+    - tamanho: (condicionado ao tamanho do identificador da entidade referenciada);
+    - não permite valor nulo.
+- payment_date: Referente ao atributo "data de pagamento". Terá as seguintes características:
     - tipo: date;
     - não permite valor nulo.
 
-
-- gross_value: Referente ao atributo "gross_value". Terá as seguintes características:
-    - tipo: double;
-    - tamanho: 7 sendo 2 casas decimais;
-    - não permite valor nulo.
-- discount_value: Referente ao atributo "discount_value". Terá as seguintes características:
-    - tipo: double;
-    - tamanho: 7 sendo 2 casas decimais;
-    - não permite valor nulo.
-
-
 - chave primária: 
-    - id, installment_number
+    - transaction
+    - installment_number
 - chave estrangeira: 
-    - transaction_type faz referência ao atributo "id" da entidade "transaction type"
+    - transaction_id faz referência ao atributo "id" da tabela "transaction"
+    - payment_method_id faz referência ao atributo "id" da tabela "payment_method"
+    - card_id faz referência ao atributo "id" da tabela "card"
+    - source_wallet_id faz referência ao atributo "id" da tabela "wallet"
+    - destination_wallet_id faz referência ao atributo "id" da tabela "wallet"
 
 
-#### 1.1.8.4. Tarefas
+#### 1.1.8.4. Características da entidade
 
-Tarefa #1: Quando uma fatura nova é gerada, as parcelas que pertencem a essa fatura terão suas datas de vencimento (due_date) alteradas para o primeiro dia da fatura. Ex.: Considere uma parcela que vence dia 25/06/2023. Considere também a fatura entre os dias 05/06/2023 e 04/07/2023. Nesse caso, quando a fatura for criada, a data de vencimento deve ser alterada de 25/06/2023 para 05/06/2023 (primeiro dia da fatura). Obs.: Essa regra só vale para os casos onde a fatura ainda não foi criada. Quando uma parcela é lançada com uma data de vencimento que percente a uma fatura já criada (caso da primeira parcela de uma venda), a data de vencimento deve ser mantida. Ex.: Consideranto a fatura em aberto ser entre os dias 05/06/2023 e 04/07/2023. Considerando também que o dia em questão é 25/06/2023. Caso uma venda seja lançada, a data de vencimento da primeira parcela será 25/06/2023 (não sofrendo a alteração).
+- Caracteristica #1: Não é permitido a exclusão do registro de uma Parcela;
 
+- Caracteristica #2: Não é permitido a alteração dos valores dos atributos "transação", "número da parcela", "valor bruto" e "carteira destino". Os demais atributos poderão ser alterados, desde que a Parcela não pertença a uma Fatura, ou que pertença a uma Fatura que esteja marcada como "Aberta" ou "Fechada" (ver demais características para regras adicionais sobre alterações).
 
-A primeira parcela deve ter a mesma data da transação
+- Caracteristica #3: As Parcelas são criadas com suas data da parcela sempre com o mesmo dia em que foi efetuada a Transação, no entanto, quando uma nova fatura é criada, as parcelas que irão pertencer a ela terão suas datas atualizadas para o primeiro dia da Fatura (rever a Caracteristica #12, descrita no item 1.1.4.4).
 
+- Caracteristica #4: Com exceção do atributo "arredondamento", todos os atributos numéricos deverão conter valores positivos. Não serão permitidos valores negativos;
 
+- Caracteristica #5: Nenhum dos atributos que mantém valores numéricos poderão conter um valor maior que o informado no atributo Valor Bruto.
 
+- Caracteristica #6: O valor liquido da Parcela não será infomado pelo usuário, ao invés disso, será calculado sempre que for solicitado através do seguinte cálculo: "valor líquido" = "valor bruto" - "valor de desconto" - "juros" - "arredondamento". O Valor líquido nunca deverá ser maior que o Valor Bruto;
 
+- Caracteristica #7: Por padrão, o atributo "cartão" não é obrigatório, entretanto, caso seja informado um valor para o atributo Método de Pagamento que seja relativo a cartão (seja crédito ou débito), o atributo "cartão" pasa a ser obrigatório. O Método de Pagamento também limita os Cartões liberados para a venda, por exemplo, se o Metodo de Pagamento selecionado for do tipo crédito, então somente cartões do tipo crédito serão permitidos na transação.
 
+- Caracteristica #8: Por padrão, o atributo "carteira origem" não é obrigatório, e pode ser alterado posteriormente, entretanto, caso seja informado um cartão, esse atributo passa a ser obrigatório e sua alteração pelo usuário não será mais permitida. Ao invés disso, a Carteira de Origem deverá ser obrigatoriamente a mesma a qual o Cartão pertence.
 
+- Caracteristica #9: Quando uma Transação for marcada com um Método de Pagamento do tipo crédito, obrigatoriamente suas Parcelas deverão ter os mesmos valores para Cartão e Carteira Origem.
 
-installments
--quando informado um card, a payment_mathod ja deve ser informada e não pode ser alterada
-
-
-
-
-
-
-
-
+- Caracteristica #10: Nos casos de Transações que sejam referentes a vendas no crédito, suas Parcelas terão seu atributo "data de pagamento" preenchidos automaticamente no momento que Fatura for paga, com o valor da data em questão.
 
 
+#### 1.1.8.5. Tarefas
+
+Tarefa #1: Definir o valor do atributo Data da Parcela.
+> Transações que não forem referentes a vendas no crédito, manterão o atributo "Data da Parcela" de sua Parcela igual ao valor informado no atributo "Data da Transação" da Transação;
+> Para transações que forem referentes a vendas no crédito, seguir a seguinte regra:
+> - A primeiro Parcela terá o valor do seu atributo "Data da Parcela" salvo com o mesmo valor informado no atributo "Data da Transação" da Transação;
+> - As demais Parcelas terão o valor dos seus respectivos atributos "Data da Parcela" salvos com o mesmo dia informado no atributo "Data da Transação" da Transação, porém, com os meses seguintes.
+> Ex.: Considere que a Fatura atual vai do dia 05/05/2023 até 04/06/2023. Considere também que uma venda foi efetuada no dia 25/05/2023, e que 5 Parcelas foram geradas para essa venda. Nesse caso, as Parcelas devem ter seus respectivos atributos "Data da Parcela" marcados como "25/05/2023", "25/06/2023", "25/07/2023", "25/08/2023" e "25/05/2023".
+> 
 
 
 
 
-1.1.1.1.1.1 Formatações especiais
-- transaction_type: Salva o tipo de transação que o registro representa. Se relaciona com a entidade "transaction_type"
-    - Preenchimento obrigatório;
-    - Deverá ser informado no momento do cadastro da entidade;
-    - O formato do valor deve ser 00000.00. Até cinco dígitos a esquerda da vírgula, e sempre com duas casas decimais. O separador de casas decimais deve ser ponto (".") ao invés da vírgula (",");
-    - Serão permitidos valores com até duas casas decimais.
+
+
+
+
+
+
 
 
 
@@ -1006,3 +1053,8 @@ Alterações de funções
 considerar a possibilidade de permitir a alteração do nomes dos registros (como o nome dos cartões), porém manter salvos os nomes antigos. COmo uma forma de garantir que se tenha o registro dos nomes antigos, evitando que alterações no nome causem erros. Por exemplo, trocar o nome de um cartão repetidas vezes, misturando assim os movimentos. No caso da transaction, uma solução poderia ser um outro campo, para um "segundo titulo". Quando uma transação é criada, os dois campos são preenchidos da mesma forma, mas um deles permite a alteração. Assim, mesmo com um deles alterado, sempre existirá o registro do nome original
 
 considerar trocar os valores para que não tenham casas decimais, multiplicando o valor por 100. Ex.: ao invés de salvar o valor "25,35", salvar "2535". No momento de apresentar o valor na tela fazer a conversão para casas decimais de novo, dividindo por 100. Ex.: o valor salvo como "12578" seria apresentado como "125,78"
+
+
+rever como as tarefas são apresentadas, pois as "novas linhas" são ignoradas e apresentadas em uma mesma linha
+
+rever o bloqueio na alteração dos valores das parcelas. Uma alternativa seria distribuir a diferença no valor entre as parcelas ainda não quitadas
