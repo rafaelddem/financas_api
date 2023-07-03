@@ -5,7 +5,7 @@ error_reporting(E_ALL ^ E_WARNING);
 require_once "vendor/autoload.php";
 
 use api\controller\Route;
-use financas_api\model\businessObject\Home;
+use financas_api\controller\Home;
 use financas_api\model\businessObject\Installment;
 use financas_api\model\businessObject\Owner;
 use financas_api\model\businessObject\PaymentMethod;
